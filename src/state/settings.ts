@@ -5,9 +5,8 @@ import { persist } from 'zustand/middleware'
  * Client settings, not game state. They belong to the person and the browser,
  * not the save, so they live in their own store and persist to localStorage.
  *
- * Nothing reads `sound` yet (step 16) or `aiWording` yet (step 15). The
- * toggles store the value now so the screen is real; the wiring lands with
- * those steps. `reducedMotion` is live — App.tsx mirrors it onto <html>.
+ * `reducedMotion` is mirrored onto <html> by App.tsx; `aiWording` gates the
+ * flavour layer (ai/flavour.ts). Nothing reads `sound` yet — step 16.
  */
 
 export interface Settings {

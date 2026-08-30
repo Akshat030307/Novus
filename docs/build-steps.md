@@ -202,15 +202,53 @@ it.
 already fit; `EventDef` is `Omit<MarketEvent, 'firedAt'>`. Shock sizes, decay
 windows and the 65% frequency are the playtest dials.
 
-### Step 14 — Supabase ◻
+### Step 14 — Supabase ✅ done
 
-Login on the home screen, cloud save, move the existing local save up on first
-login. Row level security on, so a player can only reach their own row.
+`@supabase/supabase-js` installed. `lib/supabase.ts` — `createClient` guarded by
+`cloudEnabled = Boolean(url && key)` (null client, pure localStorage, when
+`.env` is absent); magic-link auth (`signInWithOtp`), `onAuthChange`,
+`currentUser`, `signOut`. `state/auth.ts` holds `{ user, ready }`.
+`vite-env.d.ts` types the env vars.
 
-### Step 15 — AI wording ◻
+`state/save.ts` keeps the same three signatures. `saveGame` writes localStorage
+first (with a `:at` timestamp), then upserts the `saves` row when signed in,
+swallowing failures. `loadGame` prefers the cloud row when its `updated_at`
+beats the local timestamp. `hasCloudSave` + `syncOnLogin` (push a local save up
+on first sign-in) are new. `App.tsx` resolves the session on load and runs
+`syncOnLogin` on `SIGNED_IN`; the home screen gains a sign-in block below the
+nav and Continue lights up for a cloud-only save.
 
-`ai/flavour.ts`, with the fallbacks already written. Ship it switched off by
-default and turn it on once the written fallbacks read well on their own.
+Verified against the live project: the `saves` table + RLS work — anon reads
+return `[]`, anon writes are refused (`42501`), the env is injected into the
+client. The magic-link → email → session → cloud round-trip needs a browser and
+an inbox. `sim/types.ts` unchanged.
+
+Note: `beforeunload` only completes the local write (async cloud work is cut
+off on unload); the cloud catches up at the next day-end save or sign-in.
+
+### Step 15 — AI wording ✅ done
+
+`ai/flavour.ts` — `getCaseIntro` / `getCaseExplanation` run cache → model →
+fallback and never throw. `aiConfigured` is true only when `VITE_AI_ENABLED=true`
+plus `VITE_AI_BASE_URL` + `VITE_AI_KEY` are set; otherwise (and by default) the
+written text carries the game. `ai/fallback.ts` holds that written text — the
+case brief verbatim, and a plain-language explanation built from the figures,
+drivers and the reward-the-reasoning line. `ai/cache.ts` stores model output by
+content hash in localStorage, never in the save.
+
+`ui/hooks/useFlavour.ts` shows the fallback synchronously and swaps in the model
+text if it resolves — no blocking, no tick-path calls. Wired into `CasePanel`
+only (the brief and the outcome explanation); dialogue trees and event headlines
+stay as authored content. The Settings "AI wording" toggle is real, disabled
+with a hint when no endpoint is configured.
+
+`callModel` hits an OpenAI-compatible `/chat/completions` endpoint. Shipped
+dormant — no key/endpoint here to verify against; the fallback path is tested
+and reads well. `sim/types.ts` unchanged; flavour text is display-only, never a
+number, never saved.
+
+Note: a `VITE_AI_KEY` in `.env` ships in the client bundle — fine for local
+play, but a deploy must proxy (e.g. a Supabase Edge Function). Not built here.
 
 ### Step 16 — Polish ◻
 

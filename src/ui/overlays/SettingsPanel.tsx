@@ -1,4 +1,5 @@
 import { useSettingsStore, type Settings } from '@/state/settings'
+import { aiConfigured } from '@/ai/flavour'
 import { PixelButton } from '@/ui/components/PixelButton'
 
 const ROWS: { key: keyof Settings; label: string; hint: string }[] = [
@@ -11,7 +12,9 @@ const ROWS: { key: keyof Settings; label: string; hint: string }[] = [
   {
     key: 'aiWording',
     label: 'AI wording',
-    hint: 'Let the flavour layer rephrase text. Stays off until step 15.',
+    hint: aiConfigured
+      ? 'Let a model rephrase the case write-ups. Falls back instantly to the written text.'
+      : 'Needs VITE_AI_ENABLED, VITE_AI_BASE_URL and VITE_AI_KEY in .env.',
   },
 ]
 
@@ -28,6 +31,7 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
         <div className="divide-y-2 divide-line">
           {ROWS.map((row) => {
             const on = settings[row.key]
+            const locked = row.key === 'aiWording' && !aiConfigured
             return (
               <div key={row.key} className="flex items-center justify-between gap-4 px-5 py-4">
                 <div>
@@ -35,13 +39,16 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
                   <div className="text-xs text-muted">{row.hint}</div>
                 </div>
                 <button
-                  onClick={() => settings.set(row.key, !on)}
+                  onClick={() => !locked && settings.set(row.key, !on)}
+                  disabled={locked}
                   aria-pressed={on}
-                  className={`shrink-0 border-2 px-3 py-1 font-display text-[10px] uppercase transition-colors ${
-                    on ? 'border-jade bg-jade/10 text-jade' : 'border-line bg-panel-2 text-muted'
+                  className={`shrink-0 border-2 px-3 py-1 font-display text-[10px] uppercase transition-colors disabled:opacity-40 ${
+                    on && !locked
+                      ? 'border-jade bg-jade/10 text-jade'
+                      : 'border-line bg-panel-2 text-muted'
                   }`}
                 >
-                  {on ? 'On' : 'Off'}
+                  {locked ? 'Off' : on ? 'On' : 'Off'}
                 </button>
               </div>
             )
