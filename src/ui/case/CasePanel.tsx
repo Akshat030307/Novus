@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FinancialCase, ResolvedCase } from '@/sim/types'
 import { useGameStore, useUiStore } from '@/state/store'
 import { rupees } from '@/lib/format'
+import { playSound } from '@/lib/sound'
 import { CASE_ORDER, getCase } from '@/data/cases'
 import { resolveCase, explainCase, riskRead, type CaseRatio } from '@/sim/cases'
 import { checkQuests } from '@/sim/quests'
@@ -231,6 +232,12 @@ function Outcome({
 }) {
   const ex = explainCase(fc, r)
   const explanation = useCaseExplanation(fc, r, ex.drivers)
+
+  // the cue is on the reasoning, not the dice — a sound call chimes even if it defaulted
+  useEffect(() => {
+    playSound(r.judgement === 'sound' ? 'caseGood' : 'caseBad')
+  }, [r.caseId, r.judgement])
+
   const lent = r.choice !== 'reject'
   const moneyLabel = lent
     ? r.outcome === 'good'
@@ -244,7 +251,7 @@ function Outcome({
   const cash = `${r.cashChange < 0 ? '-' : '+'}${rupees(Math.abs(r.cashChange))}`
 
   return (
-    <div className="space-y-4 p-4">
+    <div className="anim-rise space-y-4 p-4">
       <div className="flex items-start justify-between gap-3">
         <h3 className="font-display text-[11px] text-marigold uppercase">{fc.title}</h3>
         <button

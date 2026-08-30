@@ -1,6 +1,7 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import type { BuildingId } from '@/sim/types'
 import { useUiStore } from '@/state/store'
+import { playSound } from '@/lib/sound'
 import { PixelButton } from '@/ui/components/PixelButton'
 import { MarketPanel } from '@/ui/panels/MarketPanel'
 import { PortfolioPanel } from '@/ui/panels/PortfolioPanel'
@@ -43,6 +44,11 @@ const INSIDE: Record<BuildingId, { title: string; body: ReactNode }> = {
 export function BuildingOverlay() {
   const openBuilding = useUiStore((s) => s.openBuilding)
   const close = useUiStore((s) => s.setOpenBuilding)
+
+  useEffect(() => {
+    if (openBuilding) playSound('enterBuilding')
+  }, [openBuilding])
+
   if (!openBuilding) return null
 
   const inside = INSIDE[openBuilding as BuildingId] ?? {
@@ -51,8 +57,8 @@ export function BuildingOverlay() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-night/85 p-6">
-      <div className="flex max-h-[80vh] w-full max-w-2xl flex-col border-2 border-line bg-panel">
+    <div className="anim-backdrop fixed inset-0 z-50 flex items-center justify-center bg-night/85 p-6">
+      <div className="anim-pop flex max-h-[80vh] w-full max-w-2xl flex-col border-2 border-line bg-panel">
         <header className="flex shrink-0 items-center justify-between border-b-2 border-line px-5 py-3">
           <div>
             <h2 className="font-display text-sm text-ink">{inside.title}</h2>

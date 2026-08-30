@@ -1,7 +1,9 @@
 import { useUiStore, useGameStore, type BottomTab } from '@/state/store'
 import { useGameClock } from '@/state/useGameClock'
+import { useSoundCues } from '@/ui/hooks/useSoundCues'
 import { buildDayEndReport, startNextDay } from '@/sim/clock'
 import { saveGame } from '@/state/save'
+import { playSound } from '@/lib/sound'
 import { MARKET_CLOSE } from '@/lib/format'
 import { Hud } from '@/ui/hud/Hud'
 import { Panel } from '@/ui/components/Panel'
@@ -39,6 +41,7 @@ export default function GameScreen() {
   const apply = useGameStore((s) => s.apply)
 
   useGameClock()
+  useSoundCues()
 
   const endDayNow = () => {
     apply((s) => ({ ...s, clock: { ...s.clock, minute: MARKET_CLOSE, phase: 'closed' } }))
@@ -76,7 +79,10 @@ export default function GameScreen() {
                 {TABS.map((t) => (
                   <button
                     key={t.id}
-                    onClick={() => setTab(t.id)}
+                    onClick={() => {
+                      setTab(t.id)
+                      playSound('tab')
+                    }}
                     className={`border px-2 py-1 font-display text-[9px] uppercase transition-colors ${
                       tab === t.id
                         ? 'border-marigold text-marigold'
@@ -89,10 +95,12 @@ export default function GameScreen() {
               </div>
             }
           >
-            {tab === 'case' && <CasePanel />}
-            {tab === 'market' && <MarketPanel />}
-            {tab === 'portfolio' && <PortfolioPanel />}
-            {tab === 'notifications' && <NotificationsPanel />}
+            <div key={tab} className="anim-rise">
+              {tab === 'case' && <CasePanel />}
+              {tab === 'market' && <MarketPanel />}
+              {tab === 'portfolio' && <PortfolioPanel />}
+              {tab === 'notifications' && <NotificationsPanel />}
+            </div>
           </Panel>
         </div>
 

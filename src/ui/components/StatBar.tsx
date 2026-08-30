@@ -13,7 +13,10 @@ export function StatBar({
   return (
     <div className="flex h-2 w-full gap-[2px] border border-line bg-night p-[1px]">
       {Array.from({ length: 20 }, (_, i) => (
-        <div key={i} className={`flex-1 ${i < steps ? colorClass : 'bg-line/40'}`} />
+        <div
+          key={i}
+          className={`flex-1 transition-colors duration-300 ${i < steps ? colorClass : 'bg-line/40'}`}
+        />
       ))}
     </div>
   )

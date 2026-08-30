@@ -45,9 +45,25 @@ canvas, img.pixel { image-rendering: pixelated; }
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .animate-ticker { animation: ticker 40s linear infinite; }
 
+/* Step 16 — the whole motion vocabulary. Short, one easing, nothing that
+   loops. Every class below is switched off by the reduced-motion blocks. */
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop-in  { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes feed-in { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes level-pop { 0% { transform: scale(0.8); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
+
+.anim-fade     { animation: fade-in 160ms ease-out; }
+.anim-backdrop { animation: fade-in 140ms ease-out; }
+.anim-pop      { animation: pop-in 140ms ease-out; }
+.anim-rise     { animation: rise-in 130ms ease-out both; }
+.anim-feed     { animation: feed-in 180ms ease-out; }
+.anim-level    { animation: level-pop 320ms ease-out; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
@@ -58,6 +74,7 @@ canvas, img.pixel { image-rendering: pixelated; }
 [data-reduced-motion="true"] *::before,
 [data-reduced-motion="true"] *::after {
   animation-duration: 0.01ms !important;
+  animation-delay: 0s !important;
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
 }
