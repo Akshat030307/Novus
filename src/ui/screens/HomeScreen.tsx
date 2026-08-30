@@ -1,21 +1,29 @@
-import { useState } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import { useUiStore, useGameStore } from '@/state/store'
-import { hasSave, loadGame } from '@/state/save'
+import { hasSave, hasCloudSave, loadGame } from '@/state/save'
 import { newGame } from '@/state/newGame'
+import { cloudEnabled, sendMagicLink, signOut } from '@/lib/supabase'
+import { useAuthStore } from '@/state/auth'
 import { PixelButton } from '@/ui/components/PixelButton'
 
-/**
- * The first thing anyone sees.
- *
- * The Supabase login (step 14) slots in below the buttons without moving
- * anything else.
- */
+/** The first thing anyone sees. */
 export default function HomeScreen() {
   const setScreen = useUiStore((s) => s.setScreen)
   const load = useGameStore((s) => s.load)
+  const user = useAuthStore((s) => s.user)
+  const authReady = useAuthStore((s) => s.ready)
   const [naming, setNaming] = useState(false)
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [linkSent, setLinkSent] = useState(false)
+  const [authError, setAuthError] = useState<string | null>(null)
+  const [cloudSave, setCloudSave] = useState(false)
   const saveExists = hasSave()
+
+  useEffect(() => {
+    if (cloudEnabled && user) void hasCloudSave().then(setCloudSave)
+    else setCloudSave(false)
+  }, [user])
 
   const startNew = () => {
     load(newGame(name.trim()))
@@ -28,6 +36,14 @@ export default function HomeScreen() {
       load(saved)
       setScreen('game')
     }
+  }
+
+  const sendLink = async (e: FormEvent) => {
+    e.preventDefault()
+    setAuthError(null)
+    const { error } = await sendMagicLink(email.trim())
+    if (error) setAuthError(error)
+    else setLinkSent(true)
   }
 
   return (
@@ -85,8 +101,8 @@ export default function HomeScreen() {
               New game
             </PixelButton>
             <PixelButton
-              disabled={!saveExists}
-              title={saveExists ? '' : 'No saved game yet'}
+              disabled={!saveExists && !cloudSave}
+              title={saveExists || cloudSave ? '' : 'No saved game yet'}
               onClick={continueSaved}
             >
               Continue
@@ -95,6 +111,43 @@ export default function HomeScreen() {
               Skip to the UI demo
             </PixelButton>
           </nav>
+        )}
+
+        {cloudEnabled && authReady && (
+          <div className="mt-6 w-full">
+            {user ? (
+              <div className="flex items-center justify-center gap-3 text-xs">
+                <span className="font-num text-muted">{user.email}</span>
+                <button
+                  onClick={() => void signOut()}
+                  className="font-display text-[9px] text-muted uppercase hover:text-marigold"
+                >
+                  Sign out
+                </button>
+              </div>
+            ) : linkSent ? (
+              <p className="text-center text-xs text-muted">
+                Sign-in link sent — check your email.
+              </p>
+            ) : (
+              <form onSubmit={sendLink} className="flex w-full gap-2">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@email.com"
+                  className="min-w-0 flex-1 border-2 border-line bg-night px-3 py-2 font-num text-sm text-ink
+                    placeholder:text-muted/50 focus:border-marigold focus:outline-none"
+                />
+                <PixelButton type="submit">Send link</PixelButton>
+              </form>
+            )}
+            {authError && <p className="mt-2 text-center text-xs text-coral">{authError}</p>}
+            <p className="mt-2 text-center text-[10px] text-muted/60">
+              Sign in to save your progress to the cloud.
+            </p>
+          </div>
         )}
 
         <p className="mt-10 font-display text-[9px] text-muted/60 uppercase">

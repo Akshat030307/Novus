@@ -6,6 +6,7 @@ import { CASE_ORDER, getCase } from '@/data/cases'
 import { resolveCase, explainCase, riskRead, type CaseRatio } from '@/sim/cases'
 import { checkQuests } from '@/sim/quests'
 import { skillLevel } from '@/sim/progression'
+import { useCaseIntro, useCaseExplanation } from '@/ui/hooks/useFlavour'
 import { PixelButton } from '@/ui/components/PixelButton'
 
 const VERDICT_TONE: Record<CaseRatio['verdict'], string> = {
@@ -30,6 +31,7 @@ export function CasePanel() {
 
   const openCase = openCaseId ? getCase(openCaseId) : undefined
   const openResolved = openCaseId ? resolved.find((r) => r.caseId === openCaseId) : undefined
+  const intro = useCaseIntro(openCase) // written brief now, AI phrasing if it resolves
 
   const openFile = (id: string) => {
     setChoice(null)
@@ -137,7 +139,7 @@ export function CasePanel() {
         </button>
       </div>
 
-      <p className="text-sm text-ink">{openCase.brief}</p>
+      <p className="text-sm text-ink">{intro}</p>
 
       <div>
         <div className="mb-1 font-display text-[9px] text-muted uppercase">On the file</div>
@@ -228,6 +230,7 @@ function Outcome({
   onDone: () => void
 }) {
   const ex = explainCase(fc, r)
+  const explanation = useCaseExplanation(fc, r, ex.drivers)
   const lent = r.choice !== 'reject'
   const moneyLabel = lent
     ? r.outcome === 'good'
@@ -265,7 +268,7 @@ function Outcome({
         </span>
       </div>
 
-      <p className="text-sm text-ink">{ex.verdict}</p>
+      <p className="text-sm text-ink">{explanation}</p>
 
       <div className="grid grid-cols-3 gap-3">
         <Delta label="Cash" value={cash} tone={r.cashChange >= 0 ? 'text-jade' : 'text-coral'} />
