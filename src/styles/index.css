@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/* Design tokens. Every colour and font in the game comes from here.
+   Do not hard-code hex values in components. */
+@theme {
+  --color-night: #000000;        /* page background */
+  --color-panel: #000000;        /* panel fill */
+  --color-panel-2: #161616;      /* raised panel / hover */
+  --color-line: #2e2e2e;         /* borders */
+  --color-ink: #e6e8f5;          /* main text */
+  --color-muted: #8d93b5;        /* secondary text */
+  --color-marigold: #f2a73b;     /* accent: money, XP, focus */
+  --color-amethyst: #8a6be8;     /* reputation, levels */
+  --color-jade: #43c08a;         /* up / gain / approve */
+  --color-coral: #e4574c;        /* down / loss / reject */
+
+  --font-display: "Silkscreen", monospace;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+  --font-num: "IBM Plex Mono", monospace;
+}
+
+html, body, #root { height: 100%; }
+
+body {
+  background: var(--color-night);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  /* faint scanline wash: retro terminal, kept very low so text stays readable */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.014) 0px,
+    rgba(255,255,255,0.014) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+canvas, img.pixel { image-rendering: pixelated; }
+
+*:focus-visible {
+  outline: 2px solid var(--color-marigold);
+  outline-offset: 2px;
+}
+
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.animate-ticker { animation: ticker 40s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* manual override from the settings panel, independent of the OS setting */
+[data-reduced-motion="true"] *,
+[data-reduced-motion="true"] *::before,
+[data-reduced-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
