@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import type { LevelUpReport } from '@/sim/types'
+import { playSound } from '@/lib/sound'
 import { PixelButton } from '@/ui/components/PixelButton'
 
 /**
@@ -12,12 +14,16 @@ export function LevelUpPopup({
   report: LevelUpReport
   onClose: () => void
 }) {
+  useEffect(() => {
+    playSound('levelUp')
+  }, [report.newLevel])
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-night/85 p-6">
-      <div className="w-full max-w-sm border-2 border-amethyst bg-panel">
+    <div className="anim-backdrop fixed inset-0 z-50 flex items-center justify-center bg-night/85 p-6">
+      <div className="anim-pop w-full max-w-sm border-2 border-amethyst bg-panel">
         <header className="border-b-2 border-amethyst px-5 py-4 text-center">
           <div className="font-display text-[10px] text-amethyst uppercase">Level up</div>
-          <div className="font-display text-2xl text-ink">Level {report.newLevel}</div>
+          <div className="anim-level font-display text-2xl text-ink">Level {report.newLevel}</div>
         </header>
 
         <div className="p-5">

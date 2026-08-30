@@ -6,7 +6,7 @@ import { persist } from 'zustand/middleware'
  * not the save, so they live in their own store and persist to localStorage.
  *
  * `reducedMotion` is mirrored onto <html> by App.tsx; `aiWording` gates the
- * flavour layer (ai/flavour.ts). Nothing reads `sound` yet — step 16.
+ * flavour layer (ai/flavour.ts); `sound` gates the interface cues (lib/sound.ts).
  */
 
 export interface Settings {

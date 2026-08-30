@@ -40,7 +40,14 @@ export function DayArc({ minute, day }: { minute: number; day: number }) {
         <line x1="14" y1={cy} x2="106" y2={cy} stroke="var(--color-line)" strokeWidth="2" />
         {/* the sun: a square, never a circle */}
         {!beforeOpen && (
-          <rect x={x - 4} y={y - 4} width="8" height="8" fill={sunColor} />
+          <rect
+            x={x - 4}
+            y={y - 4}
+            width="8"
+            height="8"
+            fill={sunColor}
+            className="transition-all duration-700 ease-linear"
+          />
         )}
       </svg>
       <div className="leading-tight">

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useGameStore, useUiStore } from '@/state/store'
 import { getNpc, type DialogueOption } from '@/data/npcs'
 import { evalCond, applyDialogueEffect, checkQuests } from '@/sim/quests'
+import { playSound } from '@/lib/sound'
 import { PixelButton } from '@/ui/components/PixelButton'
 
 /**
@@ -19,6 +20,7 @@ export function DialogueBox() {
 
   useEffect(() => {
     setNodeId('start')
+    if (npcId) playSound('dialogue')
   }, [npcId])
 
   const npc = npcId ? getNpc(npcId) : undefined
@@ -40,7 +42,7 @@ export function DialogueBox() {
 
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 p-4">
-      <div className="pointer-events-auto mx-auto max-w-3xl border-2 border-marigold bg-panel p-4">
+      <div className="anim-rise pointer-events-auto mx-auto max-w-3xl border-2 border-marigold bg-panel p-4">
         <div className="mb-1 flex items-baseline gap-2">
           <h3 className="font-display text-[11px] text-marigold uppercase">{npc.name}</h3>
           <span className="font-display text-[9px] text-muted uppercase">{npc.role}</span>

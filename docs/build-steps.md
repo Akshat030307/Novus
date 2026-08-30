@@ -250,10 +250,28 @@ number, never saved.
 Note: a `VITE_AI_KEY` in `.env` ships in the client bundle — fine for local
 play, but a deploy must proxy (e.g. a Supabase Edge Function). Not built here.
 
-### Step 16 — Polish ◻
+### Step 16 — Polish ✅ done
 
-Sound, small animations, transitions, and a day-end screen that feels good to
-read.
+`lib/sound.ts` synthesises the interface cues with Web Audio — no asset files,
+gated on the `sound` setting, a silent no-op if the AudioContext is missing or
+unhappy. Eleven cues: tab, building, dialogue, trade ok/fail, case good/bad
+(keyed on the *judgement*, not the dice), level-up, day-end, and a feed ping
+from `ui/hooks/useSoundCues.ts` for lines that arrive while you are looking
+elsewhere. Nothing on the market tick path makes noise.
+
+`styles/index.css` holds the whole motion vocabulary — `fade`, `pop`, `rise`,
+`feed`, `level-pop`, one easing, ~130ms, nothing that loops. Both reduced-motion
+paths (OS and the settings toggle) now also zero `animation-delay`, so the
+day-end stagger collapses too. Applied to the four overlays (backdrop fade +
+panel pop), the bottom-tab body, the screen swap, the dialogue box, the feed,
+the level number, plus colour transitions on `StatBar` fills and a slide on the
+`DayArc` sun.
+
+`DayEndScreen` rebuilt: the P&L on the day is the headline number with a
+one-line read, then Money / Trading / Standing as grouped sections that fade in
+in sequence. Same `DayEndReport` prop, same `onClose` — no sim change.
+
+`sim/types.ts` unchanged; sound and motion are display-only.
 
 ---
 

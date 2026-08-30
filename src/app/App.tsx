@@ -34,5 +34,9 @@ export default function App() {
     })
   }, [setUser, setReady])
 
-  return screen === 'home' ? <HomeScreen /> : <GameScreen />
+  return (
+    <div key={screen} className="anim-fade h-full">
+      {screen === 'home' ? <HomeScreen /> : <GameScreen />}
+    </div>
+  )
 }

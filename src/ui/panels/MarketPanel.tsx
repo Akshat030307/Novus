@@ -3,6 +3,7 @@ import { useGameStore, useUiStore } from '@/state/store'
 import { rupees, signed } from '@/lib/format'
 import { applyTrade } from '@/sim/portfolio'
 import { checkQuests } from '@/sim/quests'
+import { playSound } from '@/lib/sound'
 import { PriceChart } from '@/ui/panels/PriceChart'
 import { PixelButton } from '@/ui/components/PixelButton'
 
@@ -40,8 +41,10 @@ export function MarketPanel() {
       load(quested.state)
       pushLevelUps([...result.levelUps, ...quested.levelUps])
       setError(null)
+      playSound('tradeOk')
     } else {
       setError(result.reason)
+      playSound('tradeFail')
     }
   }
 

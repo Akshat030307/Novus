@@ -1,9 +1,10 @@
 import { useSettingsStore, type Settings } from '@/state/settings'
 import { aiConfigured } from '@/ai/flavour'
+import { playSound } from '@/lib/sound'
 import { PixelButton } from '@/ui/components/PixelButton'
 
 const ROWS: { key: keyof Settings; label: string; hint: string }[] = [
-  { key: 'sound', label: 'Sound', hint: 'Music and effects. Wired up at step 16.' },
+  { key: 'sound', label: 'Sound', hint: 'Interface clicks and cues. No music yet.' },
   {
     key: 'reducedMotion',
     label: 'Reduced motion',
@@ -22,8 +23,8 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
   const settings = useSettingsStore()
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-night/85 p-6">
-      <div className="w-full max-w-md border-2 border-line bg-panel">
+    <div className="anim-backdrop fixed inset-0 z-50 flex items-center justify-center bg-night/85 p-6">
+      <div className="anim-pop w-full max-w-md border-2 border-line bg-panel">
         <header className="border-b-2 border-line px-5 py-3">
           <h2 className="font-display text-sm text-ink">Settings</h2>
         </header>
@@ -39,7 +40,11 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
                   <div className="text-xs text-muted">{row.hint}</div>
                 </div>
                 <button
-                  onClick={() => !locked && settings.set(row.key, !on)}
+                  onClick={() => {
+                    if (locked) return
+                    settings.set(row.key, !on)
+                    playSound('click')
+                  }}
                   disabled={locked}
                   aria-pressed={on}
                   className={`shrink-0 border-2 px-3 py-1 font-display text-[10px] uppercase transition-colors disabled:opacity-40 ${
