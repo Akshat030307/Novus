@@ -370,6 +370,77 @@ unrealised P&L and diversification (one holding is 100% of the book — the
 lesson lands on the very first trade), re-running with no new state changes
 nothing. A v1 save migrates to v2 with `learned: []`.
 
+#### C-b — assist setting ✅ done
+
+`settings.assist` (on by default). Shows the case decide-view hints
+(debt-service cover, risk read, leverage) up front rather than only behind
+skill unlocks; the tag reads "Assist" until the skill level is actually
+reached. The three hint blocks folded into one `Aid` helper. No sim change.
+
+#### C-d — predict, then reveal ✅ done
+
+`sim/types.ts` — `CasePrediction` and two optional fields on `ResolvedCase`
+(`prediction`, `predictionRight`); optional throughout, no migration. The
+decide view gains an optional "Your read" block (low / mid / high band + a
+one-line why) that never gates Submit. `gradePrediction` scores the band
+against `truth.defaultRisk`; the outcome screen shows a "Read right / off"
+badge and echoes it back — graded on the band, never the roll.
+
+Deviation from `education.md` open question 3: the "why" is a shown-back note,
+not a graded driver pick — the case `drivers` are prose, not slugs.
+
+#### C-e — day-end debrief + mistake log ✅ done
+
+`sim/analysis.ts` — `analyseDay` picks one teaching sentence about the day
+(unsound call → concentrated book → churn, first hit); `spotMistakes` /
+`logMistakes` record those at the day boundary in `startNextDay`, idempotent.
+`DayEndReport.lesson`, `GameState.mistakes`; migrate → v3. Day-end screen
+shows the line under the P&L; a new **Mistakes** Academy tab lists the log
+with a pattern line once a kind repeats three times.
+
+#### C-f — Academy modules ✅ done
+
+`data/modules.ts` — five modules (reading a loan file, balance-sheet stress,
+cash vs profit, don't bet the book, reading the tape), each a blurb, the
+Ledger concepts it covers, an in-game task, and a 4–5 question check.
+`sim/modules.ts` scores it — 60% to pass, best score kept, passing sticks,
+**failing blocks nothing**. `GameState.modules`; migrate → v4. **Modules**
+Academy tab with an inline quiz that marks right/wrong on submit.
+
+#### C-g — transcript ✅ done
+
+`ui/panels/TranscriptPanel.tsx` (**Report** Academy tab): concepts learned,
+credit-decision record with risk-read accuracy, best/worst call, modules
+passed with scores, mistakes logged — plus a plain-text **Copy**.
+
+#### C-a2 — the Casebook ✅ done (draft content)
+
+`data/casebook.ts` — six real concluded events (Satyam 2009, IL&FS 2018,
+PNB letters of undertaking 2018, the 1992 securities scam, Kingfisher 2012,
+the 2008 crisis). Each: timeline, the numbers, what was visible beforehand,
+the Ledger concepts it reinforces, the fictional case it rhymes with,
+self-check Q&A, sources. **Marked DRAFT** — figures and dates need a pass
+against the cited sources before this ships publicly. The one place real
+companies appear (`education.md` principle 5); every card carries its sources
+and a "not investment advice" footer. **Casebook** Academy tab; read-state
+via a `flags` key, no type change. `tools/casebook-ingest/` is a documented
+skeleton (source allowlist, draft-out-never-commit) — not wired in, not run.
+
+#### C-h — scenario drills ✅ done
+
+`data/scenarios.ts` + `ui/scenarios/` — three self-contained drills off a
+**Drills** Academy tab, no city / clock / save (v1 answer to open question 6):
+the credit desk (five files back to back), build a book (allocation exercise
+on a frozen snapshot), spot the shock (pick who a headline lifts). No sim
+change.
+
+#### C-c — `FinancialCase` generalisation — deferred
+
+Not done. It is only a prerequisite for *authoring* non-loan case content
+(allocation, fraud-pattern), which this pass did not write — the modules and
+drills run against the five existing loan files. Land it when that content is
+next.
+
 ---
 
 ## Not in this build
