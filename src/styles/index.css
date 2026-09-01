@@ -62,6 +62,19 @@ canvas, img.pixel { image-rendering: pixelated; }
 .anim-feed     { animation: feed-in 180ms ease-out; }
 .anim-level    { animation: level-pop 320ms ease-out; }
 
+/* Home screen ambient motion — background decoration only. The reduced-motion
+   blocks below zero all of this out along with everything else. */
+@keyframes money-rain {
+  0%   { transform: translateY(-15vh) rotate(-6deg); }
+  50%  { transform: translateY(50vh) rotate(6deg); }
+  100% { transform: translateY(115vh) rotate(-6deg); }
+}
+@keyframes citylight {
+  0%, 88%, 100% { opacity: 1; }
+  92%           { opacity: 0.12; }
+  96%           { opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
