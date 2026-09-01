@@ -253,6 +253,8 @@ export interface DayEndReport {
   questsCompleted: string[]
   /** tomorrow's leading headline, shown as a teaser; null on a quiet day */
   tomorrowHeadline: string | null
+  /** one plain-language teaching sentence about the day, or null (step C-e) */
+  lesson: string | null
 }
 
 /**
@@ -280,4 +282,23 @@ export interface GameState {
   flags: Record<string, boolean>
   /** ids of Ledger concepts unlocked so far — see sim/concepts.ts */
   learned: string[]
+  /** recurring errors the game has spotted — see sim/analysis.ts (step C-e) */
+  mistakes: MistakeRecord[]
+  /** Academy module progress, keyed by module id (step C-f) */
+  modules: Record<string, ModuleProgress>
+}
+
+/** one error, logged at the day boundary, with the lesson attached */
+export interface MistakeRecord {
+  id: string
+  kind: 'unsound_call' | 'concentration' | 'noise_trade'
+  day: number
+  note: string
+}
+
+export interface ModuleProgress {
+  started: boolean
+  passed: boolean
+  /** best fraction correct on the end check, 0–1 */
+  score?: number
 }

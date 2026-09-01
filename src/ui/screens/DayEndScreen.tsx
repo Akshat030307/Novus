@@ -45,6 +45,16 @@ export function DayEndScreen({
             <p className="mt-1 text-sm text-muted">{verdict}</p>
           </div>
 
+          {report.lesson && (
+            <div
+              className="anim-rise border-l-2 border-amethyst bg-panel-3 py-2 pl-3 pr-2"
+              style={{ animationDelay: '40ms' }}
+            >
+              <div className="font-display text-[9px] text-amethyst uppercase">Worth noting</div>
+              <p className="mt-0.5 text-sm text-ink">{report.lesson}</p>
+            </div>
+          )}
+
           <Section title="Money" delay={80}>
             <Figure label="Cash at open" value={rupees(report.cashOpen)} />
             <Figure label="Cash at close" value={rupees(report.cashClose)} />
