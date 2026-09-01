@@ -21,27 +21,27 @@ import { LevelUpPopup } from '@/ui/overlays/LevelUpPopup'
 import { SettingsPanel } from '@/ui/overlays/SettingsPanel'
 import { BuildingOverlay } from '@/ui/overlays/BuildingOverlay'
 
-const TABS: { id: BottomTab; label: string }[] = [
-  { id: 'case', label: 'Case' },
-  { id: 'market', label: 'Market' },
-  { id: 'portfolio', label: 'Portfolio' },
-  { id: 'notifications', label: 'Feed' },
+const TABS: { id: BottomTab; label: string; icon: string; accent: 'marigold' | 'amethyst' | 'jade' | 'muted' }[] = [
+  { id: 'case', label: 'Case', icon: '⚖', accent: 'amethyst' },
+  { id: 'market', label: 'Market', icon: '↕', accent: 'marigold' },
+  { id: 'portfolio', label: 'Portfolio', icon: '◐', accent: 'jade' },
+  { id: 'notifications', label: 'Feed', icon: '✦', accent: 'muted' },
 ]
 
 export default function GameScreen() {
   const tab = useUiStore((s) => s.bottomTab)
   const setTab = useUiStore((s) => s.setBottomTab)
-  const setNpc = useUiStore((s) => s.setDialogueNpc)
   const overlay = useUiStore((s) => s.overlay)
   const setOverlay = useUiStore((s) => s.setOverlay)
   const levelUp = useUiStore((s) => s.levelUpQueue[0])
   const dismissLevelUp = useUiStore((s) => s.dismissLevelUp)
-  const pushLevelUps = useUiStore((s) => s.pushLevelUps)
   const state = useGameStore((s) => s.state)
   const apply = useGameStore((s) => s.apply)
 
   useGameClock()
   useSoundCues()
+
+  const active = TABS.find((t) => t.id === tab)
 
   const endDayNow = () => {
     apply((s) => ({ ...s, clock: { ...s.clock, minute: MARKET_CLOSE, phase: 'closed' } }))
@@ -73,7 +73,9 @@ export default function GameScreen() {
           </div>
 
           <Panel
-            title={TABS.find((t) => t.id === tab)?.label}
+            title={active?.label}
+            icon={active?.icon}
+            accent={active?.accent}
             right={
               <div className="flex gap-1">
                 {TABS.map((t) => (
@@ -107,33 +109,18 @@ export default function GameScreen() {
         {/* right: where you are, what you can do from here */}
         <div className="flex min-h-0 flex-col gap-2">
           <MiniMap />
-          <Panel title="Quick actions" bodyClassName="p-2">
-            <div className="flex flex-col gap-2">
-              <PixelButton onClick={() => setTab('portfolio')}>Portfolio</PixelButton>
-              <PixelButton onClick={() => setTab('market')}>Market</PixelButton>
-              <PixelButton onClick={() => setNpc('bank-manager')}>Talk (demo)</PixelButton>
-              <PixelButton
-                tone="bad"
-                onClick={endDayNow}
-                title="Skip ahead to the market close"
-              >
-                End day
-              </PixelButton>
-              <PixelButton
-                tone="primary"
-                onClick={() =>
-                  pushLevelUps([
-                    {
-                      newLevel: state.player.level + 1,
-                      unlocks: ['Demo popup — real level-ups come from cases and trades.'],
-                    },
-                  ])
-                }
-                title="Preview the level-up popup"
-              >
-                Level up (demo)
-              </PixelButton>
-            </div>
+          <Panel title="Actions" icon="◆" accent="coral" bodyClassName="p-2">
+            <PixelButton
+              tone="bad"
+              className="w-full"
+              onClick={endDayNow}
+              title="Skip ahead to the market close"
+            >
+              End day
+            </PixelButton>
+            <p className="mt-2 px-1 text-[10px] text-muted">
+              The day also ends on its own when the market closes at 3:30.
+            </p>
           </Panel>
         </div>
       </div>
