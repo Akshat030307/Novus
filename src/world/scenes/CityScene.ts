@@ -2,12 +2,15 @@ import Phaser from 'phaser'
 import { bridge } from '@/world/bridge'
 import {
   GROUND,
+  DECOR,
   OBJECTS,
+  DOOR_TILES,
   MAP_W,
   MAP_H,
   TILE,
   SPAWN,
   BUILDINGS,
+  ENTERABLE,
   NPCS,
   type Building,
   type NpcSpec,
@@ -24,9 +27,10 @@ type NpcInstance = { spec: NpcSpec; sprite: ReturnType<typeof createNpc> }
 type DoorZone = { building: Building; zone: Phaser.GameObjects.Zone }
 
 /**
- * The city. Two array-data layers off one tilesheet: ground (walkable) and
- * objects (buildings, water, trees — all solid). Doorways are cut back out of
- * the object layer; an overlap zone on each one calls bridge.enterBuilding().
+ * The city. Three array-data layers off one tilesheet: ground (walkable),
+ * decor (props — lamps, trees, cars, all solid) and objects (building shells,
+ * fountain — all solid). Doorways are cut back out of the object layer; an
+ * overlap zone on each enterable building calls bridge.enterBuilding().
  * NPCs stand in fixed spots — walk up and press E to bridge.talkTo() them.
  *
  * Everything past this scene goes through world/bridge.ts.
@@ -54,10 +58,17 @@ export class CityScene extends Phaser.Scene {
     const groundSet = groundMap.addTilesetImage('tiles', 'tiles')!
     groundMap.createLayer(0, groundSet, 0, 0)
 
+    const decorMap = this.make.tilemap({ data: DECOR, tileWidth: TILE, tileHeight: TILE })
+    const decorSet = decorMap.addTilesetImage('tiles', 'tiles')!
+    const decorLayer = decorMap.createLayer(0, decorSet, 0, 0)!
+    decorLayer.setCollisionByExclusion([-1])
+    decorLayer.setDepth(4)
+
     const objectMap = this.make.tilemap({ data: OBJECTS, tileWidth: TILE, tileHeight: TILE })
     const objectSet = objectMap.addTilesetImage('tiles', 'tiles')!
     const objectLayer = objectMap.createLayer(0, objectSet, 0, 0)!
     objectLayer.setCollisionByExclusion([-1])
+    objectLayer.setCollision(DOOR_TILES, false) // walk through the doorway
     objectLayer.setDepth(5)
 
     const worldW = MAP_W * TILE
@@ -70,9 +81,10 @@ export class CityScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, worldW, worldH)
     this.player.setCollideWorldBounds(true)
     this.physics.add.collider(this.player, objectLayer)
+    this.physics.add.collider(this.player, decorLayer)
 
-    // --- doors ---
-    this.doors = BUILDINGS.map((building) => {
+    // --- doors (enterable buildings only) ---
+    this.doors = ENTERABLE.map((building) => {
       const zone = this.add.zone(
         building.door.x * TILE + TILE / 2,
         building.door.y * TILE + TILE / 2,
@@ -156,7 +168,7 @@ export class CityScene extends Phaser.Scene {
   private enterDoor(zone: Phaser.GameObjects.Zone) {
     if (this.doorLocked || bridge.isPaused()) return
     const hit = this.doors.find((d) => d.zone === zone)
-    if (!hit) return
+    if (!hit || !hit.building.door) return
     this.doorLocked = true
     bridge.enterBuilding(hit.building.id)
     // step back onto the pavement, so leaving drops you on the doorstep
