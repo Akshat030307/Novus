@@ -275,9 +275,73 @@ in sequence. Same `DayEndReport` prop, same `onClose` — no sim change.
 
 ---
 
+## Redesign pass (after the MVP)
+
+The 16 steps above make the game. This pass makes it look and teach like the
+thing it wants to be. Three tracks, each its own step, stop after each.
+
+### Step A — The city ✅ done
+
+`world/map/city.ts` rebuilt on a 58×44 grid: three avenues and three roads on a
+proper block grid, tarmac with lane markings, footpaths and zebra crossings,
+a footpath apron around every building. The centre junction opens into a tan
+plaza with a stone-rimmed fountain — the new spawn point.
+
+Thirteen buildings off Kenney's low-rise set (red brick, orange brick, glass
+shopfront with a green awning), each a roof/wall/base slice with a window grid
+and a door tile in the south wall. Eight are enterable: the five wired venues
+plus **Risk & Compliance**, **Payment Centre** and **Cafeteria** — placed with
+working doors, interiors are later steps (each shows a nameplate note for now
+via `BuildingOverlay`). The rest — Insurance, Businesses, Investment Firm,
+Government Office, the Registry — are scenery with labels, no door.
+
+New `DECOR` layer for props (lamp posts, traffic signals, parked cars, benches,
+market stalls, hydrants, bins, a postbox) — all solid. `CityScene` gains the
+third layer and clears collision on the door tile so you can walk in.
+
+`sim/types.ts` unchanged: the three new venues carry world-local ids
+(`CityBuildingId`) until their interiors get built. No new assets — same CC0
+Kenney pack. The pack is low-rise, so the look is a brick market-city, not the
+glass towers in the reference.
+
+### Step B — Panels with life ✅ done
+
+`Panel` primitive reworked: a raised header strip (`bg-panel-2`), an accent rule
+under the title in the panel's colour, an icon slot, and a lighter top edge
+(`--color-hi`) so it sits up off the black. Two new tokens — `--color-panel-3`
+(inset wells) and `--color-hi`. Hard corners kept.
+
+Per-panel identity: Tasks (marigold, ✎) gets real checkboxes and a progress
+bar per quest; the Feed (✦) gets kind tags (MKT / TASK / ₹ / CITY); Portfolio
+(jade, ◐) gets an `AllocationBar` — a twenty-cell blocky bar of cash + each
+holding, in the StatBar language, no smooth pie; the bottom panel takes the
+active tab's colour and glyph. Mini-map redrawn to the eight real doors.
+
+One nav: the right-hand panel is now just **End day** plus a line saying the
+day ends itself at 3:30. The duplicate Portfolio/Market buttons and the two
+demo buttons are gone. No bottom nav was ever added; the bottom tabs stay.
+
+HUD: a third gauge, **Energy** ("focus"), sits between XP and Reputation. It
+renders a placeholder full bar — `player.energy` and the drain/restore rules
+are the next step. **Proposed `sim/types.ts` change** (not yet written): add
+`energy: number` to `Player`; `newGame` inits it to 100; either a v2 migration
+or `?? 100` at the read sites covers old saves. Nothing else in B touched
+`sim/`.
+
+### Step C — Educational layer ◻
+
+Spec written: **`docs/education.md`** — read it there. Eleven pieces (Ledger,
+predict-then-reveal, tap-to-explain, modules, day-end debrief, mistake log,
+scenario mode, assist setting, further reading, transcript, and a Casebook of
+real concluded events — the one place real companies appear, as study material
+with sources), the batched `sim/types.ts` proposal, and a step-by-step order
+(C-a … C-h). Awaiting sign-off on §8's open questions before C-a.
+
+---
+
 ## Not in this build
 
 Multiplayer, extra careers, the FinTech company management sim, options and
-futures, mobile layout, leaderboards, more than five buildings.
+futures, mobile layout, leaderboards.
 
 They all fit later. The layer split is what keeps that door open.
