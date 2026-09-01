@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react'
 import { useGameStore } from '@/state/store'
 import { rupees, signed } from '@/lib/format'
 import { AllocationBar, type Slice } from '@/ui/components/AllocationBar'
+import { Explain } from '@/ui/components/Explain'
 
 /** colours for the holding slices, after cash takes jade */
 const SLICE_CLS = [
@@ -36,7 +38,7 @@ export function PortfolioPanel() {
         <Stat label="Cash" value={rupees(player.cash, { short: true })} />
         <Stat label="Holdings" value={rupees(value, { short: true })} />
         <Stat
-          label="Open profit"
+          label={<Explain id="unrealised-pnl">Open profit</Explain>}
           value={rupees(unrealised, { short: true })}
           tone={unrealised >= 0 ? 'text-jade' : 'text-coral'}
         />
@@ -44,7 +46,9 @@ export function PortfolioPanel() {
       </div>
 
       <div className="border-2 border-line bg-panel-3 p-3">
-        <div className="mb-2 font-display text-[9px] text-muted uppercase">Where the money is</div>
+        <div className="mb-2 font-display text-[9px] text-muted uppercase">
+          <Explain id="diversification">Where the money is</Explain>
+        </div>
         <AllocationBar slices={allocation} />
       </div>
 
@@ -86,7 +90,7 @@ export function PortfolioPanel() {
   )
 }
 
-function Stat({ label, value, tone = 'text-ink' }: { label: string; value: string; tone?: string }) {
+function Stat({ label, value, tone = 'text-ink' }: { label: ReactNode; value: string; tone?: string }) {
   return (
     <div className="border-2 border-line bg-panel-3 px-3 py-2">
       <div className="font-display text-[9px] text-muted uppercase">{label}</div>

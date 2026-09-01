@@ -6,14 +6,25 @@ import { playSound } from '@/lib/sound'
 import { CASE_ORDER, getCase } from '@/data/cases'
 import { resolveCase, explainCase, riskRead, type CaseRatio } from '@/sim/cases'
 import { checkQuests } from '@/sim/quests'
+import { checkConcepts } from '@/sim/concepts'
 import { skillLevel } from '@/sim/progression'
 import { useCaseIntro, useCaseExplanation } from '@/ui/hooks/useFlavour'
 import { PixelButton } from '@/ui/components/PixelButton'
+import { Explain } from '@/ui/components/Explain'
 
 const VERDICT_TONE: Record<CaseRatio['verdict'], string> = {
   strong: 'text-jade',
   ok: 'text-muted',
   weak: 'text-coral',
+}
+
+/** the ratio labels explainCase writes, mapped to their Ledger card */
+const RATIO_CONCEPT: Record<string, string> = {
+  'Debt-service cover': 'debt-service-cover',
+  'Operating margin': 'margin',
+  'Debt / annual profit': 'leverage',
+  'Collateral / existing debt': 'collateral-cover',
+  'Credit score': 'credit-score',
 }
 
 /**
@@ -52,7 +63,8 @@ export function CasePanel() {
     if (!openCase || !choice) return
     const result = resolveCase(useGameStore.getState().state, openCase, choice)
     const quested = checkQuests(result.state)
-    load(quested.state)
+    const concepts = checkConcepts(quested.state)
+    load(concepts.state)
     pushLevelUps([...result.levelUps, ...quested.levelUps])
     setChoice(null)
   }
@@ -290,12 +302,17 @@ function Outcome({
       <div>
         <div className="mb-1 font-display text-[9px] text-muted uppercase">What the numbers said</div>
         <dl className="grid grid-cols-2 gap-x-6 text-sm">
-          {ex.ratios.map((ratio) => (
-            <div key={ratio.label} className="flex justify-between border-b border-line/50 py-1">
-              <dt className="text-muted">{ratio.label}</dt>
-              <dd className={`font-num ${VERDICT_TONE[ratio.verdict]}`}>{ratio.value}</dd>
-            </div>
-          ))}
+          {ex.ratios.map((ratio) => {
+            const conceptId = RATIO_CONCEPT[ratio.label]
+            return (
+              <div key={ratio.label} className="flex justify-between border-b border-line/50 py-1">
+                <dt className="text-muted">
+                  {conceptId ? <Explain id={conceptId}>{ratio.label}</Explain> : ratio.label}
+                </dt>
+                <dd className={`font-num ${VERDICT_TONE[ratio.verdict]}`}>{ratio.value}</dd>
+              </div>
+            )
+          })}
         </dl>
       </div>
 

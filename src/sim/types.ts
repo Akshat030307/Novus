@@ -264,4 +264,6 @@ export interface GameState {
   cases: { openCaseId: string | null; resolved: ResolvedCase[] }
   notifications: GameNotification[]
   flags: Record<string, boolean>
+  /** ids of Ledger concepts unlocked so far — see sim/concepts.ts */
+  learned: string[]
 }

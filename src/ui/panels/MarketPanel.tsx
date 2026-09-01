@@ -3,9 +3,11 @@ import { useGameStore, useUiStore } from '@/state/store'
 import { rupees, signed } from '@/lib/format'
 import { applyTrade } from '@/sim/portfolio'
 import { checkQuests } from '@/sim/quests'
+import { checkConcepts } from '@/sim/concepts'
 import { playSound } from '@/lib/sound'
 import { PriceChart } from '@/ui/panels/PriceChart'
 import { PixelButton } from '@/ui/components/PixelButton'
+import { Explain } from '@/ui/components/Explain'
 
 export function MarketPanel() {
   const stocks = useGameStore((s) => s.state.market.stocks)
@@ -38,7 +40,8 @@ export function MarketPanel() {
     })
     if (result.ok) {
       const quested = checkQuests(result.state)
-      load(quested.state)
+      const concepts = checkConcepts(quested.state)
+      load(concepts.state)
       pushLevelUps([...result.levelUps, ...quested.levelUps])
       setError(null)
       playSound('tradeOk')
@@ -88,8 +91,12 @@ export function MarketPanel() {
             <th className="px-3 py-2 text-left">Sector</th>
             <th className="px-3 py-2 text-right">Price</th>
             <th className="px-3 py-2 text-right">Day</th>
-            <th className="px-3 py-2 text-right">P/E</th>
-            <th className="px-3 py-2 text-right">D/E</th>
+            <th className="px-3 py-2 text-right">
+              <Explain id="pe-ratio">P/E</Explain>
+            </th>
+            <th className="px-3 py-2 text-right">
+              <Explain id="debt-to-equity">D/E</Explain>
+            </th>
           </tr>
         </thead>
         <tbody>
