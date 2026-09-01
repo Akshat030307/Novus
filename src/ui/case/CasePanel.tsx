@@ -42,20 +42,28 @@ export function CasePanel() {
   const load = useGameStore((s) => s.load)
   const pushLevelUps = useUiStore((s) => s.pushLevelUps)
   const [choice, setChoice] = useState<string | null>(null)
+  const [predRisk, setPredRisk] = useState<'low' | 'mid' | 'high' | null>(null)
+  const [predNote, setPredNote] = useState('')
+
+  const resetForm = () => {
+    setChoice(null)
+    setPredRisk(null)
+    setPredNote('')
+  }
 
   const openCase = openCaseId ? getCase(openCaseId) : undefined
   const openResolved = openCaseId ? resolved.find((r) => r.caseId === openCaseId) : undefined
   const intro = useCaseIntro(openCase) // written brief now, AI phrasing if it resolves
 
   const openFile = (id: string) => {
-    setChoice(null)
+    resetForm()
     apply((d) => {
       d.cases.openCaseId = id
       return d
     })
   }
   const closeFile = () => {
-    setChoice(null)
+    resetForm()
     apply((d) => {
       d.cases.openCaseId = null
       return d
@@ -63,12 +71,15 @@ export function CasePanel() {
   }
   const submit = () => {
     if (!openCase || !choice) return
-    const result = resolveCase(useGameStore.getState().state, openCase, choice)
+    const prediction = predRisk
+      ? { risk: predRisk, note: predNote.trim() || undefined }
+      : undefined
+    const result = resolveCase(useGameStore.getState().state, openCase, choice, prediction)
     const quested = checkQuests(result.state)
     const concepts = checkConcepts(quested.state)
     load(concepts.state)
     pushLevelUps([...result.levelUps, ...quested.levelUps])
-    setChoice(null)
+    resetForm()
   }
 
   /* ---------- list ---------- */
@@ -193,6 +204,35 @@ export function CasePanel() {
       )}
 
       <div>
+        <div className="mb-1 font-display text-[9px] text-muted uppercase">
+          Your read <span className="text-muted/60">· optional, before you decide</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {(['low', 'mid', 'high'] as const).map((band) => (
+            <button
+              key={band}
+              onClick={() => setPredRisk((b) => (b === band ? null : band))}
+              className={`border-2 px-3 py-1.5 font-display text-[10px] uppercase transition-colors ${
+                predRisk === band
+                  ? 'border-amethyst text-amethyst'
+                  : 'border-line text-muted hover:text-ink'
+              }`}
+            >
+              {band === 'low' ? 'Low <20%' : band === 'mid' ? 'Mid 20–40%' : 'High >40%'}
+            </button>
+          ))}
+          <input
+            value={predNote}
+            onChange={(e) => setPredNote(e.target.value)}
+            maxLength={80}
+            placeholder="why? (one line)"
+            className="min-w-0 flex-1 border-2 border-line bg-night px-2 py-1.5 text-xs text-ink
+              placeholder:text-muted/50 focus:border-amethyst focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div>
         <div className="mb-2 font-display text-[9px] text-muted uppercase">Your call</div>
         <div className="flex flex-wrap gap-2">
           {openCase.choices.map((ch) => (
@@ -278,7 +318,18 @@ function Outcome({
         >
           {r.judgement === 'sound' ? 'Sound call' : 'Unsound call'}
         </span>
+        {r.prediction && (
+          <span
+            className={`border-2 border-current px-2 py-1 font-display text-[10px] uppercase ${
+              r.predictionRight ? 'text-jade' : 'text-coral'
+            }`}
+          >
+            Read {r.predictionRight ? 'right' : 'off'}
+          </span>
+        )}
       </div>
+
+      {r.prediction && <PredictionLine r={r} realRisk={ex.realRisk} />}
 
       <p className="text-sm text-ink">{explanation}</p>
 
@@ -332,6 +383,26 @@ function Delta({ label, value, tone }: { label: string; value: string; tone: str
     <div className="border-2 border-line bg-night px-3 py-2">
       <div className="font-display text-[9px] text-muted uppercase">{label}</div>
       <div className={`font-num text-sm ${tone}`}>{value}</div>
+    </div>
+  )
+}
+
+const BAND_LABEL = { low: 'low risk (under 20%)', mid: 'mid risk (20–40%)', high: 'high risk (over 40%)' }
+
+/** the "you called it…" line on the outcome screen (C-d) */
+function PredictionLine({ r, realRisk }: { r: ResolvedCase; realRisk: number }) {
+  const p = r.prediction!
+  const pct = Math.round(realRisk * 100)
+  return (
+    <div className="border-l-2 border-amethyst pl-3">
+      <div className="font-display text-[9px] text-amethyst uppercase">Your read</div>
+      <p className="text-xs text-muted">
+        You called it {BAND_LABEL[p.risk]}
+        {p.note ? ` — “${p.note}”` : ''}. The file was {pct}%.{' '}
+        {r.predictionRight
+          ? 'Well judged, whichever way the roll went.'
+          : 'Worth sitting with why the figures pointed the other way.'}
+      </p>
     </div>
   )
 }
