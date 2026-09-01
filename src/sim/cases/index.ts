@@ -1,4 +1,10 @@
-import type { FinancialCase, GameState, LevelUpReport, ResolvedCase } from '@/sim/types'
+import type {
+  CasePrediction,
+  FinancialCase,
+  GameState,
+  LevelUpReport,
+  ResolvedCase,
+} from '@/sim/types'
 import { makeRng } from '@/sim/rng'
 import { awardProgress, caseSkillGains } from '@/sim/progression'
 
@@ -38,6 +44,13 @@ const CHOICE_EFFECTS: Record<StdChoice, ChoiceEffect> = {
 
 const RISKY = 0.3 // at or above this, a full unsecured approve is not defensible
 
+/** C-d: did the player's risk band contain the real default risk. */
+export function gradePrediction(prediction: CasePrediction, defaultRisk: number): boolean {
+  if (prediction.risk === 'low') return defaultRisk < 0.2
+  if (prediction.risk === 'mid') return defaultRisk >= 0.2 && defaultRisk <= 0.4
+  return defaultRisk > 0.4
+}
+
 /** The reasoning verdict — measured against the truth, not the outcome. */
 export function judgeChoice(defaultRisk: number, choice: string): Judgement {
   switch (choice) {
@@ -66,6 +79,7 @@ export function resolveCase(
   state: GameState,
   fc: FinancialCase,
   choiceId: string,
+  prediction?: CasePrediction,
 ): { state: GameState; resolved: ResolvedCase; levelUps: LevelUpReport[] } {
   const rng = makeRng(`${state.seed}|case|${fc.id}|${state.clock.day}`)
   const effect = CHOICE_EFFECTS[choiceId as StdChoice] ?? CHOICE_EFFECTS.approve_full
@@ -90,6 +104,10 @@ export function resolveCase(
     xpChange,
     reputationChange,
     day: state.clock.day,
+    ...(prediction && {
+      prediction,
+      predictionRight: gradePrediction(prediction, fc.truth.defaultRisk),
+    }),
   }
 
   const { player, levelUps } = awardProgress(

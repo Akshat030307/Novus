@@ -165,6 +165,16 @@ export interface FinancialCase {
   teaches: string[]
 }
 
+/**
+ * What the player commits before deciding, in step C-d. The risk band is
+ * graded against the hidden truth; the note is shown back, not scored.
+ * Optional throughout — skipping it costs the feedback, never the decision.
+ */
+export interface CasePrediction {
+  risk: 'low' | 'mid' | 'high' // <20% / 20–40% / >40%
+  note?: string
+}
+
 export interface ResolvedCase {
   caseId: string
   choice: CaseChoiceId
@@ -176,6 +186,10 @@ export interface ResolvedCase {
   xpChange: number
   reputationChange: number
   day: number
+  /** absent for cases resolved before C-d, or when the player skipped it */
+  prediction?: CasePrediction
+  /** did the risk band contain the real default risk */
+  predictionRight?: boolean
 }
 
 /* ---------- quests ---------- */
