@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import type { FinancialCase, ResolvedCase } from '@/sim/types'
 import { useGameStore, useUiStore } from '@/state/store'
+import { useSettingsStore } from '@/state/settings'
 import { rupees } from '@/lib/format'
 import { playSound } from '@/lib/sound'
 import { CASE_ORDER, getCase } from '@/data/cases'
@@ -36,6 +37,7 @@ export function CasePanel() {
   const openCaseId = useGameStore((s) => s.state.cases.openCaseId)
   const resolved = useGameStore((s) => s.state.cases.resolved)
   const skills = useGameStore((s) => s.state.player.skills)
+  const assist = useSettingsStore((s) => s.assist)
   const apply = useGameStore((s) => s.apply)
   const load = useGameStore((s) => s.load)
   const pushLevelUps = useUiStore((s) => s.pushLevelUps)
@@ -166,37 +168,28 @@ export function CasePanel() {
         </dl>
       </div>
 
-      {skillLevel(skills.accounting) >= 2 && (
-        <div className="border-l-2 border-marigold pl-3">
-          <div className="font-display text-[9px] text-marigold uppercase">Unlocked · Accounting 2</div>
-          <p className="text-xs text-muted">
-            Debt-service cover{' '}
-            <span className="font-num text-ink">
-              {f.interestPaid > 0 ? (f.cashFlow / f.interestPaid).toFixed(1) : '—'}×
-            </span>{' '}
-            — cash flow ÷ interest already paid.
-          </p>
-        </div>
+      {(assist || skillLevel(skills.accounting) >= 2) && (
+        <Aid tag={skillLevel(skills.accounting) >= 2 ? 'Unlocked · Accounting 2' : 'Assist'}>
+          <Explain id="debt-service-cover">Debt-service cover</Explain>{' '}
+          <span className="font-num text-ink">
+            {f.interestPaid > 0 ? (f.cashFlow / f.interestPaid).toFixed(1) : '—'}×
+          </span>{' '}
+          — cash flow ÷ interest already paid.
+        </Aid>
       )}
-      {skillLevel(skills.risk) >= 2 && (
-        <div className="border-l-2 border-marigold pl-3">
-          <div className="font-display text-[9px] text-marigold uppercase">Unlocked · Risk 2</div>
-          <p className="text-xs text-muted">{riskRead(openCase)}</p>
-        </div>
+      {(assist || skillLevel(skills.risk) >= 2) && (
+        <Aid tag={skillLevel(skills.risk) >= 2 ? 'Unlocked · Risk 2' : 'Assist'}>{riskRead(openCase)}</Aid>
       )}
-      {skillLevel(skills.analysis) >= 3 && (
-        <div className="border-l-2 border-marigold pl-3">
-          <div className="font-display text-[9px] text-marigold uppercase">Unlocked · Analysis 3</div>
-          <p className="text-xs text-muted">
-            Leverage{' '}
-            <span className="font-num text-ink">
-              {f.revenue - f.expenses > 0
-                ? (f.existingDebt / (f.revenue - f.expenses)).toFixed(1)
-                : '—'}
-            </span>{' '}
-            years of profit would clear the existing debt.
-          </p>
-        </div>
+      {(assist || skillLevel(skills.analysis) >= 3) && (
+        <Aid tag={skillLevel(skills.analysis) >= 3 ? 'Unlocked · Analysis 3' : 'Assist'}>
+          <Explain id="leverage">Leverage</Explain>{' '}
+          <span className="font-num text-ink">
+            {f.revenue - f.expenses > 0
+              ? (f.existingDebt / (f.revenue - f.expenses)).toFixed(1)
+              : '—'}
+          </span>{' '}
+          years of profit would clear the existing debt.
+        </Aid>
       )}
 
       <div>
@@ -339,6 +332,16 @@ function Delta({ label, value, tone }: { label: string; value: string; tone: str
     <div className="border-2 border-line bg-night px-3 py-2">
       <div className="font-display text-[9px] text-muted uppercase">{label}</div>
       <div className={`font-num text-sm ${tone}`}>{value}</div>
+    </div>
+  )
+}
+
+/** a hint on the decide screen — from a skill unlock, or from the Assist setting */
+function Aid({ tag, children }: { tag: string; children: ReactNode }) {
+  return (
+    <div className="border-l-2 border-marigold pl-3">
+      <div className="font-display text-[9px] text-marigold uppercase">{tag}</div>
+      <p className="text-xs text-muted">{children}</p>
     </div>
   )
 }
