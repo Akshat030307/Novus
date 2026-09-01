@@ -6,6 +6,11 @@ import { PixelButton } from '@/ui/components/PixelButton'
 const ROWS: { key: keyof Settings; label: string; hint: string }[] = [
   { key: 'sound', label: 'Sound', hint: 'Interface clicks and cues. No music yet.' },
   {
+    key: 'assist',
+    label: 'Assist',
+    hint: 'Show the case ratios up front. Off, and you work them out (or unlock them with skills).',
+  },
+  {
     key: 'reducedMotion',
     label: 'Reduced motion',
     hint: 'Cuts animations and transitions across the game.',
