@@ -5,7 +5,7 @@ import { PixelButton } from '@/ui/components/PixelButton'
 import { MarketPanel } from '@/ui/panels/MarketPanel'
 import { PortfolioPanel } from '@/ui/panels/PortfolioPanel'
 import { CasePanel } from '@/ui/case/CasePanel'
-import { SkillsPanel } from '@/ui/panels/SkillsPanel'
+import { AcademyPanel } from '@/ui/panels/AcademyPanel'
 
 /**
  * What you see after walking through a door. The world sets `openBuilding`
@@ -34,7 +34,7 @@ const INSIDE: Record<string, { title: string; body: ReactNode }> = {
   },
   academy: {
     title: 'The Academy',
-    body: <SkillsPanel />,
+    body: <AcademyPanel />,
   },
   apartment: {
     title: 'Your Apartment',

@@ -328,14 +328,47 @@ are the next step. **Proposed `sim/types.ts` change** (not yet written): add
 or `?? 100` at the read sites covers old saves. Nothing else in B touched
 `sim/`.
 
-### Step C — Educational layer ◻
+### Step C — Educational layer
 
-Spec written: **`docs/education.md`** — read it there. Eleven pieces (Ledger,
-predict-then-reveal, tap-to-explain, modules, day-end debrief, mistake log,
-scenario mode, assist setting, further reading, transcript, and a Casebook of
-real concluded events — the one place real companies appear, as study material
-with sources), the batched `sim/types.ts` proposal, and a step-by-step order
-(C-a … C-h). Awaiting sign-off on §8's open questions before C-a.
+Spec: **`docs/education.md`**. Built on its own branch, `education-layer`, off
+the commit at the end of step B — `main` does not move until this merges.
+
+Eleven pieces planned (Ledger, predict-then-reveal, tap-to-explain, modules,
+day-end debrief, mistake log, scenario mode, assist setting, further reading,
+transcript, a Casebook of real concluded events).
+
+#### C-a — Ledger + tap-to-explain + further reading ✅ done
+
+`sim/types.ts` — `GameState.learned: string[]`, proposed then approved.
+`state/migrate.ts` bumped to version 2 with a step defaulting `learned: []`
+for old saves; `newGame` writes `learned: []` on a fresh one.
+
+`data/concepts.ts` — twelve cards (debt-service cover, cash vs revenue,
+leverage, collateral cover, credit score, margin, default risk, P/E, D/E,
+realised vs unrealised P&L, diversification, drift/noise/shock), each a plain
+definition, what good and bad look like, and — where one exists — a Wikipedia
+further-reading link (C9, riding along).
+
+`sim/concepts.ts` — `checkConcepts(state)` recomputes the full unlocked set
+from the save alone (which cases are resolved, whether a trade has been made,
+whether any holding is ≥50% of the book, whether a market notification has
+fired) and diffs against `learned`. Pure, idempotent, called after
+`resolveCase` and `applyTrade` alongside `checkQuests`.
+
+`ui/panels/LedgerPanel.tsx` — the shelf; locked cards show a placeholder,
+unlocked ones show the full card. Lives in the Academy, behind a new
+Skills/Ledger tab (`ui/panels/AcademyPanel.tsx` replaces the bare
+`SkillsPanel` in `BuildingOverlay`) — walk there, no HUD shortcut.
+
+`ui/components/Explain.tsx` — hover-to-reveal wrapper reading the same
+glossary, wired onto the case outcome's ratio labels, the market table's P/E
+and D/E headers, and the portfolio's "Open profit" / "Where the money is".
+
+Verified with a scripted run (not just typecheck/build): resolving Sharma
+unlocks four cards, Girish unlocks leverage, a first trade unlocks P/E, D/E,
+unrealised P&L and diversification (one holding is 100% of the book — the
+lesson lands on the very first trade), re-running with no new state changes
+nothing. A v1 save migrates to v2 with `learned: []`.
 
 ---
 
