@@ -2,6 +2,7 @@ import type { Clock, DayPhase, DayEndReport, GameState } from '@/sim/types'
 import { MARKET_OPEN, MARKET_CLOSE } from '@/lib/format'
 import { rollMarketDay } from '@/sim/market'
 import { rollDayEvent } from '@/sim/events'
+import { analyseDay, logMistakes } from '@/sim/analysis'
 
 /**
  * Step 7. One real second = one game minute, so a trading day (9:15 to 3:30)
@@ -40,14 +41,16 @@ export function advanceClock(clock: Clock): { clock: Clock; closed: boolean } {
 /** Roll into the next trading day. `rollMarketDay` clears the day's events; the
  *  next day's fires from the driver when the clock reaches it. */
 export function startNextDay(state: GameState): GameState {
+  // log the day's mistakes before the clock rolls past it
+  const logged = logMistakes(state)
   return {
-    ...state,
+    ...logged,
     clock: {
-      day: state.clock.day + 1,
+      day: logged.clock.day + 1,
       minute: DAY_START_MINUTE,
       phase: phaseFor(DAY_START_MINUTE),
     },
-    market: rollMarketDay(state.market),
+    market: rollMarketDay(logged.market),
   }
 }
 
@@ -78,5 +81,6 @@ export function buildDayEndReport(state: GameState): DayEndReport {
     reputationChange: 0,
     questsCompleted: [],
     tomorrowHeadline: rollDayEvent(state.seed, state.clock.day + 1)?.event.headline ?? null,
+    lesson: analyseDay(state),
   }
 }

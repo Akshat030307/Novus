@@ -6,7 +6,7 @@ import type { GameState } from '@/sim/types'
  * existing save. Returns null for anything it cannot make sense of, so the
  * home screen falls back to "no save" rather than crashing.
  */
-const CURRENT_VERSION = 2
+const CURRENT_VERSION = 4
 
 export function migrate(raw: unknown): GameState | null {
   if (!raw || typeof raw !== 'object') return null
@@ -18,6 +18,14 @@ export function migrate(raw: unknown): GameState | null {
   if (save.version < 2) {
     save.learned = [] // the Ledger — nothing was tracked before step C-a
     save.version = 2
+  }
+  if (save.version < 3) {
+    save.mistakes = [] // the Mistakes log — new in step C-e
+    save.version = 3
+  }
+  if (save.version < 4) {
+    save.modules = {} // Academy modules — new in step C-f
+    save.version = 4
   }
 
   return save

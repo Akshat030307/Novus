@@ -1,24 +1,40 @@
 import { useState } from 'react'
 import { SkillsPanel } from '@/ui/panels/SkillsPanel'
 import { LedgerPanel } from '@/ui/panels/LedgerPanel'
+import { MistakesPanel } from '@/ui/panels/MistakesPanel'
+import { ModulesPanel } from '@/ui/panels/ModulesPanel'
+import { TranscriptPanel } from '@/ui/panels/TranscriptPanel'
 
-type Tab = 'skills' | 'ledger'
+type Tab = 'skills' | 'ledger' | 'modules' | 'mistakes' | 'report'
 
-/** The Academy body: what you've practised, and the Ledger of what you know. */
+/** The Academy body: skills practised, the Ledger, the course modules, the slip log. */
 export function AcademyPanel() {
   const [tab, setTab] = useState<Tab>('skills')
 
   return (
     <div>
-      <div className="mb-4 flex gap-2">
+      <div className="mb-4 flex flex-wrap gap-2">
         <TabButton active={tab === 'skills'} onClick={() => setTab('skills')}>
           Skills
         </TabButton>
         <TabButton active={tab === 'ledger'} onClick={() => setTab('ledger')}>
           Ledger
         </TabButton>
+        <TabButton active={tab === 'modules'} onClick={() => setTab('modules')}>
+          Modules
+        </TabButton>
+        <TabButton active={tab === 'mistakes'} onClick={() => setTab('mistakes')}>
+          Mistakes
+        </TabButton>
+        <TabButton active={tab === 'report'} onClick={() => setTab('report')}>
+          Report
+        </TabButton>
       </div>
-      {tab === 'skills' ? <SkillsPanel /> : <LedgerPanel />}
+      {tab === 'skills' && <SkillsPanel />}
+      {tab === 'ledger' && <LedgerPanel />}
+      {tab === 'modules' && <ModulesPanel />}
+      {tab === 'mistakes' && <MistakesPanel />}
+      {tab === 'report' && <TranscriptPanel />}
     </div>
   )
 }
