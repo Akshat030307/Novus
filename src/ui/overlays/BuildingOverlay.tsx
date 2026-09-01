@@ -1,5 +1,4 @@
 import { useEffect, type ReactNode } from 'react'
-import type { BuildingId } from '@/sim/types'
 import { useUiStore } from '@/state/store'
 import { playSound } from '@/lib/sound'
 import { PixelButton } from '@/ui/components/PixelButton'
@@ -12,8 +11,10 @@ import { SkillsPanel } from '@/ui/panels/SkillsPanel'
  * What you see after walking through a door. The world sets `openBuilding`
  * through the bridge; this shows the matching panel. Bank and Exchange reuse
  * the real panels; the rest are honest placeholders until their step lands.
+ * Keyed by string — the world layer owns building ids, and the three venues
+ * added in step A (risk, payments, cafeteria) have no interior yet.
  */
-const INSIDE: Record<BuildingId, { title: string; body: ReactNode }> = {
+const INSIDE: Record<string, { title: string; body: ReactNode }> = {
   bank: {
     title: 'Meridian Bank',
     body: <CasePanel />,
@@ -39,6 +40,18 @@ const INSIDE: Record<BuildingId, { title: string; body: ReactNode }> = {
     title: 'Your Apartment',
     body: <Note>Sleeping here to end the day arrives with the clock (step 7).</Note>,
   },
+  risk: {
+    title: 'Risk & Compliance',
+    body: <Note>The compliance desk gets its own step. For now, just a nameplate.</Note>,
+  },
+  payments: {
+    title: 'Payment Centre',
+    body: <Note>UPI rails and settlement come later — nothing to do here yet.</Note>,
+  },
+  cafeteria: {
+    title: 'The Cafeteria',
+    body: <Note>Buying focus back with a break lands with the energy rules, a later step.</Note>,
+  },
 }
 
 export function BuildingOverlay() {
@@ -51,7 +64,7 @@ export function BuildingOverlay() {
 
   if (!openBuilding) return null
 
-  const inside = INSIDE[openBuilding as BuildingId] ?? {
+  const inside = INSIDE[openBuilding] ?? {
     title: openBuilding,
     body: <Note>Nothing here yet.</Note>,
   }
