@@ -1,6 +1,7 @@
 import { useUiStore, useGameStore, type BottomTab } from '@/state/store'
 import { useGameClock } from '@/state/useGameClock'
 import { useSoundCues } from '@/ui/hooks/useSoundCues'
+import { useGameKeys } from '@/ui/hooks/useGameKeys'
 import { buildDayEndReport, startNextDay } from '@/sim/clock'
 import { saveGame } from '@/state/save'
 import { playSound } from '@/lib/sound'
@@ -54,6 +55,8 @@ export default function GameScreen() {
     void saveGame(useGameStore.getState().state)
     setOverlay(null)
   }
+
+  useGameKeys({ onAdvanceDay: startTomorrow })
 
   return (
     <div className="flex h-full flex-col">

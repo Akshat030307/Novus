@@ -42,15 +42,14 @@ export type PlayerSprite = ReturnType<typeof createPlayer>
 type Wasd = Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>
 
 /**
- * Arrow keys + WASD -> velocity + animation. Mutates the sprite, returns
- * nothing. Freezes the player whenever a panel is up (`bridge.isPaused()`),
- * so the character does not wander around under an open screen.
+ * WASD -> velocity + animation. Mutates the sprite, returns nothing. Freezes
+ * the player whenever a panel is up (`bridge.isPaused()`), so the character
+ * does not wander around under an open screen.
+ *
+ * The arrow keys are deliberately not movement — the React layer uses them to
+ * drive the menus (bottom tabs, dialogue options); Escape closes what's open.
  */
-export function updatePlayer(
-  sprite: PlayerSprite,
-  cursors: Phaser.Types.Input.Keyboard.CursorKeys,
-  wasd: Wasd,
-) {
+export function updatePlayer(sprite: PlayerSprite, wasd: Wasd) {
   const body = sprite.body
   body.setVelocity(0)
 
@@ -62,10 +61,10 @@ export function updatePlayer(
 
   let vx = 0
   let vy = 0
-  if (cursors.left.isDown || wasd.A.isDown) vx -= 1
-  if (cursors.right.isDown || wasd.D.isDown) vx += 1
-  if (cursors.up.isDown || wasd.W.isDown) vy -= 1
-  if (cursors.down.isDown || wasd.S.isDown) vy += 1
+  if (wasd.A.isDown) vx -= 1
+  if (wasd.D.isDown) vx += 1
+  if (wasd.W.isDown) vy -= 1
+  if (wasd.S.isDown) vy += 1
 
   if (vx === 0 && vy === 0) {
     sprite.anims.stop()

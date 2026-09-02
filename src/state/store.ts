@@ -31,6 +31,8 @@ export const useGameStore = create<GameStore>((set) => ({
 
 export type Screen = 'home' | 'game'
 export type BottomTab = 'case' | 'market' | 'portfolio' | 'notifications'
+/** canonical left-to-right order of the bottom tabs (arrow-key cycling, GameScreen strip) */
+export const BOTTOM_TABS: BottomTab[] = ['case', 'market', 'portfolio', 'notifications']
 /** full-screen things that sit above the game screen */
 export type Overlay = 'day-end' | 'settings'
 
