@@ -156,11 +156,12 @@ export class CityScene extends Phaser.Scene {
       D: kb.addKey(Phaser.Input.Keyboard.KeyCodes.D),
     }
     this.interact = kb.addKey(Phaser.Input.Keyboard.KeyCodes.E)
-    kb.addCapture(['UP', 'DOWN', 'LEFT', 'RIGHT', 'W', 'A', 'S', 'D', 'E', 'SPACE'])
+    // arrow keys belong to the React menus now — only capture what the city uses
+    kb.addCapture(['W', 'A', 'S', 'D', 'E', 'SPACE'])
   }
 
   update() {
-    updatePlayer(this.player, this.cursors, this.wasd)
+    updatePlayer(this.player, this.wasd)
     this.updateDoorLock()
     this.updateNpcHint()
   }

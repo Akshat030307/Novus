@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { useSettingsStore, type Settings } from '@/state/settings'
 import { aiConfigured } from '@/ai/flavour'
 import { playSound } from '@/lib/sound'
@@ -26,6 +27,36 @@ const ROWS: { key: keyof Settings; label: string; hint: string }[] = [
 
 export function SettingsPanel({ onClose }: { onClose: () => void }) {
   const settings = useSettingsStore()
+  const [selected, setSelected] = useState(0)
+
+  // ↑/↓ moves the highlight, Enter/Space flips that row. Escape (useGameKeys) closes.
+  const selRef = useRef(0)
+  useEffect(() => {
+    selRef.current = selected
+  }, [selected])
+  const toggleRef = useRef<(i: number) => void>(() => {})
+  toggleRef.current = (i: number) => {
+    const row = ROWS[i]
+    if (row.key === 'aiWording' && !aiConfigured) return
+    settings.set(row.key, !settings[row.key])
+    playSound('click')
+  }
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        setSelected((s) => (s + 1) % ROWS.length)
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        setSelected((s) => (s - 1 + ROWS.length) % ROWS.length)
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        toggleRef.current(selRef.current)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   return (
     <div className="anim-backdrop fixed inset-0 z-50 flex items-center justify-center bg-night/85 p-6">
@@ -35,11 +66,16 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
         </header>
 
         <div className="divide-y-2 divide-line">
-          {ROWS.map((row) => {
+          {ROWS.map((row, i) => {
             const on = settings[row.key]
             const locked = row.key === 'aiWording' && !aiConfigured
             return (
-              <div key={row.key} className="flex items-center justify-between gap-4 px-5 py-4">
+              <div
+                key={row.key}
+                className={`flex items-center justify-between gap-4 px-5 py-4 ${
+                  i === selected ? 'bg-marigold/10' : ''
+                }`}
+              >
                 <div>
                   <div className="font-display text-[11px] text-ink">{row.label}</div>
                   <div className="text-xs text-muted">{row.hint}</div>
