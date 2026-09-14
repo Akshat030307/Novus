@@ -1,12 +1,18 @@
-import { useState, useEffect, useMemo, type CSSProperties, type FormEvent, type ReactNode } from 'react'
+import { useState, useEffect, type CSSProperties, type FormEvent, type ReactNode } from 'react'
 import { useUiStore, useGameStore } from '@/state/store'
 import { hasSave, hasCloudSave, loadGame } from '@/state/save'
 import { newGame } from '@/state/newGame'
 import { cloudEnabled, sendMagicLink, signOut } from '@/lib/supabase'
 import { useAuthStore } from '@/state/auth'
 
-/** The first thing anyone sees. Left-anchored: giant wordmark, a plain menu
- *  list under it, the skyline shoved to the right as a backdrop. */
+/**
+ * The front door — a product page rather than a game title screen: what Novus
+ * is on the left, what it looks like on the right, one obvious way in.
+ *
+ * It runs on its own palette (plum + magenta, `--color-plum*`/`--color-magenta*`
+ * in styles/index.css). Those tokens exist only for this screen; the game's
+ * black-and-marigold interface behind it is deliberately untouched.
+ */
 export default function HomeScreen() {
   const setScreen = useUiStore((s) => s.setScreen)
   const load = useGameStore((s) => s.load)
@@ -46,169 +52,241 @@ export default function HomeScreen() {
     else setLinkSent(true)
   }
 
+  const canContinue = saveExists || cloudSave
+
   return (
-    <main className="relative flex h-full flex-col justify-center overflow-hidden">
-      <Backdrop />
+    <main className="relative h-full overflow-y-auto bg-plum">
+      <Blooms />
 
-      {/* skyline: flat blocks, no gradient — pushed right, tall enough to fill
-          the bottom half. items-end so the tallest towers clip past mid-screen. */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-1/2 items-end justify-end gap-1.5 pr-4 opacity-90">
-        {[220, 360, 280, 480, 320, 560, 400, 260, 460, 240, 520, 340].map((h, i) => (
-          <div key={i} className="w-16 border-t-2 border-hi bg-panel-3" style={{ height: h }}>
-            <div className="mt-4 grid grid-cols-3 gap-1.5 px-2">
-              {Array.from({ length: 18 }, (_, j) => {
-                const lit = (i + j) % 3 === 0
-                const flicker = lit && (i * 5 + j) % 4 === 0
-                return (
-                  <span
-                    key={j}
-                    className={`h-1.5 ${lit ? 'bg-marigold' : 'bg-hi'}`}
-                    style={
-                      flicker
-                        ? { animation: 'citylight 7s ease-in-out infinite', animationDelay: `${(i * 3 + j) % 9}s` }
-                        : undefined
-                    }
-                  />
-                )
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
+      <div className="relative z-10 flex min-h-full w-full flex-col px-6 py-8 sm:px-10 lg:px-16 lg:py-10">
+        {/* logotype */}
+        <header className="anim-rise flex items-center gap-2.5">
+          <PixelDollar className="aspect-[6/7] h-5 shrink-0" />
+          <span className="font-display text-[11px] tracking-widest text-blush uppercase">Novus</span>
+        </header>
 
-      <div className="relative z-10 flex w-full flex-col items-start pl-[6vw] pr-6">
-        {/* ~half the viewport wide — tweak the vw if it drifts. the negative
-            margin cancels Silkscreen's left side-bearing so the glyph edge
-            lines up with the menu below. */}
-        <h1 className="-ml-[0.08em] mb-3 font-display leading-[0.82] tracking-tight text-ink text-[clamp(3.5rem,12vw,11rem)]">
-          NOVUS
-        </h1>
-        <p className="mb-12 font-display uppercase tracking-wide text-jade text-[clamp(0.7rem,1.9vw,1.1rem)] leading-relaxed">
-          Gamified Financial Markets Education Platform
-        </p>
-
-        {naming ? (
-          <div className="w-full max-w-sm">
-            <label htmlFor="name" className="mb-2 block font-display text-[10px] text-muted uppercase">
-              What should people call you?
-            </label>
-            <input
-              id="name"
-              autoFocus
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              maxLength={16}
-              placeholder="Arjun"
-              className="mb-4 w-full border-2 border-line bg-night px-3 py-2 font-num text-ink
-                placeholder:text-muted/50 focus:border-marigold focus:outline-none"
-            />
-            <div className="flex gap-6 font-display text-sm uppercase tracking-wide">
-              <button
-                onClick={startNew}
-                className="text-marigold transition-[color,text-shadow]
-                  hover:[text-shadow:0_0_18px_var(--color-marigold)]"
-              >
-                Start
-              </button>
-              <button
-                onClick={() => setNaming(false)}
-                className="text-muted transition-[color,text-shadow]
-                  hover:text-marigold hover:[text-shadow:0_0_18px_var(--color-marigold)]"
-              >
-                Back
-              </button>
-            </div>
-          </div>
-        ) : (
-          <nav className="flex flex-col items-start font-display text-xl uppercase tracking-wide">
-            <MenuItem onClick={() => setNaming(true)}>New game</MenuItem>
-            <MenuItem
-              onClick={continueSaved}
-              disabled={!saveExists && !cloudSave}
-              title={saveExists || cloudSave ? '' : 'No saved game yet'}
+        {/* hero — centred in whatever room is left between logotype and footer */}
+        <div className="my-auto grid items-center gap-10 py-8 lg:grid-cols-[0.85fr_1.35fr] lg:gap-16">
+          <div className="flex flex-col items-start">
+            <h1
+              className="anim-rise -ml-[0.08em] font-display leading-[0.85] tracking-tight text-blush text-[clamp(3rem,8vw,7.5rem)]"
+              style={{ animationDelay: '60ms' }}
             >
-              Continue
-            </MenuItem>
-          </nav>
-        )}
+              NOVUS
+            </h1>
 
-        {cloudEnabled && authReady && (
-          <div className="mt-10 w-full max-w-sm">
-            {user ? (
-              <div className="flex items-center gap-3 text-xs">
-                <span className="font-num text-muted">{user.email}</span>
-                <button
-                  onClick={() => void signOut()}
-                  className="font-display text-[9px] text-muted uppercase hover:text-marigold"
-                >
-                  Sign out
-                </button>
-              </div>
-            ) : linkSent ? (
-              <p className="text-xs text-muted">Sign-in link sent — check your email.</p>
-            ) : (
-              <form onSubmit={sendLink} className="flex w-full gap-3">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@email.com"
-                  className="min-w-0 flex-1 border-2 border-line bg-night px-3 py-2 font-num text-sm text-ink
-                    placeholder:text-muted/50 focus:border-marigold focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  className="shrink-0 font-display text-[11px] text-muted uppercase tracking-wide
-                    transition-[color,text-shadow] hover:text-marigold
-                    hover:[text-shadow:0_0_16px_var(--color-marigold)]"
-                >
-                  Send link
-                </button>
-              </form>
-            )}
-            {authError && <p className="mt-2 text-xs text-coral">{authError}</p>}
-            <p className="mt-2 text-[10px] text-muted/60">
-              Sign in to save your progress to the cloud.
+            <p
+              className="anim-rise mt-4 font-display uppercase leading-relaxed tracking-wide text-magenta text-[clamp(0.7rem,1.5vw,1.15rem)]"
+              style={{ animationDelay: '120ms' }}
+            >
+              Gamified Financial Markets Education Platform
             </p>
-          </div>
-        )}
 
-        <p className="mt-12 font-display text-[9px] text-muted/60 uppercase">
-          Build 0.1 · single player
-        </p>
+            <p
+              className="anim-rise mt-6 max-w-lg text-[15px] leading-relaxed text-blush/70"
+              style={{ animationDelay: '180ms' }}
+            >
+              Walk a city that runs on money. Judge real loan files, trade a live market, and find
+              out what your decisions were worth — graded on your reasoning, never on your luck.
+            </p>
+
+            <div className="anim-rise mt-8 w-full" style={{ animationDelay: '240ms' }}>
+              {naming ? (
+                <div className="w-full max-w-sm border-2 border-plum-line bg-plum-2 p-4">
+                  <label
+                    htmlFor="name"
+                    className="mb-2 block font-display text-[10px] text-blush/50 uppercase"
+                  >
+                    What should people call you?
+                  </label>
+                  <input
+                    id="name"
+                    autoFocus
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    maxLength={16}
+                    placeholder="Arjun"
+                    className="mb-4 w-full border-2 border-plum-line bg-plum px-3 py-2 font-num text-blush
+                      placeholder:text-blush/25 focus:border-magenta focus:outline-none"
+                  />
+                  <div className="flex gap-3">
+                    <Cta onClick={startNew}>Start</Cta>
+                    <Ghost onClick={() => setNaming(false)}>Back</Ghost>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-wrap items-center gap-3">
+                  <Cta onClick={() => setNaming(true)}>Start playing</Cta>
+                  <Ghost
+                    onClick={continueSaved}
+                    disabled={!canContinue}
+                    title={canContinue ? '' : 'No saved game yet'}
+                  >
+                    Continue
+                  </Ghost>
+                </div>
+              )}
+            </div>
+
+            <ul
+              className="anim-rise mt-10 flex flex-wrap gap-x-5 gap-y-2 font-display text-[9px] text-blush/40 uppercase"
+              style={{ animationDelay: '300ms' }}
+            >
+              <Feature>Credit decisions</Feature>
+              <Feature>Live market sim</Feature>
+              <Feature>Academy and transcript</Feature>
+            </ul>
+          </div>
+
+          {/* what it actually looks like */}
+          <figure
+            className="anim-rise relative border-2 border-plum-line bg-plum-2 p-2"
+            style={{
+              animationDelay: '200ms',
+              boxShadow: '0 0 60px -20px var(--color-magenta)',
+            }}
+          >
+            <div style={{ animation: 'float-soft 9s ease-in-out infinite' }}>
+              <img
+                src="/hero-city.png"
+                alt="The city of Novus: the pixel map, your desk, the market feed and the day clock"
+                className="pixel w-full"
+                width={2880}
+                height={1800}
+                loading="eager"
+              />
+            </div>
+            <figcaption className="mt-2 px-1 font-display text-[8px] text-blush/35 uppercase">
+              Day one · Meridian Bank · the market opens at 9:15
+            </figcaption>
+          </figure>
+        </div>
+
+        {/* account + build */}
+        <footer className="flex flex-col gap-4 border-t-2 border-plum-line pt-6 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-sm">
+            {cloudEnabled && authReady ? (
+              user ? (
+                <div className="flex items-center gap-3 text-xs">
+                  <span className="font-num text-blush/60">{user.email}</span>
+                  <button
+                    onClick={() => void signOut()}
+                    className="font-display text-[9px] text-blush/40 uppercase transition-colors hover:text-magenta"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              ) : linkSent ? (
+                <p className="text-xs text-blush/60">Sign-in link sent — check your email.</p>
+              ) : (
+                <>
+                  <form onSubmit={sendLink} className="flex gap-3">
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@email.com"
+                      className="min-w-0 flex-1 border-2 border-plum-line bg-plum-2 px-3 py-2 font-num text-sm text-blush
+                        placeholder:text-blush/25 focus:border-magenta focus:outline-none"
+                    />
+                    <Ghost type="submit">Send link</Ghost>
+                  </form>
+                  <p className="mt-2 text-[10px] text-blush/35">
+                    Optional — sign in to keep your progress across devices.
+                  </p>
+                </>
+              )
+            ) : null}
+            {authError && <p className="mt-2 text-xs text-coral">{authError}</p>}
+          </div>
+
+          <p className="font-display text-[9px] text-blush/30 uppercase">
+            Build 0.1 · single player · plays in the browser
+          </p>
+        </footer>
       </div>
     </main>
   )
 }
 
-/** A menu row: no border, a marigold tick and a fill band that grow in on hover. */
-function MenuItem({
+/* ---------- pieces ---------- */
+
+/** Two slow magenta blooms behind everything — the only light in the room. */
+function Blooms() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div
+        className="absolute -top-56 -left-52 h-[36rem] w-[36rem] blur-[130px]"
+        style={{
+          background: 'radial-gradient(closest-side, var(--color-magenta), transparent)',
+          animation: 'bloom 13s ease-in-out infinite',
+        }}
+      />
+      <div
+        className="absolute -right-56 -bottom-64 h-[40rem] w-[40rem] blur-[140px]"
+        style={{
+          background: 'radial-gradient(closest-side, var(--color-amethyst), transparent)',
+          animation: 'bloom 17s ease-in-out infinite',
+          animationDelay: '-6s',
+        }}
+      />
+    </div>
+  )
+}
+
+/** The one thing we want pressed. Hard corners, magenta fill, glow on hover. */
+function Cta({ children, onClick }: { children: ReactNode; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="border-2 border-magenta bg-magenta px-5 py-2.5 font-display text-[11px] tracking-wide
+        text-plum uppercase transition-[box-shadow,background-color]
+        hover:bg-magenta-soft hover:[box-shadow:0_0_24px_var(--color-magenta)]"
+    >
+      {children}
+    </button>
+  )
+}
+
+/** Everything else: outline only, so it never competes with the CTA. */
+function Ghost({
   children,
   onClick,
   disabled,
   title,
+  type = 'button',
 }: {
   children: ReactNode
-  onClick: () => void
+  onClick?: () => void
   disabled?: boolean
   title?: string
+  type?: 'button' | 'submit'
 }) {
   return (
     <button
+      type={type}
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className="group flex items-center gap-3 py-2 pr-6 text-muted transition-[color,text-shadow]
-        hover:text-marigold hover:[text-shadow:0_0_18px_var(--color-marigold)]
-        disabled:cursor-not-allowed disabled:text-muted/30
-        disabled:hover:text-muted/30 disabled:hover:[text-shadow:none]"
+      className="border-2 border-plum-line px-5 py-2.5 font-display text-[11px] tracking-wide
+        text-blush/70 uppercase transition-colors hover:border-magenta hover:text-magenta
+        disabled:cursor-not-allowed disabled:border-plum-line disabled:text-blush/20
+        disabled:hover:border-plum-line disabled:hover:text-blush/20"
     >
-      <span className="h-3 w-1 origin-left scale-y-0 bg-marigold transition-transform
-        group-hover:scale-y-100 group-hover:[box-shadow:0_0_12px_var(--color-marigold)]
-        group-disabled:group-hover:scale-y-0" />
       {children}
     </button>
+  )
+}
+
+/** A hard magenta pixel rather than a glyph — Silkscreen has no icon set, and
+ *  anything fancier falls back to a different face mid-line. */
+function Feature({ children }: { children: ReactNode }) {
+  return (
+    <li className="flex items-center gap-2">
+      <span className="h-1.5 w-1.5 shrink-0 bg-magenta" />
+      {children}
+    </li>
   )
 }
 
@@ -224,8 +302,7 @@ const DOLLAR = [
   [0, 0, 1, 1, 0, 0],
 ]
 
-/** The dollar mark rendered as hard pixels — a grid of neon-jade cells, no
- *  anti-alias, with a bloom so it reads against the black. */
+/** The mark, rendered as hard pixels — a grid of magenta cells, no anti-alias. */
 function PixelDollar({ className = '', style }: { className?: string; style?: CSSProperties }) {
   return (
     <div
@@ -234,54 +311,12 @@ function PixelDollar({ className = '', style }: { className?: string; style?: CS
       style={{
         gridTemplateColumns: 'repeat(6, 1fr)',
         gridAutoRows: '1fr',
-        filter: 'drop-shadow(0 0 3px var(--color-jade)) drop-shadow(0 0 8px var(--color-jade))',
+        filter: 'drop-shadow(0 0 4px var(--color-magenta))',
         ...style,
       }}
     >
       {DOLLAR.flat().map((on, i) => (
-        <span key={i} className={on ? 'bg-jade' : ''} />
-      ))}
-    </div>
-  )
-}
-
-/* Money rain: a field of small pixel-dollars falling straight down, each on its
-   own speed and offset. Randomised once per mount so every visit differs; the
-   negative delays mean the screen is already full on load. */
-function Backdrop() {
-  const drops = useMemo(
-    () =>
-      Array.from({ length: 40 }, () => {
-        const size = 10 + Math.random() * 14 // px wide
-        return {
-          left: Math.random() * 100, // %
-          size,
-          dur: 4 + Math.random() * 5, // s
-          delay: -Math.random() * 9, // s, negative → mid-fall already
-          opacity: 0.4 + Math.random() * 0.45,
-        }
-      }),
-    [],
-  )
-
-  return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-      {drops.map((d, i) => (
-        <div
-          key={i}
-          className="absolute top-0"
-          style={{
-            left: `${d.left}%`,
-            width: d.size,
-            height: (d.size * 7) / 6,
-            opacity: d.opacity,
-            animation: `money-rain ${d.dur}s linear infinite`,
-            animationDelay: `${d.delay}s`,
-            willChange: 'transform',
-          }}
-        >
-          <PixelDollar className="h-full w-full" />
-        </div>
+        <span key={i} className={on ? 'bg-magenta' : ''} />
       ))}
     </div>
   )
