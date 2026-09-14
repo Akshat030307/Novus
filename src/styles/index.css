@@ -16,6 +16,16 @@
   --color-jade: #43c08a;         /* up / gain / approve */
   --color-coral: #e4574c;        /* down / loss / reject */
 
+  /* Landing page only — ui/screens/HomeScreen. The game palette above is
+     deliberately untouched, so the front door can have its own identity
+     without restyling a single panel behind it. */
+  --color-plum: #140d18;         /* landing ground */
+  --color-plum-2: #241430;       /* raised surface, image frame */
+  --color-plum-line: #4a2a55;    /* borders on the landing page */
+  --color-magenta: #ff2d78;      /* primary accent */
+  --color-magenta-soft: #ff7ab0; /* secondary accent, hover ink */
+  --color-blush: #f5eaf0;        /* landing body text */
+
   --font-display: "Silkscreen", monospace;
   --font-body: "IBM Plex Sans", system-ui, sans-serif;
   --font-num: "IBM Plex Mono", monospace;
@@ -62,17 +72,16 @@ canvas, img.pixel { image-rendering: pixelated; }
 .anim-feed     { animation: feed-in 180ms ease-out; }
 .anim-level    { animation: level-pop 320ms ease-out; }
 
-/* Home screen ambient motion — background decoration only. The reduced-motion
-   blocks below zero all of this out along with everything else. */
-@keyframes money-rain {
-  0%   { transform: translateY(-15vh) rotate(-6deg); }
-  50%  { transform: translateY(50vh) rotate(6deg); }
-  100% { transform: translateY(115vh) rotate(-6deg); }
+/* Landing page ambient motion — background decoration only, slow enough to
+   read as light rather than movement. The reduced-motion blocks below zero all
+   of this out along with everything else. */
+@keyframes bloom {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50%      { opacity: 0.75; transform: scale(1.09); }
 }
-@keyframes citylight {
-  0%, 88%, 100% { opacity: 1; }
-  92%           { opacity: 0.12; }
-  96%           { opacity: 1; }
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
