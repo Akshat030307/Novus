@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { useGameStore, useUiStore } from '@/state/store'
+import { useCloudStore } from '@/state/cloud'
 import { rupees } from '@/lib/format'
 import { StatBar } from '@/ui/components/StatBar'
 import { DayArc } from '@/ui/components/DayArc'
@@ -55,6 +56,8 @@ export function Hud() {
 
       <DayArc minute={clock.minute} day={clock.day} />
 
+      <CloudChip />
+
       <button
         onClick={() => setOverlay('settings')}
         title="Settings"
@@ -64,6 +67,34 @@ export function Hud() {
         Settings
       </button>
     </header>
+  )
+}
+
+/**
+ * Whether the cloud copy is keeping up. Hidden entirely when Supabase isn't
+ * configured. Hover for the reason — a failed sync used to be invisible.
+ */
+function CloudChip() {
+  const status = useCloudStore((s) => s.status)
+  const error = useCloudStore((s) => s.error)
+  const savedAt = useCloudStore((s) => s.savedAt)
+  if (status === 'off') return null
+
+  const chip = {
+    idle: { text: 'Local only', cls: 'text-muted', title: 'Not signed in — this save stays in the browser.' },
+    syncing: { text: 'Syncing…', cls: 'text-muted', title: 'Writing to the cloud.' },
+    saved: {
+      text: 'Cloud ✓',
+      cls: 'text-jade',
+      title: savedAt ? `Last synced ${new Date(savedAt).toLocaleTimeString()}` : 'Synced.',
+    },
+    error: { text: 'Cloud ✕', cls: 'text-coral', title: error ?? 'Cloud save failed.' },
+  }[status]
+
+  return (
+    <span className={`font-display text-[9px] uppercase ${chip.cls}`} title={chip.title}>
+      {chip.text}
+    </span>
   )
 }
 
