@@ -1,10 +1,11 @@
-import type { FinancialCase } from '@/sim/types'
+import type { LoanCase } from '@/sim/types'
 
 /**
  * The Sharma Textiles credit file. Figures match the worked example in
  * docs/architecture.md — thin debt-service cover against an unconfirmed buyer.
  */
-export const loanSharmaTextiles: FinancialCase = {
+export const loanSharmaTextiles: LoanCase = {
+  kind: 'loan',
   id: 'loan-sharma-textiles',
   building: 'bank',
   title: 'Sharma Textiles — working capital loan',

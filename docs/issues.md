@@ -267,7 +267,7 @@ who passed and where the class went wrong.
 
 ---
 
-### B4 — Every case is a loan; that's the content ceiling ⬜ M
+### B4 — Every case is a loan; that's the content ceiling ✅ M
 
 The deferred C-c step. `FinancialCase` only models credit files, so the five in
 `data/cases/` are the entire library — roughly thirty minutes of unique
@@ -288,9 +288,38 @@ the compiler list every screen that breaks.
 
 **Done when:** a non-loan case plays end to end alongside the loan files.
 
+**Landed.** `FinancialCase` is a union on `kind` — `loan | allocation |
+pattern`. The five loan files gained one line each and nothing else; the
+compiler listed every screen that broke, which is exactly what the type file is
+for.
+
+The three kinds live in three buildings, and that is the point: loans at the
+Bank, books at the Exchange, accounts at Risk & Compliance. The city stops
+being decoration when what you can read depends on where you walked. Risk &
+Compliance was a nameplate before this (see C6).
+
+`resolveCase` now takes one submission object rather than four positional
+arguments, and the outcome roll was generalised: every file has a hazard and
+every choice either steps out of its way or takes it on. A guarded choice is
+vindicated when the hazard lands, an unguarded one when it doesn't — which is
+the old approve/reject logic, stated once instead of per kind.
+
+Pattern files add the part loans never had: **you have to say which lines are
+the tell before you decide**, and the decoys count against you. A reviewer who
+flags everything has flagged nothing. That feeds a new `missed_flags` mistake
+kind, so reading files too fast becomes a visible habit rather than a one-off.
+
+`ResolvedCase` gained `kind` and `flagScore`; migration v5 → v6 stamps every
+case resolved before the union as `loan`, so nothing shows a blank years later.
+
+**Two non-loan files ship as proof:** *The Nalanda Trust book* (eight holdings,
+six sectors, and two thirds of it one bet wearing three tickers) and *Sahyadri
+Software* (a cash pile earning 0.6%, next to profit the operating cash flow
+never backs up).
+
 ---
 
-### B5 — The Casebook doesn't connect to gameplay ⬜ M
+### B5 — The Casebook doesn't connect to gameplay ✅ M
 
 Six real events sit in the Academy as reading. Nothing asks the player to
 *use* them. This is the most obvious untapped idea in the project.
@@ -302,6 +331,22 @@ entries — read Satyam, then spot the same pattern in a fictional file. The
 **Files:** `data/cases/`, `data/casebook.ts`, `sim/concepts.ts`
 
 **Depends on:** B4, and A5 for the content to be trustworthy.
+
+**Landed.** Three Casebook entries now open an invented file with the same
+shape: **Satyam → Sahyadri Software**, **IL&FS → Setu Finance** (eleven-year
+assets funded by eighty-four-day paper, AAA throughout), **PNB letters of
+undertaking → Harbour Trade Finance** (₹940 crore of live guarantees on a
+system the ledger has never seen). The PNB card used to read "the fraud-pattern
+case (planned)". It is no longer planned.
+
+**The link is deliberately not symmetric.** The Casebook offers the live file
+freely — reading then practising is the whole idea. The file only names the
+event it rhymes with *after* the decision, because knowing it was Satyam hands
+you the answer.
+
+`caseEchoing()` reads the link off the case rather than the Casebook, so a case
+can never point at history that is not there — verified, along with the prose
+on all six cards agreeing with what actually links.
 
 ---
 

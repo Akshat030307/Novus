@@ -12,6 +12,11 @@ const CASE_CONCEPTS: Record<string, string[]> = {
   'loan-girish-steel': ['leverage'],
   'loan-prakash-cold-storage': ['collateral-cover'],
   'loan-vector-trading': ['operating-cash-flow'],
+  // issue B4 — the first files that are not loans
+  'alloc-trust-book': ['diversification'],
+  'pattern-sahyadri-software': ['operating-cash-flow', 'margin'],
+  'pattern-setu-finance': ['leverage', 'default-risk'],
+  'pattern-harbour-trade': ['default-risk'],
 }
 
 /** any single holding worth this share of the book or more counts as concentrated */

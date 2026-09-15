@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CASE_ORDER, getCase } from '@/data/cases'
+import { LOAN_ORDER, getCase } from '@/data/cases'
 import { judgeChoice, gradePrediction } from '@/sim/cases'
 import { rupees } from '@/lib/format'
 import { logAttempt } from '@/state/attempts'
@@ -22,7 +22,7 @@ export function CreditDeskDrill() {
   const [choice, setChoice] = useState<string | null>(null)
   const [turns, setTurns] = useState<Turn[]>([])
 
-  const done = turns.length === CASE_ORDER.length
+  const done = turns.length === LOAN_ORDER.length
 
   if (done) {
     const sound = turns.filter((t) => t.sound).length
@@ -30,13 +30,13 @@ export function CreditDeskDrill() {
     return (
       <div className="space-y-3">
         <div
-          className={`border-l-2 pl-3 ${sound === CASE_ORDER.length ? 'border-jade' : 'border-marigold'}`}
+          className={`border-l-2 pl-3 ${sound === LOAN_ORDER.length ? 'border-jade' : 'border-marigold'}`}
         >
           <div className="font-display text-[10px] uppercase text-ink">
-            {sound}/{CASE_ORDER.length} sound · {reads}/{CASE_ORDER.length} reads right
+            {sound}/{LOAN_ORDER.length} sound · {reads}/{LOAN_ORDER.length} reads right
           </div>
           <p className="mt-1 text-xs text-muted">
-            {sound === CASE_ORDER.length
+            {sound === LOAN_ORDER.length
               ? 'Clean sweep. The reasoning held on every file.'
               : 'Look back at the ones that slipped — the figures were all on the file.'}
           </p>
@@ -55,8 +55,10 @@ export function CreditDeskDrill() {
     )
   }
 
-  const fc = getCase(CASE_ORDER[i])
-  if (!fc) return null
+  const fc = getCase(LOAN_ORDER[i])
+  // LOAN_ORDER only holds loan files, but the narrowing has to be written out —
+  // the library stopped being all loans at issue B4
+  if (!fc || fc.kind !== 'loan') return null
   const f = fc.figures
   const rows: [string, string][] = [
     ['Annual revenue', rupees(f.revenue)],
@@ -70,18 +72,18 @@ export function CreditDeskDrill() {
 
   const submit = () => {
     if (!choice) return
-    const sound = judgeChoice(fc.truth.defaultRisk, choice) === 'sound'
+    const sound = judgeChoice(fc, choice) === 'sound'
     const readRight = band ? gradePrediction({ risk: band }, fc.truth.defaultRisk) : false
     const next = [...turns, { sound, readRight }]
     setTurns(next)
     // one attempt per completed run, logged from `next` rather than from state:
     // reading `turns` here would be one file behind
-    if (next.length === CASE_ORDER.length) {
+    if (next.length === LOAN_ORDER.length) {
       logAttempt({
         kind: 'drill',
         refId: 'credit-desk',
         score: next.filter((t) => t.sound).length,
-        outOf: CASE_ORDER.length,
+        outOf: LOAN_ORDER.length,
         passed: next.every((t) => t.sound),
         detail: { readsRight: next.filter((t) => t.readRight).length },
       })
@@ -94,7 +96,7 @@ export function CreditDeskDrill() {
   return (
     <div className="space-y-3">
       <div className="font-display text-[9px] text-muted uppercase">
-        File {i + 1} of {CASE_ORDER.length} · {fc.title}
+        File {i + 1} of {LOAN_ORDER.length} · {fc.title}
       </div>
       <p className="text-sm text-ink">{fc.brief}</p>
 

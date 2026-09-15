@@ -9,12 +9,15 @@ const KIND_LABEL: Record<MistakeRecord['kind'], string> = {
   unsound_call: 'Unsound call',
   concentration: 'Concentration',
   noise_trade: 'Churn',
+  missed_flags: 'Read the file too fast',
 }
 
 const PATTERN: Record<MistakeRecord['kind'], string> = {
   unsound_call: "That's a habit forming. Slow the decide screen down — the figures are all there.",
   concentration: "Same shape each time: too much in one name. Watch the allocation bar before you buy.",
   noise_trade: "You're trading the noise. Most days, the right number of trades is zero.",
+  missed_flags:
+    'The tells keep going past you. Read every line before you tick anything — and tick only what the figures actually support.',
 }
 
 export function MistakesPanel() {

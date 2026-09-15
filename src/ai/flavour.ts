@@ -1,6 +1,7 @@
 import type { FinancialCase, ResolvedCase } from '@/sim/types'
 import { getCached, setCached, hash } from '@/ai/cache'
 import { fallbackCaseIntro, fallbackCaseExplanation } from '@/ai/fallback'
+import { caseRisk } from '@/sim/cases'
 
 /**
  * Step 15. The only file allowed to call a model. It takes numbers the sim has
@@ -75,10 +76,40 @@ async function resolve(
   }
 }
 
+const INTRO_TASK: Record<FinancialCase['kind'], string> = {
+  loan: 'Retell this loan application as a short human story — who runs it, why they need the money.',
+  allocation: 'Set the scene for this portfolio review in a line or two — whose money it is and what they need from it.',
+  pattern: 'Set the scene for this compliance referral in a line or two — who is asking, and what they are uneasy about.',
+}
+
+/** the evidence the player actually read, in the words that kind uses */
+function evidenceFor(fc: FinancialCase): string {
+  switch (fc.kind) {
+    case 'loan': {
+      const f = fc.figures
+      return (
+        `Figures (paise): revenue ${f.revenue}, expenses ${f.expenses}, existing debt ` +
+        `${f.existingDebt}, interest paid ${f.interestPaid}, operating cash flow ${f.cashFlow}, ` +
+        `credit score ${f.creditScore}, collateral ${f.collateralValue}, sector ${f.sector}.`
+      )
+    }
+    case 'allocation':
+      return (
+        'Book (paise): ' +
+        fc.book.map((b) => `${b.name} ${b.sector} ${b.value}`).join('; ') +
+        `.\nMandate: ${fc.mandate.join(' ')}`
+      )
+    case 'pattern':
+      return (
+        'Accounts: ' +
+        fc.accounts.map((a) => `${a.label} ${a.value}`).join('; ') +
+        `.\nThe lines that really did not hold: ${fc.truth.realFlags.join(', ')}.`
+      )
+  }
+}
+
 export function getCaseIntro(fc: FinancialCase, enabled: boolean): Promise<string> {
-  const prompt =
-    'Retell this loan application as a short human story — who runs it, why they ' +
-    `need the money. Do not restate the figures.\n\nApplication: ${fc.brief}`
+  const prompt = `${INTRO_TASK[fc.kind]} Do not restate the figures.\n\nFile: ${fc.brief}`
   return resolve(enabled, hash(`intro|${fc.id}`), prompt, fallbackCaseIntro({ fc }))
 }
 
@@ -88,15 +119,12 @@ export function getCaseExplanation(
   drivers: string[],
   enabled: boolean,
 ): Promise<string> {
-  const f = fc.figures
   const prompt =
-    'Explain plainly what happened with this credit decision and why, pointing at the ' +
-    'numbers that were on the file. Reward the reasoning, not the dice: a sound call ' +
-    'that still went bad is still a sound call.\n\n' +
-    `Figures (paise): revenue ${f.revenue}, expenses ${f.expenses}, existing debt ` +
-    `${f.existingDebt}, interest paid ${f.interestPaid}, operating cash flow ${f.cashFlow}, ` +
-    `credit score ${f.creditScore}, collateral ${f.collateralValue}, sector ${f.sector}.\n` +
-    `Real default risk: ${Math.round(fc.truth.defaultRisk * 100)}%. ` +
+    'Explain plainly what happened with this decision and why, pointing at what was ' +
+    'on screen. Reward the reasoning, not the dice: a sound call that still went bad ' +
+    'is still a sound call.\n\n' +
+    `${evidenceFor(fc)}\n` +
+    `Real risk: ${Math.round(caseRisk(fc) * 100)}%. ` +
     `Drivers: ${drivers.join('; ') || 'none'}.\n` +
     `Decision: ${r.choice}. Outcome: ${r.outcome}. Judgement: ${r.judgement}.`
   return resolve(

@@ -1,7 +1,8 @@
-import type { FinancialCase } from '@/sim/types'
+import type { LoanCase } from '@/sim/types'
 
 /** Big revenue, tiny profit, and debt that is already nine years of earnings. */
-export const girishSteel: FinancialCase = {
+export const girishSteel: LoanCase = {
+  kind: 'loan',
   id: 'loan-girish-steel',
   building: 'bank',
   title: 'Girish Steel Fabricators — plant upgrade',

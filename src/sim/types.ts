@@ -43,6 +43,8 @@ export type BuildingId =
   | 'fintech'
   | 'academy'
   | 'apartment'
+  /** Risk & Compliance — where the pattern files are read (issue B4) */
+  | 'risk'
 
 /* ---------- clock ---------- */
 
@@ -135,7 +137,46 @@ export interface CaseChoice {
   id: CaseChoiceId
   label: string
   detail?: string
+  /**
+   * Does this choice step out of the way of the file's hazard? A rejected
+   * loan, a trimmed position, an escalated audit. It decides which way the
+   * outcome roll reads: guarded choices are vindicated when the hazard lands,
+   * unguarded ones are vindicated when it doesn't.
+   *
+   * Loan cases leave it off — the four standard choice ids already say.
+   */
+  guards?: boolean
+  /** multiplies the hazard for a choice that still takes the risk on */
+  riskMult?: number
 }
+
+/**
+ * Issue B4. A case used to be a loan and nothing else, which capped the whole
+ * library at about thirty minutes of content: you could not author an
+ * allocation exercise or a fraud-pattern file without changing the type.
+ *
+ * It is now a union on `kind`. Everything shared lives on `CaseBase`; the
+ * evidence the player reads and the hidden truth they are judged against are
+ * per-kind. `sim/cases/index.ts` branches once, at the top, and the compiler
+ * makes sure every branch is handled.
+ *
+ * Each kind sits in a different building, which is the point — the city stops
+ * being decoration when the file you can read depends on where you walked.
+ */
+export type CaseKind = 'loan' | 'allocation' | 'pattern'
+
+export interface CaseBase {
+  id: string
+  building: BuildingId
+  title: string
+  /** what the player is shown */
+  brief: string
+  choices: CaseChoice[]
+  /** used to write the explanation after the outcome */
+  teaches: string[]
+}
+
+/* --- loan: can this borrower carry the debt --- */
 
 export interface LoanFigures {
   revenue: Paise
@@ -148,22 +189,78 @@ export interface LoanFigures {
   sector: Sector
 }
 
-export interface FinancialCase {
-  id: string
-  building: BuildingId
-  title: string
-  /** what the player is shown */
-  brief: string
-  figures: LoanFigures
-  choices: CaseChoice[]
-  /** never shown before the player decides */
-  truth: {
-    defaultRisk: number
-    drivers: string[]
-  }
-  /** used to write the explanation after the outcome */
-  teaches: string[]
+export interface LoanTruth {
+  defaultRisk: number
+  drivers: string[]
 }
+
+export interface LoanCase extends CaseBase {
+  kind: 'loan'
+  figures: LoanFigures
+  /** never shown before the player decides */
+  truth: LoanTruth
+}
+
+/* --- allocation: is this book shaped like it should be --- */
+
+/** one position in a book the player is asked to judge, not to trade */
+export interface BookLine {
+  name: string
+  sector: Sector
+  value: Paise
+  note?: string
+}
+
+export interface AllocationTruth {
+  /** every choice a careful analyst could defend, not just the best one */
+  soundChoices: CaseChoiceId[]
+  /** chance the book as it stands takes a serious hit */
+  hitRisk: number
+  drivers: string[]
+}
+
+export interface AllocationCase extends CaseBase {
+  kind: 'allocation'
+  book: BookLine[]
+  /** what the book was supposed to respect — the rules it is measured against */
+  mandate: string[]
+  truth: AllocationTruth
+}
+
+/* --- pattern: does this set of accounts hold together --- */
+
+export interface LedgerLine {
+  label: string
+  value: string
+  /** a second line, where the figure needs context to be readable */
+  note?: string
+}
+
+/** a red flag the player can tick. Some are real; the rest are decoys. */
+export interface CaseFlag {
+  id: string
+  label: string
+}
+
+export interface PatternTruth {
+  /** the ids in `flags` that genuinely point at something */
+  realFlags: string[]
+  soundChoices: CaseChoiceId[]
+  /** chance the file really is what the flags suggest */
+  fraudRisk: number
+  drivers: string[]
+  /** the Casebook entry this rhymes with — see data/casebook.ts (issue B5) */
+  echoes?: string
+}
+
+export interface PatternCase extends CaseBase {
+  kind: 'pattern'
+  accounts: LedgerLine[]
+  flags: CaseFlag[]
+  truth: PatternTruth
+}
+
+export type FinancialCase = LoanCase | AllocationCase | PatternCase
 
 /**
  * What the player commits before deciding, in step C-d. The risk band is
@@ -171,12 +268,24 @@ export interface FinancialCase {
  * Optional throughout — skipping it costs the feedback, never the decision.
  */
 export interface CasePrediction {
-  risk: 'low' | 'mid' | 'high' // <20% / 20–40% / >40%
+  risk: 'low' | 'mid' | 'high' // <20% / 20-40% / >40%
   note?: string
+}
+
+/** how a pattern case's red-flag ticks scored (issue B4) */
+export interface FlagScore {
+  /** real flags the player ticked */
+  found: number
+  /** real flags there were to find */
+  of: number
+  /** decoys the player ticked — reading too much into a file is its own error */
+  wrong: number
 }
 
 export interface ResolvedCase {
   caseId: string
+  /** which kind of file this was. Saves from before B4 are all 'loan'. */
+  kind: CaseKind
   choice: CaseChoiceId
   /** did the dice go the player's way */
   outcome: 'good' | 'bad'
@@ -188,8 +297,10 @@ export interface ResolvedCase {
   day: number
   /** absent for cases resolved before C-d, or when the player skipped it */
   prediction?: CasePrediction
-  /** did the risk band contain the real default risk */
+  /** did the risk band contain the real risk */
   predictionRight?: boolean
+  /** pattern cases only */
+  flagScore?: FlagScore
 }
 
 /* ---------- quests ---------- */
@@ -319,7 +430,7 @@ export interface GameState {
 /** one error, logged at the day boundary, with the lesson attached */
 export interface MistakeRecord {
   id: string
-  kind: 'unsound_call' | 'concentration' | 'noise_trade'
+  kind: 'unsound_call' | 'concentration' | 'noise_trade' | 'missed_flags'
   day: number
   note: string
 }

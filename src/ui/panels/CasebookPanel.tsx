@@ -1,7 +1,9 @@
-import { useState, type ReactNode } from 'react'
-import { useGameStore } from '@/state/store'
+import { useEffect, useState, type ReactNode } from 'react'
+import { useGameStore, useUiStore } from '@/state/store'
 import { CASEBOOK, getCasebookEntry, type CasebookEntry } from '@/data/casebook'
 import { getConcept } from '@/data/concepts'
+import { caseEchoing } from '@/data/cases'
+import { PixelButton } from '@/ui/components/PixelButton'
 
 /**
  * Step C-a2. Real, concluded events as study cards. Read-state is a `flags`
@@ -12,6 +14,21 @@ export function CasebookPanel() {
   const [openId, setOpenId] = useState<string | null>(null)
   const flags = useGameStore((s) => s.state.flags)
   const apply = useGameStore((s) => s.apply)
+  const wanted = useUiStore((s) => s.casebookEntry)
+  const setWanted = useUiStore((s) => s.setCasebookEntry)
+
+  // issue B5: a resolved pattern file can send the player straight here
+  useEffect(() => {
+    if (!wanted) return
+    setOpenId(wanted)
+    setWanted(null)
+    if (!useGameStore.getState().state.flags[`casebook:${wanted}`]) {
+      apply((d) => {
+        d.flags[`casebook:${wanted}`] = true
+        return d
+      })
+    }
+  }, [wanted, setWanted, apply])
 
   const open = (id: string) => {
     setOpenId(id)
@@ -120,10 +137,7 @@ function Detail({ entry, onBack }: { entry: CasebookEntry; onBack: () => void })
         ))}
       </div>
 
-      <div className="border-l-2 border-amethyst pl-3">
-        <div className="font-display text-[9px] text-amethyst uppercase">Rhymes with</div>
-        <p className="text-xs text-muted">{entry.pairsWith}</p>
-      </div>
+      <RhymesWith entry={entry} />
 
       <Block title="Check yourself">
         {entry.questions.map((qa, i) => (
@@ -153,6 +167,49 @@ function Detail({ entry, onBack }: { entry: CasebookEntry; onBack: () => void })
         Study material, not investment advice. The companies named are the historical record of
         concluded events.
       </p>
+    </div>
+  )
+}
+
+/**
+ * Issue B5. Reading is where the Casebook used to stop. Where an invented file
+ * carries the same shape, this opens it — the reading and the exercise are the
+ * same lesson, and until now nothing joined them.
+ *
+ * The other direction is deliberately not symmetric: a pattern file only names
+ * the event it rhymes with *after* the decision, because knowing it was Satyam
+ * hands you the answer.
+ */
+function RhymesWith({ entry }: { entry: CasebookEntry }) {
+  const live = caseEchoing(entry.id)
+  const resolved = useGameStore((s) => s.state.cases.resolved)
+  const apply = useGameStore((s) => s.apply)
+  const setOpenBuilding = useUiStore((s) => s.setOpenBuilding)
+  const done = live ? resolved.some((r) => r.caseId === live.id) : false
+
+  const openLive = () => {
+    if (!live) return
+    apply((d) => {
+      d.cases.openCaseId = live.id
+      return d
+    })
+    setOpenBuilding(live.building)
+  }
+
+  return (
+    <div className="border-l-2 border-amethyst pl-3">
+      <div className="font-display text-[9px] text-amethyst uppercase">Rhymes with</div>
+      <p className="text-xs text-muted">{entry.pairsWith}</p>
+      {live && (
+        <div className="mt-2">
+          <PixelButton onClick={openLive}>
+            {done ? 'Reopen the file' : 'Now find it in a live file'}
+          </PixelButton>
+          <p className="mt-1 text-[10px] text-muted">
+            {live.title} — waiting at Risk &amp; Compliance.
+          </p>
+        </div>
+      )}
     </div>
   )
 }

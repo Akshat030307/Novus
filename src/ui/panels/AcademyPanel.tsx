@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useUiStore } from '@/state/store'
 import { SkillsPanel } from '@/ui/panels/SkillsPanel'
 import { LedgerPanel } from '@/ui/panels/LedgerPanel'
 import { MistakesPanel } from '@/ui/panels/MistakesPanel'
@@ -11,7 +12,9 @@ type Tab = 'skills' | 'ledger' | 'modules' | 'casebook' | 'scenarios' | 'mistake
 
 /** The Academy body: skills practised, the Ledger, the course modules, the slip log. */
 export function AcademyPanel() {
-  const [tab, setTab] = useState<Tab>('skills')
+  // issue B5: arriving from a resolved pattern file opens the Casebook, not Skills
+  const wanted = useUiStore((s) => s.casebookEntry)
+  const [tab, setTab] = useState<Tab>(wanted ? 'casebook' : 'skills')
 
   return (
     <div>
