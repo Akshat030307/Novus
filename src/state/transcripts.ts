@@ -33,6 +33,18 @@ export type Issued<T> = { ok: true; value: T } | { ok: false; error: string }
 
 const fail = (error: string): Issued<never> => ({ ok: false, error })
 
+/**
+ * PostgREST answers a missing table or function with a schema-cache message
+ * that reads like a bug. It isn't one — it means docs/supabase.sql has not
+ * been run on this project yet, and saying so is the difference between a
+ * confusing error and an actionable one.
+ */
+const NOT_SET_UP = /schema cache|does not exist/i
+const readable = (message: string) =>
+  NOT_SET_UP.test(message)
+    ? 'Transcripts are not set up on this Novus install yet — docs/supabase.sql has to be run once on the project.'
+    : message
+
 interface TranscriptRow {
   code: string
   player_name: string
@@ -71,7 +83,7 @@ export async function issueTranscript(
       .insert({ user_id: user.id, player_name: doc.player, body: doc })
       .select('code, player_name, body, issued_at')
       .single()
-    if (error) return fail(cloudNote('transcript issue', error.message))
+    if (error) return fail(readable(cloudNote('transcript issue', error.message)))
     return { ok: true, value: issuedOf(data as TranscriptRow) }
   } catch (e) {
     return fail(cloudNote('transcript issue', cloudReason(e)))
@@ -107,7 +119,7 @@ export async function verifyTranscript(code: string): Promise<Issued<IssuedTrans
   if (!supabase) return fail('This copy of Novus has no cloud configured, so codes cannot be checked here.')
   try {
     const { data, error } = await supabase.rpc('verify_transcript', { p_code: code })
-    if (error) return fail(error.message)
+    if (error) return fail(readable(error.message))
     const rows = (data ?? []) as TranscriptRow[]
     if (rows.length === 0) return fail('No transcript has been issued with that code.')
     return { ok: true, value: issuedOf(rows[0]) }
