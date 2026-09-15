@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { CASE_ORDER, getCase } from '@/data/cases'
 import { judgeChoice, gradePrediction } from '@/sim/cases'
 import { rupees } from '@/lib/format'
+import { logAttempt } from '@/state/attempts'
 import { PixelButton } from '@/ui/components/PixelButton'
 
 type Band = 'low' | 'mid' | 'high'
@@ -10,7 +11,11 @@ interface Turn {
   readRight: boolean
 }
 
-/** Five loan files, back to back. Pure — no store, no rng, no outcome roll. */
+/**
+ * Five loan files, back to back. Pure — no store, no rng, no outcome roll.
+ * The finished run is logged as one attempt (issue B2); the files themselves
+ * still touch nothing in the save.
+ */
 export function CreditDeskDrill() {
   const [i, setI] = useState(0)
   const [band, setBand] = useState<Band | null>(null)
@@ -67,7 +72,20 @@ export function CreditDeskDrill() {
     if (!choice) return
     const sound = judgeChoice(fc.truth.defaultRisk, choice) === 'sound'
     const readRight = band ? gradePrediction({ risk: band }, fc.truth.defaultRisk) : false
-    setTurns((t) => [...t, { sound, readRight }])
+    const next = [...turns, { sound, readRight }]
+    setTurns(next)
+    // one attempt per completed run, logged from `next` rather than from state:
+    // reading `turns` here would be one file behind
+    if (next.length === CASE_ORDER.length) {
+      logAttempt({
+        kind: 'drill',
+        refId: 'credit-desk',
+        score: next.filter((t) => t.sound).length,
+        outOf: CASE_ORDER.length,
+        passed: next.every((t) => t.sound),
+        detail: { readsRight: next.filter((t) => t.readRight).length },
+      })
+    }
     setI((n) => n + 1)
     setBand(null)
     setChoice(null)

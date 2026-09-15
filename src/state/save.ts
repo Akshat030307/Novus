@@ -1,7 +1,7 @@
 import type { GameState } from '@/sim/types'
 import { migrate } from '@/state/migrate'
 import { supabase, cloudEnabled, currentUser } from '@/lib/supabase'
-import { useCloudStore } from '@/state/cloud'
+import { useCloudStore, cloudFailed, cloudReason } from '@/state/cloud'
 
 /**
  * Step 7 writes to the browser; step 14 adds Supabase behind the same two
@@ -16,20 +16,17 @@ import { useCloudStore } from '@/state/cloud'
  */
 const KEY = 'novus:save:1'
 const AT_KEY = 'novus:save:1:at' // ISO timestamp of the last local write, for newer-wins
+/**
+ * One world save, on purpose. Issue B2 asked for attempt history and the
+ * temptation was to turn this into slots — but a career run and a record of
+ * practice are different things with different lifetimes, so the log lives in
+ * `state/attempts.ts` against its own table and this stays a single slot.
+ */
 const SLOT = 1
 
 const localAt = () => localStorage.getItem(AT_KEY) ?? ''
 const cloud = () => useCloudStore.getState()
 
-/** one place to record a cloud failure, so it can never pass unnoticed again */
-function failed(where: string, message: string) {
-  cloud().report('error', message)
-  console.warn(`[novus] cloud ${where} failed: ${message}`)
-}
-
-/** message from anything a Supabase call can hand back or throw */
-const reason = (e: unknown) =>
-  e instanceof Error ? e.message : typeof e === 'string' ? e : 'Unknown error'
 
 export async function saveGame(state: GameState): Promise<void> {
   const now = new Date().toISOString()
@@ -50,11 +47,11 @@ export async function saveGame(state: GameState): Promise<void> {
         { user_id: user.id, slot: SLOT, state, updated_at: now },
         { onConflict: 'user_id,slot' },
       )
-    if (error) failed('save', error.message)
+    if (error) cloudFailed('save', error.message)
     else cloud().report('saved', null, now)
   } catch (e) {
     // offline or blocked — the local copy is safe, retry on the next save
-    failed('save', reason(e))
+    cloudFailed('save', cloudReason(e))
   }
 }
 
@@ -71,7 +68,7 @@ export async function loadGame(): Promise<GameState | null> {
         .eq('slot', SLOT)
         .maybeSingle()
       if (error) {
-        failed('load', error.message)
+        cloudFailed('load', error.message)
       } else if (data && (!local || String(data.updated_at) > localAt())) {
         cloud().report('saved', null, String(data.updated_at))
         return migrate(data.state)
@@ -79,7 +76,7 @@ export async function loadGame(): Promise<GameState | null> {
         cloud().report('saved')
       }
     } catch (e) {
-      failed('load', reason(e)) // fall through to the local copy
+      cloudFailed('load', cloudReason(e)) // fall through to the local copy
     }
   } else {
     cloud().report(cloudEnabled ? 'idle' : 'off')
@@ -103,12 +100,12 @@ export async function hasCloudSave(): Promise<boolean> {
       .eq('slot', SLOT)
       .maybeSingle()
     if (error) {
-      failed('lookup', error.message)
+      cloudFailed('lookup', error.message)
       return false
     }
     return Boolean(data)
   } catch (e) {
-    failed('lookup', reason(e))
+    cloudFailed('lookup', cloudReason(e))
     return false
   }
 }
@@ -128,7 +125,7 @@ export async function syncOnLogin(): Promise<void> {
       .eq('user_id', user.id)
       .eq('slot', SLOT)
       .maybeSingle()
-    if (error) return failed('sync', error.message)
+    if (error) return cloudFailed('sync', error.message)
     if (data && String(data.updated_at) >= localAt()) {
       cloud().report('saved', null, String(data.updated_at)) // cloud is newer, keep it
       return
@@ -141,10 +138,10 @@ export async function syncOnLogin(): Promise<void> {
         { user_id: user.id, slot: SLOT, state: JSON.parse(local), updated_at: at },
         { onConflict: 'user_id,slot' },
       )
-    if (writeError) failed('sync', writeError.message)
+    if (writeError) cloudFailed('sync', writeError.message)
     else cloud().report('saved', null, at)
   } catch (e) {
-    failed('sync', reason(e)) // best effort — loadGame still has the local copy
+    cloudFailed('sync', cloudReason(e)) // best effort — loadGame still has the local copy
   }
 }
 

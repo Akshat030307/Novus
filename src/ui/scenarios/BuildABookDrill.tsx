@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { STOCKS } from '@/data/stocks'
 import { rupees } from '@/lib/format'
 import { AllocationBar, type Slice } from '@/ui/components/AllocationBar'
+import { logAttempt } from '@/state/attempts'
 import { PixelButton } from '@/ui/components/PixelButton'
 
 const START_CASH = 5_00_000_00
@@ -30,6 +31,20 @@ export function BuildABookDrill() {
   const bookValue = invested
   const topShare = bookValue > 0 ? Math.max(...held.map((s) => (s.price * (qty[s.id] ?? 0)) / bookValue)) : 0
   const pass = held.length >= 4 && topShare <= 0.4 && bookValue > 0
+
+  // two things are being asked for — enough names, and none of them dominating
+  // — so the attempt is scored out of two rather than as a bare pass/fail
+  const score = () => {
+    setScored(true)
+    logAttempt({
+      kind: 'drill',
+      refId: 'build-a-book',
+      score: (held.length >= 4 ? 1 : 0) + (topShare <= 0.4 ? 1 : 0),
+      outOf: 2,
+      passed: pass,
+      detail: { holdings: held.length, biggestSharePct: Math.round(topShare * 100) },
+    })
+  }
 
   const buy = (id: string, price: number) => {
     if (cash < price) return
@@ -72,7 +87,7 @@ export function BuildABookDrill() {
       </ul>
 
       {!scored ? (
-        <PixelButton tone="primary" onClick={() => setScored(true)} disabled={bookValue === 0}>
+        <PixelButton tone="primary" onClick={score} disabled={bookValue === 0}>
           Score the book
         </PixelButton>
       ) : (

@@ -2,9 +2,21 @@ import { useMemo, useState } from 'react'
 import { STOCKS } from '@/data/stocks'
 import { EVENTS } from '@/data/events'
 import { signed } from '@/lib/format'
+import { logAttempt } from '@/state/attempts'
 import { PixelButton } from '@/ui/components/PixelButton'
 
-/** Read a headline, pick who it lifts. Scored against the event's sector map. */
+/** below this the shock is lost inside a normal day of noise, so it isn't marked */
+const MOVED = 0.005
+
+/**
+ * Read a headline, pick who it lifts. Scored against the event's sector map.
+ *
+ * Marked out of the stocks the headline actually moves: picking one it lifts
+ * and leaving one it hurts both count. Picks on stocks the headline doesn't
+ * touch are counted separately as stray picks rather than folded into the
+ * score — reading a headline too widely is a different error from reading it
+ * backwards, and a single number would hide which one you made.
+ */
 export function SpotTheShockDrill() {
   const [seed, setSeed] = useState(0)
   const event = useMemo(() => EVENTS[seed % EVENTS.length], [seed])
@@ -22,18 +34,28 @@ export function SpotTheShockDrill() {
     })
   }
 
-  const score = useMemo(() => {
-    let s = 0
-    for (const stock of STOCKS) {
-      const shock = shockFor(stock.sector)
-      const chose = picked.has(stock.id)
-      if (chose && shock > 0.005) s += 1
-      else if (chose && shock < -0.005) s -= 1
-      else if (!chose && shock > 0.005) s -= 0.5 // missed a beneficiary
-    }
-    return s
+  const marks = useMemo(() => {
+    const movers = STOCKS.filter((s) => Math.abs(shockFor(s.sector)) > MOVED)
+    const right = movers.filter((s) => (shockFor(s.sector) > 0) === picked.has(s.id)).length
+    const stray = STOCKS.filter(
+      (s) => picked.has(s.id) && Math.abs(shockFor(s.sector)) <= MOVED,
+    ).length
+    return { right, of: movers.length, stray }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [picked, event])
+
+  const reveal = () => {
+    setRevealed(true)
+    if (marks.of === 0) return // nothing to mark — don't log an empty attempt
+    logAttempt({
+      kind: 'drill',
+      refId: 'spot-the-shock',
+      score: marks.right,
+      outOf: marks.of,
+      passed: marks.right === marks.of && marks.stray === 0,
+      detail: { strayPicks: marks.stray, headline: (seed % EVENTS.length) + 1 },
+    })
+  }
 
   const next = () => {
     setSeed((n) => n + 1)
@@ -79,16 +101,25 @@ export function SpotTheShockDrill() {
       </ul>
 
       {!revealed ? (
-        <PixelButton tone="primary" onClick={() => setRevealed(true)}>
+        <PixelButton tone="primary" onClick={reveal}>
           Reveal
         </PixelButton>
       ) : (
         <div className="space-y-2">
-          <div className="border-l-2 border-jade pl-3">
-            <div className="font-display text-[10px] uppercase text-ink">Score {score.toFixed(1)}</div>
+          <div
+            className={`border-l-2 pl-3 ${
+              marks.right === marks.of && marks.stray === 0 ? 'border-jade' : 'border-marigold'
+            }`}
+          >
+            <div className="font-display text-[10px] uppercase text-ink">
+              {marks.right}/{marks.of} read right
+              {marks.stray > 0 && ` · ${marks.stray} stray pick${marks.stray === 1 ? '' : 's'}`}
+            </div>
             <p className="mt-1 text-xs text-muted">
-              A right pick is +1, a wrong one −1, a missed beneficiary −0.5. The map decays over a
-              few game hours — and the weak links move less than a day of noise.
+              Marked on the stocks this headline actually moves — picking the ones it lifts and
+              leaving the ones it hurts. A stray pick is a stock the headline doesn't touch at all.
+              The map decays over a few game hours, and the weak links move less than a day of
+              noise.
             </p>
           </div>
           <PixelButton onClick={next}>Another headline</PixelButton>

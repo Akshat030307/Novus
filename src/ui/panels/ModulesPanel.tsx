@@ -5,9 +5,11 @@ import {
   PASS_MARK,
   moduleProgress,
   scoreQuiz,
+  countCorrect,
   markModuleStarted,
   recordAttempt,
 } from '@/sim/modules'
+import { logAttempt } from '@/state/attempts'
 import { getConcept } from '@/data/concepts'
 import { playSound } from '@/lib/sound'
 import { PixelButton } from '@/ui/components/PixelButton'
@@ -90,6 +92,15 @@ function ModuleDetail({ id, onBack }: { id: string; onBack: () => void }) {
   const submit = () => {
     const score = scoreQuiz(module, answers)
     load(recordAttempt(useGameStore.getState().state, id, score))
+    // the save keeps the best score; the log keeps every go, including this one
+    // (issue B2) — a best score alone can't tell anyone whether you improved
+    logAttempt({
+      kind: 'module',
+      refId: id,
+      score: countCorrect(module, answers),
+      outOf: module.quiz.length,
+      passed: score >= PASS_MARK,
+    })
     setResult(score)
     playSound(score >= PASS_MARK ? 'caseGood' : 'caseBad')
   }
