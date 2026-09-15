@@ -48,6 +48,8 @@ export class CityScene extends Phaser.Scene {
   private nearbyNpc: NpcSpec | null = null
   /** true from stepping on a door until stepping clear of every door again */
   private doorLocked = false
+  /** last tile written back to the save, so we only write on a real change */
+  private lastTile = { x: SPAWN.x, y: SPAWN.y }
 
   constructor() {
     super('city')
@@ -75,8 +77,10 @@ export class CityScene extends Phaser.Scene {
     const worldH = MAP_H * TILE
 
     addPlayerAnimations(this)
-    // step 7: restore player.position from the save instead of SPAWN
-    this.player = createPlayer(this, SPAWN.x * TILE + TILE / 2, SPAWN.y * TILE + TILE / 2)
+    // A4: carry on from wherever the save left off, not the plaza
+    const start = this.startTile()
+    this.lastTile = { ...start }
+    this.player = createPlayer(this, start.x * TILE + TILE / 2, start.y * TILE + TILE / 2)
 
     this.physics.world.setBounds(0, 0, worldW, worldH)
     this.player.setCollideWorldBounds(true)
@@ -162,8 +166,33 @@ export class CityScene extends Phaser.Scene {
 
   update() {
     updatePlayer(this.player, this.wasd)
+    this.rememberPosition()
     this.updateDoorLock()
     this.updateNpcHint()
+  }
+
+  /** where to drop the player in — the save's tile if it still makes sense */
+  private startTile(): { x: number; y: number } {
+    const at = bridge.readState().player.position
+    const sane =
+      at &&
+      at.scene === 'city' &&
+      Number.isFinite(at.x) &&
+      Number.isFinite(at.y) &&
+      at.x > 0 &&
+      at.y > 0 &&
+      at.x < MAP_W - 1 &&
+      at.y < MAP_H - 1
+    return sane ? { x: at.x, y: at.y } : { x: SPAWN.x, y: SPAWN.y }
+  }
+
+  /** write the tile back to the save, but only when it actually changes */
+  private rememberPosition() {
+    const x = Math.floor(this.player.x / TILE)
+    const y = Math.floor(this.player.y / TILE)
+    if (x === this.lastTile.x && y === this.lastTile.y) return
+    this.lastTile = { x, y }
+    bridge.setPosition(x, y)
   }
 
   private enterDoor(zone: Phaser.GameObjects.Zone) {

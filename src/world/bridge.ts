@@ -33,6 +33,19 @@ export const bridge = {
     useUiStore.getState().setDialogueNpc(npcId)
   },
 
+  /**
+   * The player stepped onto a new tile. Remembered on the save so a reload
+   * puts them back where they were standing rather than at the plaza (A4).
+   * Shallow `tick`, not `apply` — this happens while walking and must not
+   * deep-clone the world.
+   */
+  setPosition: (x: number, y: number, scene = 'city') => {
+    const g = useGameStore.getState()
+    const at = g.state.player.position
+    if (at.x === x && at.y === y && at.scene === scene) return
+    g.tick({ player: { ...g.state.player, position: { x, y, scene } } })
+  },
+
   /** the clock must not run while a panel is blocking the view */
   isPaused: () => useUiStore.getState().isPaused(),
 }
