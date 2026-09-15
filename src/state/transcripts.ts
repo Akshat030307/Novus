@@ -1,4 +1,4 @@
-import type { TranscriptDoc } from '@/sim/transcript'
+import type { DocKind, TranscriptDoc } from '@/sim/transcript'
 export { codeFromLocation } from '@/sim/transcript'
 import { supabase, currentUser } from '@/lib/supabase'
 import { cloudNote, cloudReason } from '@/state/cloud'
@@ -27,6 +27,8 @@ export interface IssuedTranscript {
   playerName: string
   doc: TranscriptDoc
   issuedAt: string
+  /** 'transcript' or 'certificate' (issue B8) */
+  kind: DocKind
 }
 
 export type Issued<T> = { ok: true; value: T } | { ok: false; error: string }
@@ -50,6 +52,7 @@ interface TranscriptRow {
   player_name: string
   body: TranscriptDoc
   issued_at: string
+  kind?: string
 }
 
 const issuedOf = (r: TranscriptRow): IssuedTranscript => ({
@@ -57,6 +60,9 @@ const issuedOf = (r: TranscriptRow): IssuedTranscript => ({
   playerName: r.player_name,
   doc: r.body,
   issuedAt: String(r.issued_at),
+  // the column is the index; the body is the truth, and rows issued before B8
+  // have neither, which makes them transcripts
+  kind: r.kind === 'certificate' || r.body?.docKind === 'certificate' ? 'certificate' : 'transcript',
 })
 
 /** the shareable address for a code — `/t/<code>`, with `?t=` as a fallback */
@@ -80,8 +86,13 @@ export async function issueTranscript(
   try {
     const { data, error } = await supabase
       .from('transcripts')
-      .insert({ user_id: user.id, player_name: doc.player, body: doc })
-      .select('code, player_name, body, issued_at')
+      .insert({
+        user_id: user.id,
+        player_name: doc.player,
+        body: doc,
+        kind: doc.docKind ?? 'transcript',
+      })
+      .select('code, player_name, body, issued_at, kind')
       .single()
     if (error) return fail(readable(cloudNote('transcript issue', error.message)))
     return { ok: true, value: issuedOf(data as TranscriptRow) }
@@ -99,7 +110,7 @@ export async function myTranscripts(): Promise<IssuedTranscript[]> {
   try {
     const { data, error } = await supabase
       .from('transcripts')
-      .select('code, player_name, body, issued_at')
+      .select('code, player_name, body, issued_at, kind')
       .eq('user_id', user.id)
       .order('issued_at', { ascending: false })
       .limit(20)

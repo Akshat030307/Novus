@@ -5,6 +5,7 @@ import { attemptsFor, bestAttempt, progressOn, type Attempt } from '@/sim/attemp
 import { CreditDeskDrill } from '@/ui/scenarios/CreditDeskDrill'
 import { BuildABookDrill } from '@/ui/scenarios/BuildABookDrill'
 import { SpotTheShockDrill } from '@/ui/scenarios/SpotTheShockDrill'
+import { ReplayDrill } from '@/ui/scenarios/ReplayDrill'
 
 /**
  * Step C-h, extended by issue B2. Set-piece drills, off to one side of the
@@ -36,6 +37,7 @@ export function ScenariosPanel() {
         {open.kind === 'credit-desk' && <CreditDeskDrill />}
         {open.kind === 'build-a-book' && <BuildABookDrill />}
         {open.kind === 'spot-the-shock' && <SpotTheShockDrill />}
+        {open.kind === 'replay' && open.replayId && <ReplayDrill replayId={open.replayId} />}
       </div>
     )
   }

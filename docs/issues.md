@@ -242,7 +242,7 @@ nothing is swallowed, but only `save.ts` may touch the save indicator.
 
 ---
 
-### B3 — There is no instructor side at all ⬜ L
+### B3 — There is no instructor side at all ✅ L
 
 No cohorts, no assignments, no dashboard. This is the actual B2B product, and
 it is the thing that makes a college or a training team pay.
@@ -264,6 +264,38 @@ teacher *what to teach next week*. No competitor does that.
 who passed and where the class went wrong.
 
 **Depends on:** B1, B2.
+
+**Landed.** `/teach` is its own surface — a teacher is not a player and should
+not have to walk a city to find out whether the class did the homework. Create
+a cohort, get a six-character code, assign any drill or module with a deadline,
+see the table.
+
+The completion table is the obvious half. The half that matters is **"what to
+teach next"**: the typed `MistakeRecord`s that tell one student they keep
+trading the noise tell a teacher that eleven of nineteen do, and that Thursday
+should open with it. It is ranked by how much of the class it affects, and it
+ignores anything under a quarter of them or under two people — one student's
+habit is a conversation with that student, not a lesson plan.
+
+**The privacy boundary is the part that had to be right.** An instructor sees
+the name the student typed, their drill and module attempts, and a summary the
+student's own client publishes: day, level, modules, concepts, sound and
+unsound calls, and logged habits. They cannot reach the save, the cash, the
+portfolio, the career, or any transcript or certificate. That is enforced by
+RLS in Postgres, not by the screen, and the game states it in those words
+**before** anyone joins.
+
+Verified on a throwaway Postgres: an outsider cannot see a cohort, its
+assignments or its members; a bad code lets nobody in; adding yourself directly
+is denied; a student cannot rename the cohort or set their own assignment; an
+instructor reads a member's attempts and summary and gets nothing at all for a
+non-member, and cannot touch saves or transcripts either way.
+
+Two bugs the database found that no typecheck could: `create or replace` cannot
+change a function's OUT columns (`verify_transcript` gained `kind` at B8), and
+a `RETURNS TABLE` column named `cohort_id` shadows the real one, which made
+`on conflict (cohort_id, …)` ambiguous and would have broken **every** join at
+run time.
 
 ---
 
@@ -398,7 +430,7 @@ biggest mover fell ₹65, of which ₹45 was noise and ₹15 news.
 
 ---
 
-### B7 — Historical replay drills ⬜ L
+### B7 — Historical replay drills ✅ L
 
 Principle 5 keeps the playable simulation fictional, and that stays. But
 replaying a *real, labelled, past* period as a drill is history, not advice —
@@ -410,9 +442,28 @@ Buys real credibility with institutions, who will ask "is this realistic?"
 
 **Depends on:** B4.
 
+**Landed, with a hard sourcing rule.** Two replays ship: Satyam 2008 and IL&FS
+2018. A replay walks a concluded event forward one decision at a time, showing
+only what was public at that point, and commits before it reveals.
+
+**The scoring is the design.** You are marked on whether the call was
+defensible *on what was knowable then*, never on whether it matched the ending.
+A drill that rewarded hindsight would teach the opposite of what a historical
+replay is for — so the last step of each one still has a wrong answer, and
+"nobody could have known" is explicitly the wrong answer on Satyam.
+
+**Every fact in a replay must already appear on the Casebook card it is drawn
+from**, which means it has been through the A5 source check and carries the
+card's citations. Nothing invents a price, a date or a figure to make a step
+work; where the record is coarse, the step is coarse. That is also why the
+drills are decision-shaped rather than trading-shaped: a tick-by-tick replay
+would need intraday data nobody has, and inventing it under a real company's
+name is the one thing this project will not do. A test walks every rupee figure
+in every replay and fails if it is not on the source card.
+
 ---
 
-### B8 — Certification ⬜ M
+### B8 — Certification ✅ M
 
 Once modules, drills and a verifiable transcript exist, a completion
 certificate with a check code is the obvious commercial surface, and it is what
@@ -513,12 +564,18 @@ proxy. Do not shortcut this.
    kept. Needs `docs/supabase.sql` run once on the Supabase project before the
    cloud half works; the local half works without it.
 
-4. **B4**, then **B5** — lifts the content ceiling and connects the Casebook.
-   Next up. B4 needs a `sim/types.ts` proposal first.
-5. **B3** — the product bet, once 2–4 make it worth buying. B1 and B2 have
+~~4. **B4**, then **B5**~~ — done. The content ceiling is now writing rather
+   than engineering, and three Casebook entries open a live file.
+
+~~5. **B3**, **B7**, **B8**~~ — done. **Track B is clear.**
+
+Next: **C**. `C4` (no test suite) is the one that protects everything above —
+there are now four scripted verification runs in the session history and none
+of them are checked in. `C1` and `C3` are cheap. `C2` (mobile) is the real
+project. B1 and B2 have
    now built its two tables and its aggregation shape.
 
-`C1` and `C7` are small enough to slot in anywhere.
+`C1` is small enough to slot in anywhere.
 
 ## Not doing
 

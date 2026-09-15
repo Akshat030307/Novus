@@ -5,10 +5,21 @@ import { LedgerPanel } from '@/ui/panels/LedgerPanel'
 import { MistakesPanel } from '@/ui/panels/MistakesPanel'
 import { ModulesPanel } from '@/ui/panels/ModulesPanel'
 import { TranscriptPanel } from '@/ui/panels/TranscriptPanel'
+import { CertificatesPanel } from '@/ui/panels/CertificatesPanel'
+import { CohortPanel } from '@/ui/panels/CohortPanel'
 import { CasebookPanel } from '@/ui/panels/CasebookPanel'
 import { ScenariosPanel } from '@/ui/panels/ScenariosPanel'
 
-type Tab = 'skills' | 'ledger' | 'modules' | 'casebook' | 'scenarios' | 'mistakes' | 'report'
+type Tab =
+  | 'skills'
+  | 'ledger'
+  | 'modules'
+  | 'casebook'
+  | 'scenarios'
+  | 'mistakes'
+  | 'report'
+  | 'certificates'
+  | 'cohort'
 
 /** The Academy body: skills practised, the Ledger, the course modules, the slip log. */
 export function AcademyPanel() {
@@ -40,6 +51,12 @@ export function AcademyPanel() {
         <TabButton active={tab === 'report'} onClick={() => setTab('report')}>
           Report
         </TabButton>
+        <TabButton active={tab === 'certificates'} onClick={() => setTab('certificates')}>
+          Awards
+        </TabButton>
+        <TabButton active={tab === 'cohort'} onClick={() => setTab('cohort')}>
+          Class
+        </TabButton>
       </div>
       {tab === 'skills' && <SkillsPanel />}
       {tab === 'ledger' && <LedgerPanel />}
@@ -48,6 +65,8 @@ export function AcademyPanel() {
       {tab === 'scenarios' && <ScenariosPanel />}
       {tab === 'mistakes' && <MistakesPanel />}
       {tab === 'report' && <TranscriptPanel />}
+      {tab === 'certificates' && <CertificatesPanel />}
+      {tab === 'cohort' && <CohortPanel />}
     </div>
   )
 }
