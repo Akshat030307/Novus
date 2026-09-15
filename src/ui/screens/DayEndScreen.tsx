@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from 'react'
 import type { DayEndReport } from '@/sim/types'
-import { rupees } from '@/lib/format'
+import { rupees, signedRupees } from '@/lib/format'
 import { playSound } from '@/lib/sound'
 import { PixelButton } from '@/ui/components/PixelButton'
 
@@ -18,10 +18,12 @@ export function DayEndScreen({
   onClose: () => void
 }) {
   const net = report.cashClose - report.cashOpen
-  const dayPnL = report.realisedPnL + report.unrealisedPnL
+  // A1: cash + open positions, close against open — not realised + unrealised,
+  // which mixed a daily delta with a standing position
+  const dayPnL = report.netChange
   const rep = `${report.reputationChange >= 0 ? '+' : ''}${report.reputationChange}`
   const gainLoss = (n: number) => (n >= 0 ? 'text-jade' : 'text-coral')
-  const money = (n: number) => `${n < 0 ? '-' : '+'}${rupees(Math.abs(n))}`
+  const money = (n: number) => signedRupees(n)
 
   const verdict =
     dayPnL > 0 ? 'Up on the day.' : dayPnL < 0 ? 'Down on the day.' : 'Flat on the day.'

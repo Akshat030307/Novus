@@ -7,6 +7,7 @@ import type {
 } from '@/sim/types'
 import { makeRng } from '@/sim/rng'
 import { awardProgress, caseSkillGains } from '@/sim/progression'
+import { caseEnergyCost, spendEnergy } from '@/sim/energy'
 
 /**
  * Step 10. Resolving a credit file:
@@ -80,6 +81,8 @@ export function resolveCase(
   fc: FinancialCase,
   choiceId: string,
   prediction?: CasePrediction,
+  /** game minutes the file was open — a rushed read costs more focus (A2) */
+  minutesSpent?: number,
 ): { state: GameState; resolved: ResolvedCase; levelUps: LevelUpReport[] } {
   const rng = makeRng(`${state.seed}|case|${fc.id}|${state.clock.day}`)
   const effect = CHOICE_EFFECTS[choiceId as StdChoice] ?? CHOICE_EFFECTS.approve_full
@@ -111,7 +114,10 @@ export function resolveCase(
   }
 
   const { player, levelUps } = awardProgress(
-    { ...state.player, cash: state.player.cash + cashChange },
+    spendEnergy(
+      { ...state.player, cash: state.player.cash + cashChange },
+      caseEnergyCost(minutesSpent),
+    ),
     { xp: xpChange, reputation: reputationChange, skills: caseSkillGains(resolved) },
   )
 

@@ -1,25 +1,24 @@
 import type { ReactNode } from 'react'
 import { useGameStore, useUiStore } from '@/state/store'
 import { useCloudStore } from '@/state/cloud'
+import { ENERGY_MAX, isTired } from '@/sim/energy'
 import { rupees } from '@/lib/format'
 import { StatBar } from '@/ui/components/StatBar'
 import { DayArc } from '@/ui/components/DayArc'
 
 /**
  * The top strip: who you are, the three gauges you spend the day moving, the
- * cash line, and the clock. Energy is new — "focus" that a rushed decision
- * burns and the Cafeteria restores. It reads a placeholder here; the field and
- * the drain/restore rules are a sim step (see docs/build-steps.md, step B).
+ * cash line, and the clock. Energy is focus — a rushed decision or a churned
+ * hour burns it, the Cafeteria and a night's sleep buy it back. The rules live
+ * in sim/energy.ts (issue A2).
  */
-const ENERGY_MAX = 100
 
 export function Hud() {
   const { player, clock } = useGameStore((s) => s.state)
   const setScreen = useUiStore((s) => s.setScreen)
   const setOverlay = useUiStore((s) => s.setOverlay)
 
-  // TODO(step B follow-up): swap for player.energy once the field lands
-  const energy = ENERGY_MAX
+  const tired = isTired(player)
 
   return (
     <header className="flex shrink-0 items-center gap-4 border-b-2 border-line border-t-hi bg-panel-2 px-4 py-3">
@@ -41,8 +40,12 @@ export function Hud() {
       <Gauge label="XP" note={`${player.xp}/${player.xpToNext}`}>
         <StatBar value={player.xp} max={player.xpToNext} colorClass="bg-marigold" />
       </Gauge>
-      <Gauge label="Energy" note={`${energy}/${ENERGY_MAX}`}>
-        <StatBar value={energy} max={ENERGY_MAX} colorClass="bg-jade" />
+      <Gauge label="Energy" note={tired ? `${player.energy} · tired` : `${player.energy}/${ENERGY_MAX}`}>
+        <StatBar
+          value={player.energy}
+          max={ENERGY_MAX}
+          colorClass={tired ? 'bg-coral' : 'bg-jade'}
+        />
       </Gauge>
       <Gauge label="Reputation" note={String(player.reputation)}>
         <StatBar value={player.reputation} max={100} colorClass="bg-amethyst" />

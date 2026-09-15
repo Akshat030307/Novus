@@ -14,6 +14,14 @@ export function rupees(paise: Paise, opts: { short?: boolean } = {}): string {
   return `₹${r.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`
 }
 
+/**
+ * Money with an explicit + or -, so a gain still reads as a gain with the
+ * colour stripped out (issue A3). Never let hue be the only signal.
+ */
+export function signedRupees(paise: Paise, opts: { short?: boolean } = {}): string {
+  return `${paise < 0 ? '-' : '+'}${rupees(Math.abs(paise), opts)}`
+}
+
 export function signed(pct: number): string {
   return `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`
 }

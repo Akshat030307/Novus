@@ -1,5 +1,12 @@
 import { useEffect, type ReactNode } from 'react'
-import { useUiStore } from '@/state/store'
+import { useUiStore, useGameStore } from '@/state/store'
+import {
+  ENERGY_MAX,
+  ENERGY_TIRED,
+  RESTORE_CAFETERIA,
+  isTired,
+  restoreEnergy,
+} from '@/sim/energy'
 import { playSound } from '@/lib/sound'
 import { PixelButton } from '@/ui/components/PixelButton'
 import { MarketPanel } from '@/ui/panels/MarketPanel'
@@ -50,8 +57,58 @@ const INSIDE: Record<string, { title: string; body: ReactNode }> = {
   },
   cafeteria: {
     title: 'The Cafeteria',
-    body: <Note>Buying focus back with a break lands with the energy rules, a later step.</Note>,
+    body: <Cafeteria />,
   },
+}
+
+/** Issue A2: the one place that buys focus back, once a day. */
+function Cafeteria() {
+  const player = useGameStore((s) => s.state.player)
+  const day = useGameStore((s) => s.state.clock.day)
+  const usedToday = useGameStore((s) => Boolean(s.state.flags[`cafeteria:${day}`]))
+  const apply = useGameStore((s) => s.apply)
+
+  const rested = player.energy >= ENERGY_MAX
+  const takeBreak = () => {
+    apply((d) => {
+      d.player = restoreEnergy(d.player, RESTORE_CAFETERIA)
+      d.flags[`cafeteria:${day}`] = true
+      return d
+    })
+    playSound('dialogue')
+  }
+
+  return (
+    <div className="space-y-4 p-6">
+      <p className="text-sm text-muted">
+        Filter coffee, a plate of something, and fifteen minutes where nobody asks you for a number.
+      </p>
+
+      <div className="border-2 border-line bg-panel-3 p-4">
+        <div className="flex items-baseline justify-between">
+          <span className="font-display text-[9px] text-muted uppercase">Focus</span>
+          <span className={`font-num text-sm ${isTired(player) ? 'text-coral' : 'text-jade'}`}>
+            {player.energy}/{ENERGY_MAX}
+          </span>
+        </div>
+        <p className="mt-2 text-xs text-muted">
+          {rested
+            ? "You're sharp already. Save the break for when you need it."
+            : usedToday
+              ? "You've already taken your break today. The rest comes overnight."
+              : `A break puts ${RESTORE_CAFETERIA} back. Below ${ENERGY_TIRED}, the shortcuts stop coming to you on a credit file.`}
+        </p>
+        <PixelButton
+          tone="good"
+          className="mt-3 w-full"
+          disabled={usedToday || rested}
+          onClick={takeBreak}
+        >
+          {usedToday ? 'Already taken today' : 'Take a break'}
+        </PixelButton>
+      </div>
+    </div>
+  )
 }
 
 export function BuildingOverlay() {

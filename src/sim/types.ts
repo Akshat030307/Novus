@@ -219,6 +219,13 @@ export interface Player {
   reputation: number
   skills: Record<SkillName, number>
   position: { x: number; y: number; scene: string }
+  /**
+   * Focus, 0-100. Deciding in a hurry and churning trades burn it; the
+   * Cafeteria and a night's sleep buy it back. Below ENERGY_TIRED the
+   * skill-unlocked hints stop showing — a tired analyst reads worse.
+   * See sim/energy.ts.
+   */
+  energy: number
 }
 
 /* ---------- notifications ---------- */
@@ -238,14 +245,33 @@ export interface GameNotification {
  * day-end screen. Not part of GameState — it is a summary of the day just
  * finished, not something the save needs to carry.
  */
+/**
+ * What the world looked like when the day opened, so the close can diff
+ * against it rather than guess. Written by `newGame` and `startNextDay`,
+ * read only by `buildDayEndReport`.
+ */
+export interface DayOpen {
+  day: number
+  cash: Paise
+  reputation: number
+  /** cumulative booked P&L at the open — today's is the difference */
+  realisedPnL: Paise
+  /** mark-to-market value of open positions at the open */
+  holdingsValue: Paise
+  /** quest ids already finished at the open */
+  questsCompleted: string[]
+}
+
 export interface DayEndReport {
   day: number
   cashOpen: Paise
   cashClose: Paise
   /** profit booked from sells today */
   realisedPnL: Paise
-  /** change in the mark-to-market value of open positions today */
+  /** unbooked profit still sitting in open positions (value minus cost) */
   unrealisedPnL: Paise
+  /** cash + open positions at the close against the same at the open */
+  netChange: Paise
   tradeCount: number
   xpGained: number
   reputationChange: number
@@ -286,6 +312,8 @@ export interface GameState {
   mistakes: MistakeRecord[]
   /** Academy module progress, keyed by module id (step C-f) */
   modules: Record<string, ModuleProgress>
+  /** snapshot taken when the day opened — see DayOpen (issue A1) */
+  dayOpen: DayOpen
 }
 
 /** one error, logged at the day boundary, with the lesson attached */
