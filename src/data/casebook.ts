@@ -3,9 +3,25 @@
  * material. The one place in Novus real companies appear (docs/education.md
  * principle 5): historical record, not advice, sources cited.
  *
- * DRAFT. These cards are written from well-established public accounts. Every
- * figure and date needs a pass against the cited sources before this ships to
- * anyone. The `tools/casebook-ingest/` skeleton is where that pipeline goes.
+ * Issue A5 — figures checked against the cited sources, 2026-09-15. What the
+ * pass changed:
+ *
+ *   satyam      the ₹7,136 crore figure is the wider revenue/profit inflation,
+ *               not the fabricated cash. The cash line was ₹5,004 crore missing
+ *               of ₹5,361 crore reported. The card had conflated the two.
+ *   ilfs        AAA held to end-August 2018 and default came mid-September —
+ *               weeks, not "within days" as the card claimed.
+ *   pnb-lou     the revised figure (~₹14,350 crore) now named, not just "higher".
+ *   kingfisher  the licence was suspended 20 October 2012; the permit lapsed
+ *               1 January 2013. The card had both happening in October.
+ *
+ * Everything else held up: the 1992 diversion (~₹4,000 crore), the index run,
+ * ACC, Kingfisher's 17 lenders and ₹7,000 crore, Lehman's ~$600bn, the Bear
+ * Stearns and Lehman dates.
+ *
+ * STILL MARKED DRAFT IN THE UI. A person should sign this off before it is
+ * presented as fact to anyone outside the project — these are real, named
+ * companies. `tools/casebook-ingest/` is where a repeatable pipeline goes.
  */
 export interface CasebookEntry {
   id: string
@@ -34,11 +50,12 @@ export const CASEBOOK: CasebookEntry[] = [
     timeline: [
       'For years, revenues, margins and — above all — the bank balance were inflated in the accounts.',
       'A 2008 attempt to buy two promoter-linked firms with Satyam cash was blocked by shareholders.',
-      'January 2009: chairman Ramalinga Raju admitted the fraud in writing. The share price fell around 78% in a day.',
+      '7 January 2009: chairman Ramalinga Raju admitted the fraud in a letter to the board and resigned. The share price fell about 78% that day.',
       'The company was auctioned by a government-appointed board and bought by Tech Mahindra.',
     ],
     numbers: [
-      'Around ₹7,100 crore of cash and bank balances on the books were fabricated.',
+      'Of ₹5,361 crore of cash and bank balances reported at 30 September 2008, ₹5,004 crore did not exist.',
+      'The wider inflation of revenue and profit from 2003 onward was put at about ₹7,136 crore.',
       'Reported operating margins ran well above the rest of the sector.',
       'Promoter holding had fallen to single digits, with pledged shares.',
     ],
@@ -73,14 +90,14 @@ export const CASEBOOK: CasebookEntry[] = [
       'A large, top-rated infrastructure financier defaulted on its debt, and the shock ran through the whole non-bank lending sector.',
     timeline: [
       'IL&FS borrowed heavily, much of it short-term, to fund infrastructure assets that pay back over decades.',
-      'Mid-2018: it began missing payments on commercial paper and other obligations.',
-      'Ratings were cut from top-grade to default within days.',
+      'From mid-2018 it began missing payments; the serious defaults came from September.',
+      'It was rated AAA to the end of August 2018 and rated default by mid-September — weeks, not years.',
       'The government superseded the board; NBFC funding costs jumped across the market.',
     ],
     numbers: [
       'Group debt was around ₹91,000 crore.',
       'The group had grown to several hundred subsidiaries and associate entities.',
-      'It held an investment-grade rating almost up to the first default.',
+      'It held the top rating almost up to the first default.',
     ],
     redFlags: [
       'Short-term borrowing funding long-dated assets — an asset-liability mismatch.',
@@ -118,7 +135,7 @@ export const CASEBOOK: CasebookEntry[] = [
       'February 2018: the bank disclosed the fraud. The main beneficiaries had already left the country.',
     ],
     numbers: [
-      'The exposure was disclosed at around ₹11,400 crore and later put higher.',
+      'Disclosed at about ₹11,400 crore in February 2018, later revised to roughly ₹14,350 crore.',
       'It ran for about seven years undetected.',
       'It was concentrated in one branch and a handful of staff.',
     ],
@@ -197,7 +214,7 @@ export const CASEBOOK: CasebookEntry[] = [
     timeline: [
       'Launched in 2005; expanded fast, including buying a low-cost rival on debt in 2007.',
       'Losses accumulated every year; net worth turned negative.',
-      'October 2012: operations stopped and the flying licence lapsed.',
+      '20 October 2012: the regulator suspended the flying licence after operations had already stopped. The permit lapsed for good on 1 January 2013.',
       'Banks later declared the company and its promoter willful defaulters and invoked guarantees.',
     ],
     numbers: [
