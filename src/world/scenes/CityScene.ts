@@ -171,19 +171,24 @@ export class CityScene extends Phaser.Scene {
     this.updateNpcHint()
   }
 
-  /** where to drop the player in — the save's tile if it still makes sense */
+  /**
+   * Where to drop the player in — the save's tile if it still makes sense.
+   * "Makes sense" includes not being inside a wall: a stale coordinate in an
+   * old save is exactly how you end up standing in the middle of a building.
+   */
   private startTile(): { x: number; y: number } {
     const at = bridge.readState().player.position
-    const sane =
+    const inBounds =
       at &&
       at.scene === 'city' &&
-      Number.isFinite(at.x) &&
-      Number.isFinite(at.y) &&
+      Number.isInteger(at.x) &&
+      Number.isInteger(at.y) &&
       at.x > 0 &&
       at.y > 0 &&
       at.x < MAP_W - 1 &&
       at.y < MAP_H - 1
-    return sane ? { x: at.x, y: at.y } : { x: SPAWN.x, y: SPAWN.y }
+    const walkable = inBounds && OBJECTS[at.y][at.x] === -1 && DECOR[at.y][at.x] === -1
+    return walkable ? { x: at.x, y: at.y } : { x: SPAWN.x, y: SPAWN.y }
   }
 
   /** write the tile back to the save, but only when it actually changes */

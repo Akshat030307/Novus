@@ -1,4 +1,4 @@
-import type { Clock, MarketEvent, MarketState, Sector, Stock } from '@/sim/types'
+import type { Clock, MarketEvent, MarketState, Paise, Sector, Stock } from '@/sim/types'
 import { makeRng } from '@/sim/rng'
 import { MARKET_OPEN, MARKET_CLOSE } from '@/lib/format'
 
@@ -54,19 +54,35 @@ function shockTerm(events: MarketEvent[], sector: Sector, clock: Clock): number 
   return total
 }
 
+/** The three forces behind one minute's move, before they are collapsed. */
+export interface MoveTerms {
+  drift: number
+  noise: number
+  shock: number
+  /** the three added and clamped — what actually multiplies the price */
+  total: number
+}
+
+/**
+ * One stock, one minute. The single place the three terms are combined, so
+ * `tickMarket` and `explainDay` can never disagree about what moved a price.
+ */
+function moveTerms(stock: Stock, z: number, events: MarketEvent[], clock: Clock): MoveTerms {
+  const drift = driftTerm(stock)
+  const noise = noiseTerm(stock, z)
+  const shock = shockTerm(events, stock.sector, clock)
+  return { drift, noise, shock, total: clamp(drift + noise + shock, -MAX_STEP, MAX_STEP) }
+}
+
+const stepPrice = (price: number, total: number) => Math.max(1, Math.round(price * (1 + total)))
+
 /** One game minute of price movement. Pure — returns a fresh MarketState. */
 export function tickMarket(market: MarketState, seed: string, clock: Clock): MarketState {
   const rng = makeRng(`${seed}|${clock.day}|${clock.minute}`)
 
   const stocks = market.stocks.map((stock) => {
-    const delta = clamp(
-      driftTerm(stock) +
-        noiseTerm(stock, rng.normal()) +
-        shockTerm(market.activeEvents, stock.sector, clock),
-      -MAX_STEP,
-      MAX_STEP,
-    )
-    return { ...stock, price: Math.max(1, Math.round(stock.price * (1 + delta))) }
+    const { total } = moveTerms(stock, rng.normal(), market.activeEvents, clock)
+    return { ...stock, price: stepPrice(stock.price, total) }
   })
 
   const history: MarketState['history'] = { ...market.history }
@@ -91,5 +107,86 @@ export function rollMarketDay(market: MarketState): MarketState {
     ...market,
     activeEvents: [],
     stocks: market.stocks.map((s) => ({ ...s, previousClose: s.price })),
+  }
+}
+
+/* ---------- issue B6: what actually moved this thing today ---------- */
+
+/** Today's move, split across the three forces that caused it. */
+export interface DayAttribution {
+  from: Paise
+  to: Paise
+  /** paise of today's move owed to each force; the three sum to `to - from` */
+  drift: Paise
+  noise: Paise
+  shock: Paise
+  minutes: number
+  /** false if the replay didn't land on the live price — then don't show it */
+  exact: boolean
+}
+
+/**
+ * Replay the day for one stock and attribute every paise of its move.
+ *
+ * Nothing about this is stored. The rng is a pure function of seed, day and
+ * minute, and `activeEvents` keeps the whole day's events (they are cleared
+ * only at the roll), so the day can be recomputed exactly from the save —
+ * which is also what `exact` checks.
+ *
+ * Each minute's realised move is split between drift, noise and shock in
+ * proportion to their share of that minute's total, so the parts always add
+ * back up to the whole. A term can exceed the total or run against it — drift
+ * pulling up while noise drags down is real, and worth seeing.
+ *
+ * The point of showing this: on almost every quiet day, noise dwarfs both the
+ * drift and any sector shock. That is the lesson.
+ */
+export function explainDay(
+  market: MarketState,
+  seed: string,
+  clock: Clock,
+  stockId: string,
+): DayAttribution | null {
+  const index = market.stocks.findIndex((s) => s.id === stockId)
+  if (index < 0) return null
+
+  const live = market.stocks[index]
+  // the driver stops ticking the moment the clock reaches MARKET_CLOSE — the
+  // phase flips to 'closed' before that minute is ever ticked, so the last
+  // real tick of the day is MARKET_CLOSE - 1
+  const upto = Math.min(clock.minute, MARKET_CLOSE - 1)
+  if (upto < MARKET_OPEN) return null // nothing has traded yet today
+
+  let price: number = live.previousClose
+  let drift = 0
+  let noise = 0
+  let shock = 0
+
+  for (let minute = MARKET_OPEN; minute <= upto; minute++) {
+    const rng = makeRng(`${seed}|${clock.day}|${minute}`)
+    // the tick draws one normal per stock, in order — walk to this one's
+    for (let i = 0; i < index; i++) rng.normal()
+
+    const at: Clock = { ...clock, minute }
+    const terms = moveTerms({ ...live, price }, rng.normal(), market.activeEvents, at)
+    const next = stepPrice(price, terms.total)
+    const moved = next - price
+
+    if (terms.total !== 0) {
+      drift += (moved * terms.drift) / terms.total
+      noise += (moved * terms.noise) / terms.total
+      shock += (moved * terms.shock) / terms.total
+    }
+    price = next
+  }
+
+  return {
+    from: live.previousClose,
+    to: live.price,
+    drift: Math.round(drift),
+    noise: Math.round(noise),
+    shock: Math.round(shock),
+    minutes: upto - MARKET_OPEN + 1,
+    exact: price === live.price,
   }
 }
