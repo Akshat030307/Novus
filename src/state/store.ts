@@ -44,11 +44,18 @@ interface UiStore {
   overlay: Overlay | null
   /** level-ups earned since the player last dismissed one, shown one at a time */
   levelUpQueue: LevelUpReport[]
+  /**
+   * Issue B5. Open the Academy straight onto one Casebook entry. Set when a
+   * resolved pattern file offers "you have seen this before"; the panel reads
+   * it once and clears it.
+   */
+  casebookEntry: string | null
   setScreen: (screen: Screen) => void
   setBottomTab: (tab: BottomTab) => void
   setOpenBuilding: (id: string | null) => void
   setDialogueNpc: (id: string | null) => void
   setOverlay: (overlay: Overlay | null) => void
+  setCasebookEntry: (id: string | null) => void
   pushLevelUps: (reports: LevelUpReport[]) => void
   dismissLevelUp: () => void
   /** true when the clock should stop: any blocking panel is open */
@@ -62,11 +69,13 @@ export const useUiStore = create<UiStore>((set, get) => ({
   dialogueNpc: null,
   overlay: null,
   levelUpQueue: [],
+  casebookEntry: null,
   setScreen: (screen) => set({ screen }),
   setBottomTab: (bottomTab) => set({ bottomTab }),
   setOpenBuilding: (openBuilding) => set({ openBuilding }),
   setDialogueNpc: (dialogueNpc) => set({ dialogueNpc }),
   setOverlay: (overlay) => set({ overlay }),
+  setCasebookEntry: (casebookEntry) => set({ casebookEntry }),
   pushLevelUps: (reports) => {
     if (reports.length) set((s) => ({ levelUpQueue: [...s.levelUpQueue, ...reports] }))
   },

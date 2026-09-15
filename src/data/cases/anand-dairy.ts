@@ -1,7 +1,8 @@
-import type { FinancialCase } from '@/sim/types'
+import type { LoanCase } from '@/sim/types'
 
 /** A clean credit. The lesson is that turning it away is the mistake. */
-export const anandDairy: FinancialCase = {
+export const anandDairy: LoanCase = {
+  kind: 'loan',
   id: 'loan-anand-dairy',
   building: 'bank',
   title: 'Anand Dairy — cold-chain expansion',

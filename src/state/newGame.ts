@@ -17,7 +17,7 @@ const STARTING_CASH = 5_00_000_00
 export function newGame(name: string): GameState {
   // checkQuests auto-starts "First Day at Meridian" so the Tasks panel isn't empty
   const started = checkQuests({
-    version: 5, // keep in sync with migrate.ts CURRENT_VERSION
+    version: 6, // keep in sync with migrate.ts CURRENT_VERSION
     seed: `${name || 'player'}-${Date.now()}`,
     clock: { day: 1, minute: DAY_START_MINUTE, phase: phaseFor(DAY_START_MINUTE) },
     player: {

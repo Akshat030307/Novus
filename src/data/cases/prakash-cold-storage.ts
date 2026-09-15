@@ -1,8 +1,9 @@
-import type { FinancialCase } from '@/sim/types'
+import type { LoanCase } from '@/sim/types'
 
 /** Passable on its own terms, but the security barely covers a quarter of the
  *  exposure — so "approve against collateral" is not the protection it looks. */
-export const prakashColdStorage: FinancialCase = {
+export const prakashColdStorage: LoanCase = {
+  kind: 'loan',
   id: 'loan-prakash-cold-storage',
   building: 'bank',
   title: 'Prakash Cold Storage — refrigeration retrofit',

@@ -7,7 +7,7 @@ import { ENERGY_MAX } from '@/sim/energy'
  * existing save. Returns null for anything it cannot make sense of, so the
  * home screen falls back to "no save" rather than crashing.
  */
-const CURRENT_VERSION = 5
+const CURRENT_VERSION = 6
 
 export function migrate(raw: unknown): GameState | null {
   if (!raw || typeof raw !== 'object') return null
@@ -45,6 +45,13 @@ export function migrate(raw: unknown): GameState | null {
       questsCompleted: [...save.quests.completed],
     }
     save.version = 5
+  }
+  if (save.version < 6) {
+    // issue B4. Every case that existed before the union was a loan, so stamp
+    // the ones already resolved rather than leave `kind` undefined and let it
+    // surface as a blank on the transcript years later.
+    for (const r of save.cases.resolved) r.kind = 'loan'
+    save.version = 6
   }
 
   return save

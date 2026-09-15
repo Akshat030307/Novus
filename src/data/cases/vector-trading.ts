@@ -1,8 +1,9 @@
-import type { FinancialCase } from '@/sim/types'
+import type { LoanCase } from '@/sim/types'
 
 /** A crore of revenue that somehow throws off ₹40,000 of cash, next to a
  *  spotless credit score. When the numbers disagree, trust the cash. */
-export const vectorTrading: FinancialCase = {
+export const vectorTrading: LoanCase = {
+  kind: 'loan',
   id: 'loan-vector-trading',
   building: 'bank',
   title: 'Vector Trading Co — inventory finance',

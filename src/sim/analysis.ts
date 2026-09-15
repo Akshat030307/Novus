@@ -24,6 +24,8 @@ function topHolding(state: GameState): { name: string; share: number } | null {
 
 const NOISE_TRADES = 6 // trades in one ~6-minute day past which it's churn
 const CONCENTRATION = 0.6
+/** below this share of a pattern file's real flags, the file was read too fast (B4) */
+const FLAGS_SEEN = 0.5
 
 export function analyseDay(state: GameState): string | null {
   const day = state.clock.day
@@ -33,6 +35,14 @@ export function analyseDay(state: GameState): string | null {
   )
   if (unsoundToday.length > 0) {
     return 'You made an unsound call today. The outcome is a roll — the reasoning is the part to go back over.'
+  }
+
+  const missed = state.cases.resolved.find(
+    (r) => r.day === day && r.flagScore && r.flagScore.of > 0 &&
+      r.flagScore.found / r.flagScore.of < FLAGS_SEEN,
+  )
+  if (missed?.flagScore) {
+    return `You spotted ${missed.flagScore.found} of ${missed.flagScore.of} tells on that file. The lines were all on the page — the reading is the skill.`
   }
 
   const top = topHolding(state)
@@ -60,6 +70,21 @@ export function spotMistakes(state: GameState): MistakeRecord[] {
       kind: 'unsound_call',
       day,
       note: `${title} — the figures on the file did not support that call.`,
+    })
+  }
+
+  for (const r of state.cases.resolved) {
+    if (r.day !== day || !r.flagScore || r.flagScore.of === 0) continue
+    const { found: got, of, wrong } = r.flagScore
+    if (got / of >= FLAGS_SEEN && wrong <= 1) continue
+    const title = getCase(r.caseId)?.title ?? r.caseId
+    found.push({
+      id: `missed_flags-${day}-${r.caseId}`,
+      kind: 'missed_flags',
+      day,
+      note:
+        `${title} — ${got} of ${of} real tells spotted` +
+        (wrong > 0 ? `, and ${wrong} thing${wrong === 1 ? '' : 's'} flagged that was not one.` : '.'),
     })
   }
 

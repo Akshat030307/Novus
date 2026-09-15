@@ -24,7 +24,7 @@ import { AcademyPanel } from '@/ui/panels/AcademyPanel'
 const INSIDE: Record<string, { title: string; body: ReactNode }> = {
   bank: {
     title: 'Meridian Bank',
-    body: <CasePanel />,
+    body: <CasePanel building="bank" />,
   },
   exchange: {
     title: 'Novus Exchange',
@@ -32,6 +32,8 @@ const INSIDE: Record<string, { title: string; body: ReactNode }> = {
       <div className="flex flex-col gap-4">
         <MarketPanel />
         <PortfolioPanel />
+        {/* issue B4: books come in for review here, not at the Bank */}
+        <CasePanel building="exchange" />
       </div>
     ),
   },
@@ -49,7 +51,8 @@ const INSIDE: Record<string, { title: string; body: ReactNode }> = {
   },
   risk: {
     title: 'Risk & Compliance',
-    body: <Note>The compliance desk gets its own step. For now, just a nameplate.</Note>,
+    // issue B4 turned this from a nameplate into a desk — see C6
+    body: <CasePanel building="risk" />,
   },
   payments: {
     title: 'Payment Centre',

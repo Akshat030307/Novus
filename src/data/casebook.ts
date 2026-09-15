@@ -66,7 +66,8 @@ export const CASEBOOK: CasebookEntry[] = [
       'A falling promoter stake and pledged shares.',
     ],
     teaches: ['operating-cash-flow', 'margin', 'credit-score'],
-    pairsWith: 'Vector Trading — a spotless score the accounts do not support',
+    pairsWith:
+      'Sahyadri Software — a cash pile earning nothing, next to profit the cash flow never backs up.',
     questions: [
       {
         q: 'Which single line on the balance sheet was the clearest tell?',
@@ -106,7 +107,8 @@ export const CASEBOOK: CasebookEntry[] = [
       'A rating that never moved until it moved all at once.',
     ],
     teaches: ['leverage', 'debt-to-equity', 'operating-cash-flow', 'drift-noise-shock'],
-    pairsWith: 'Girish Steel — existing debt is nine years of profit',
+    pairsWith:
+      'Setu Finance — eleven-year assets funded by eighty-four-day paper, rated AAA throughout.',
     questions: [
       {
         q: 'What is an asset-liability mismatch, in one sentence?',
@@ -146,7 +148,8 @@ export const CASEBOOK: CasebookEntry[] = [
       'A long-standing client relationship treated as a reason not to check.',
     ],
     teaches: ['credit-score', 'default-risk'],
-    pairsWith: 'the fraud-pattern case (planned) — a control that was not there',
+    pairsWith:
+      'Harbour Trade Finance — guarantees live on one system that the ledger has never seen.',
     questions: [
       {
         q: 'How were the guarantees invisible to the bank?',
