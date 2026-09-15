@@ -12,6 +12,13 @@ import type { TranscriptDoc, TranscriptLine } from '@/sim/transcript'
 export function TranscriptView({ doc }: { doc: TranscriptDoc }) {
   return (
     <div className="space-y-4">
+      {doc.award && (
+        <div className="border-2 border-marigold bg-panel-3 p-4">
+          <div className="font-display text-[9px] text-marigold uppercase">Certificate</div>
+          <h3 className="mt-1 font-display text-[13px] text-ink">{doc.award.title}</h3>
+          <p className="mt-2 text-xs leading-relaxed text-muted">{doc.award.blurb}</p>
+        </div>
+      )}
       <dl className="grid grid-cols-2 gap-px border-2 border-line bg-line sm:grid-cols-4">
         {doc.headline.map((h) => (
           <div key={h.label} className="bg-panel-3 p-2">

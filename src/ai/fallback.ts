@@ -89,13 +89,16 @@ function callLine(fc: FinancialCase, r: ResolvedCase, pct: number): string {
     fc.kind === 'loan'
       ? r.choice === 'reject'
       : Boolean(fc.choices.find((c) => c.id === r.choice)?.guards)
+  // two forms, because "it came apart" and "it would have come apart" do not
+  // take the same one. "Defaulted" and "repaid" happen to be both.
   const bad = fc.kind === 'loan' ? 'defaulted' : 'came apart'
+  const badly = fc.kind === 'loan' ? 'defaulted' : 'come apart'
   const good = fc.kind === 'loan' ? 'repaid' : 'held'
 
   if (r.judgement === 'sound') {
     return r.outcome === 'good'
       ? stoodAside
-        ? ` It would have ${bad}, so standing aside at ${pct}% was right.`
+        ? ` It would have ${badly}, so standing aside at ${pct}% was right.`
         : ` It ${good}, and the call was well judged.`
       : stoodAside
         ? ` It would have ${good} this time — but acting at ${pct}% is still correct. Reward the reasoning, not the roll.`

@@ -9,6 +9,7 @@ import { codeFromLocation } from '@/state/transcripts'
 import HomeScreen from '@/ui/screens/HomeScreen'
 import GameScreen from '@/ui/screens/GameScreen'
 import VerifyScreen from '@/ui/screens/VerifyScreen'
+import TeachScreen from '@/ui/instructor/TeachScreen'
 
 /**
  * `/t/<code>` — or `?t=<code>` on a host with no SPA fallback — is the public
@@ -17,6 +18,8 @@ import VerifyScreen from '@/ui/screens/VerifyScreen'
  * a code should never be shown a title screen first.
  */
 const verifying = codeFromLocation(window.location.search, window.location.pathname)
+/** `/teach` — the instructor surface (issue B3). A teacher is not a player. */
+const teaching = /^\/teach\/?$/.test(window.location.pathname)
 
 export default function App() {
   const screen = useUiStore((s) => s.screen)
@@ -59,6 +62,7 @@ export default function App() {
   }, [hydrateAttempts])
 
   if (verifying) return <VerifyScreen code={verifying} />
+  if (teaching) return <TeachScreen />
 
   return (
     <div key={screen} className="anim-fade h-full">

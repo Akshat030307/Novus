@@ -6,6 +6,7 @@ import { MODULES } from '@/data/modules'
 import { SCENARIOS } from '@/data/scenarios'
 import { getCase } from '@/data/cases'
 import { moduleProgress } from '@/sim/modules'
+import { assess, type Certificate } from '@/sim/certificates'
 
 /**
  * Issue B1. The report card, as a document rather than a string.
@@ -56,8 +57,19 @@ export interface TranscriptSection {
   lines: TranscriptLine[]
 }
 
+export type DocKind = 'transcript' | 'certificate'
+
 export interface TranscriptDoc {
   v: number
+  /**
+   * What this document claims. A transcript is "here is everything this player
+   * did"; a certificate is the narrower "this player cleared a named,
+   * published bar" (issue B8). Absent on documents issued before B8, which are
+   * all transcripts.
+   */
+  docKind?: DocKind
+  /** certificates only: what was awarded, and what it does and does not mean */
+  award?: { title: string; blurb: string; scope: string }
   player: string
   level: number
   /** days played in the career run */
@@ -231,15 +243,61 @@ function mistakeSection(state: GameState): TranscriptSection {
   }
 }
 
+/**
+ * Issue B8. The same machinery, narrowed to one award.
+ *
+ * The requirements go into the document as they stood when it was issued,
+ * each with the figure that met it. A certificate that only said "awarded" is
+ * worth nothing to the person reading it — what they need is the bar and the
+ * evidence against it, on the same page, in words they can check.
+ */
+export function buildCertificate(
+  cert: Certificate,
+  state: GameState,
+  attempts: Attempt[],
+): TranscriptDoc {
+  const { requirements } = assess(cert, state, attempts)
+  return {
+    v: TRANSCRIPT_VERSION,
+    docKind: 'certificate',
+    award: { title: cert.title, blurb: cert.blurb, scope: cert.scope },
+    player: state.player.name,
+    level: state.player.level,
+    day: state.clock.day,
+    headline: [
+      { label: 'Awarded to', value: state.player.name },
+      { label: 'Requirements met', value: `${requirements.filter((r) => r.met).length}/${requirements.length}` },
+      { label: 'Days on the desk', value: String(state.clock.day) },
+      { label: 'Practice attempts', value: String(attempts.length) },
+    ],
+    sections: [
+      {
+        title: 'What was required',
+        summary:
+          'Every one of these was published before it was met, and every one was measured rather than awarded.',
+        lines: requirements.map((r) => ({
+          label: r.label,
+          value: `${r.got}/${r.need}`,
+          passed: r.met,
+        })),
+      },
+      {
+        title: 'What this says, and what it does not',
+        summary: cert.scope,
+        lines: [{ label: cert.title, value: 'awarded' }],
+      },
+    ],
+  }
+}
+
 /** the same document as plain text, for the clipboard */
 export function transcriptText(
   doc: TranscriptDoc,
   issued?: { code: string; at: string; url: string },
 ): string {
-  const out: string[] = [
-    'NOVUS — report card',
-    `${doc.player} · Finance Intern · Level ${doc.level} · Day ${doc.day}`,
-  ]
+  const out: string[] = doc.award
+    ? [`NOVUS — ${doc.award.title}`, `Awarded to ${doc.player} · Day ${doc.day}`]
+    : ['NOVUS — report card', `${doc.player} · Finance Intern · Level ${doc.level} · Day ${doc.day}`]
   if (issued) {
     out.push(`Verification code: ${issued.code}`)
     out.push(`Issued: ${new Date(issued.at).toUTCString()}`)

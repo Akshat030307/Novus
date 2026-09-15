@@ -513,12 +513,13 @@ function Outcome({
     fc.kind === 'loan'
       ? r.choice === 'reject'
       : Boolean(fc.choices.find((c) => c.id === r.choice)?.guards)
+  // "came apart" and "would have come apart" are not the same word
   const bad = fc.kind === 'loan' ? 'Defaulted' : 'Came apart'
   const good = fc.kind === 'loan' ? 'Repaid' : 'Held'
   const moneyLabel = stoodAside
     ? r.outcome === 'good'
-      ? `Would have ${bad.toLowerCase()}`
-      : `Would have ${good.toLowerCase()}`
+      ? `Would have ${fc.kind === 'loan' ? 'defaulted' : 'come apart'}`
+      : `Would have ${fc.kind === 'loan' ? 'repaid' : 'held'}`
     : r.outcome === 'good'
       ? good
       : bad
