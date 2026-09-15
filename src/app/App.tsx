@@ -10,13 +10,17 @@ import GameScreen from '@/ui/screens/GameScreen'
 export default function App() {
   const screen = useUiStore((s) => s.screen)
   const reducedMotion = useSettingsStore((s) => s.reducedMotion)
+  const colourSafe = useSettingsStore((s) => s.colourSafe)
   const setUser = useAuthStore((s) => s.setUser)
   const setReady = useAuthStore((s) => s.setReady)
 
-  // mirror the setting onto <html> so styles/index.css can act on it
+  // mirror the settings onto <html> so styles/index.css can act on them
   useEffect(() => {
     document.documentElement.dataset.reducedMotion = String(reducedMotion)
   }, [reducedMotion])
+  useEffect(() => {
+    document.documentElement.dataset.colourSafe = String(colourSafe)
+  }, [colourSafe])
 
   // resolve the persisted session, then track sign-in / sign-out
   useEffect(() => {

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useGameStore } from '@/state/store'
-import { rupees, signed } from '@/lib/format'
+import { rupees, signed, signedRupees } from '@/lib/format'
 import { AllocationBar, type Slice } from '@/ui/components/AllocationBar'
 import { Explain } from '@/ui/components/Explain'
 
@@ -39,7 +39,7 @@ export function PortfolioPanel() {
         <Stat label="Holdings" value={rupees(value, { short: true })} />
         <Stat
           label={<Explain id="unrealised-pnl">Open profit</Explain>}
-          value={rupees(unrealised, { short: true })}
+          value={signedRupees(unrealised, { short: true })}
           tone={unrealised >= 0 ? 'text-jade' : 'text-coral'}
         />
         <Stat label="Booked" value={rupees(portfolio.realisedPnL, { short: true })} tone="text-muted" />

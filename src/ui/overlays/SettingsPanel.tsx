@@ -12,6 +12,11 @@ const ROWS: { key: keyof Settings; label: string; hint: string }[] = [
     hint: 'Show the case ratios up front. Off, and you work them out (or unlock them with skills).',
   },
   {
+    key: 'colourSafe',
+    label: 'Colour-safe gains',
+    hint: 'Swaps the green/red up-down pair for blue/amber. Every figure is signed either way.',
+  },
+  {
     key: 'reducedMotion',
     label: 'Reduced motion',
     hint: 'Cuts animations and transitions across the game.',
