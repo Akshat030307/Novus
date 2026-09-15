@@ -135,6 +135,13 @@ $$;
 
 alter table public.transcripts alter column code set default public.novus_transcript_code();
 
+-- A column DEFAULT runs as the role doing the INSERT, so `authenticated` must
+-- keep EXECUTE or issuing breaks. Revoking from PUBLIC just stops anon calling
+-- it as an RPC — it leaks nothing either way, but there is no reason to expose
+-- it.
+revoke all on function public.novus_transcript_code() from public;
+grant execute on function public.novus_transcript_code() to authenticated;
+
 alter table public.transcripts enable row level security;
 
 drop policy if exists "read own transcripts" on public.transcripts;
@@ -212,6 +219,10 @@ end;
 $$;
 
 alter table public.cohorts alter column join_code set default public.novus_join_code();
+
+-- as above: the DEFAULT needs `authenticated`, anon does not need it at all
+revoke all on function public.novus_join_code() from public;
+grant execute on function public.novus_join_code() to authenticated;
 
 create table if not exists public.cohort_members (
   cohort_id    uuid        not null references public.cohorts (id) on delete cascade,
