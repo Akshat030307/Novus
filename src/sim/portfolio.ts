@@ -1,6 +1,7 @@
 import type { GameState, Holding, LevelUpReport, Trade } from '@/sim/types'
 import { rupees } from '@/lib/format'
 import { awardProgress, tradeSkillGains, XP_PER_TRADE } from '@/sim/progression'
+import { spendEnergy, tradeEnergyCost } from '@/sim/energy'
 
 export interface TradeOrder {
   stockId: string
@@ -92,8 +93,10 @@ export function applyTrade(state: GameState, order: TradeOrder): TradeResult {
     minute: state.clock.minute,
   }
 
+  // energy cost is read before the new trade lands, so a busy hour is the
+  // trades already made inside the window (A2)
   const { player, levelUps } = awardProgress(
-    { ...state.player, cash: nextCash },
+    spendEnergy({ ...state.player, cash: nextCash }, tradeEnergyCost(state)),
     { xp: XP_PER_TRADE, skills: tradeSkillGains() },
   )
 

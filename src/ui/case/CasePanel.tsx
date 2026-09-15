@@ -9,6 +9,7 @@ import { resolveCase, explainCase, riskRead, type CaseRatio } from '@/sim/cases'
 import { checkQuests } from '@/sim/quests'
 import { checkConcepts } from '@/sim/concepts'
 import { skillLevel } from '@/sim/progression'
+import { isTired } from '@/sim/energy'
 import { useCaseIntro, useCaseExplanation } from '@/ui/hooks/useFlavour'
 import { PixelButton } from '@/ui/components/PixelButton'
 import { Explain } from '@/ui/components/Explain'
@@ -41,9 +42,12 @@ export function CasePanel() {
   const apply = useGameStore((s) => s.apply)
   const load = useGameStore((s) => s.load)
   const pushLevelUps = useUiStore((s) => s.pushLevelUps)
+  const tired = useGameStore((s) => isTired(s.state.player))
   const [choice, setChoice] = useState<string | null>(null)
   const [predRisk, setPredRisk] = useState<'low' | 'mid' | 'high' | null>(null)
   const [predNote, setPredNote] = useState('')
+  /** game minute the file was opened, for the rushed-read energy cost (A2) */
+  const [openedAt, setOpenedAt] = useState<number | null>(null)
 
   const resetForm = () => {
     setChoice(null)
@@ -57,6 +61,7 @@ export function CasePanel() {
 
   const openFile = (id: string) => {
     resetForm()
+    setOpenedAt(useGameStore.getState().state.clock.minute)
     apply((d) => {
       d.cases.openCaseId = id
       return d
@@ -74,12 +79,21 @@ export function CasePanel() {
     const prediction = predRisk
       ? { risk: predRisk, note: predNote.trim() || undefined }
       : undefined
-    const result = resolveCase(useGameStore.getState().state, openCase, choice, prediction)
+    const now = useGameStore.getState().state.clock.minute
+    const minutesSpent = openedAt === null ? undefined : Math.max(0, now - openedAt)
+    const result = resolveCase(
+      useGameStore.getState().state,
+      openCase,
+      choice,
+      prediction,
+      minutesSpent,
+    )
     const quested = checkQuests(result.state)
     const concepts = checkConcepts(quested.state)
     load(concepts.state)
     pushLevelUps([...result.levelUps, ...quested.levelUps])
     resetForm()
+    setOpenedAt(null)
   }
 
   /* ---------- list ---------- */
@@ -179,7 +193,17 @@ export function CasePanel() {
         </dl>
       </div>
 
-      {(assist || skillLevel(skills.accounting) >= 2) && (
+      {tired && (
+        <div className="border-l-2 border-coral bg-panel-3 py-2 pl-3 pr-2">
+          <div className="font-display text-[9px] text-coral uppercase">Running on fumes</div>
+          <p className="mt-0.5 text-xs text-muted">
+            Nothing is jumping out at you. The figures are all still there — you just have to work
+            them yourself. A break at the Cafeteria would help.
+          </p>
+        </div>
+      )}
+
+      {!tired && (assist || skillLevel(skills.accounting) >= 2) && (
         <Aid tag={skillLevel(skills.accounting) >= 2 ? 'Unlocked · Accounting 2' : 'Assist'}>
           <Explain id="debt-service-cover">Debt-service cover</Explain>{' '}
           <span className="font-num text-ink">
@@ -188,10 +212,10 @@ export function CasePanel() {
           — cash flow ÷ interest already paid.
         </Aid>
       )}
-      {(assist || skillLevel(skills.risk) >= 2) && (
+      {!tired && (assist || skillLevel(skills.risk) >= 2) && (
         <Aid tag={skillLevel(skills.risk) >= 2 ? 'Unlocked · Risk 2' : 'Assist'}>{riskRead(openCase)}</Aid>
       )}
-      {(assist || skillLevel(skills.analysis) >= 3) && (
+      {!tired && (assist || skillLevel(skills.analysis) >= 3) && (
         <Aid tag={skillLevel(skills.analysis) >= 3 ? 'Unlocked · Analysis 3' : 'Assist'}>
           <Explain id="leverage">Leverage</Explain>{' '}
           <span className="font-num text-ink">
