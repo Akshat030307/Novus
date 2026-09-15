@@ -31,6 +31,16 @@
   --font-num: "IBM Plex Mono", monospace;
 }
 
+/* Issue A3. Green/red is the worst possible pair for up and down — roughly 8%
+   of men can't separate them. Every gain/loss figure carries an explicit + or -
+   so hue is never the only signal; this swaps the pair itself for blue/amber,
+   which survives protan, deutan and tritan vision. Redefining the tokens is
+   enough: every `text-jade` / `bg-coral` utility reads through var(). */
+[data-colour-safe="true"] {
+  --color-jade: #4d9de0;   /* up / gain / approve */
+  --color-coral: #e8a33d;  /* down / loss / reject */
+}
+
 html, body, #root { height: 100%; }
 
 body {
