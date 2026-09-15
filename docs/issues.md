@@ -259,7 +259,7 @@ entries — read Satyam, then spot the same pattern in a fictional file. The
 
 ---
 
-### B6 — The market is a black box ⬜ S
+### B6 — The market is a black box ✅ S
 
 `sim/market/index.ts` already computes `driftTerm`, `noiseTerm` and
 `shockTerm` as three separate functions. Nothing surfaces them.
@@ -277,6 +277,33 @@ decomposition under the chart.
 
 **`sim/types.ts`:** probably not — the breakdown is display-only and must never
 be saved.
+
+**Landed.** `moveTerms()` is now the single place the three forces are combined,
+so `tickMarket` and the new `explainDay()` cannot drift apart. `explainDay`
+replays the day from the seed — nothing stored — and splits every minute's
+realised move between drift, noise and shock in proportion to their share of
+that minute's total, so the parts always add back to the whole. It reports
+`exact: false` if the replay doesn't land on the live price, and the panel then
+renders nothing rather than a number it can't stand behind.
+
+`ui/panels/MoveBreakdown.tsx` sits under the chart, collapsed by default.
+
+Two bugs found by verifying rather than trusting the typecheck:
+
+- the replay ran one tick too many. The driver advances to `MARKET_CLOSE` and
+  the phase flips to `closed` *before* that minute is ticked, so the last real
+  tick is `MARKET_CLOSE - 1`.
+- `data/stocks.ts` seeded `price != previousClose`, an overnight gap the game
+  never traded and no later day ever reproduces (`rollMarketDay` sets them
+  equal). It was the one price move in the whole game nothing could account
+  for. `newGame` now opens flat.
+
+Verified over 3 seeds x 4 days x 12 stocks, event days included: every price
+replays exactly and every paise is attributed.
+
+**It teaches.** On a day with a steel tariff, construction took a −₹7.53 shock
+and still closed **up** ₹4.06, because noise added ₹9.20. On a rate-hike day the
+biggest mover fell ₹65, of which ₹45 was noise and ₹15 news.
 
 ---
 
@@ -389,8 +416,9 @@ proxy. Do not shortcut this.
 
 ~~1. **A1, A2, A3**~~ — done, along with A4 and A5. Track A is clear.
 
-2. **B6** — small, unique, demos beautifully. Next up.
-3. **B1, B2** — the transcript becomes a real artifact. This is the wedge.
+~~2. **B6**~~ — done.
+
+3. **B1, B2** — the transcript becomes a real artifact. This is the wedge. Next up.
 4. **B4**, then **B5** — lifts the content ceiling and connects the Casebook.
 5. **B3** — the product bet, once 2–4 make it worth buying.
 

@@ -4,6 +4,8 @@ import { DAY_START_MINUTE, phaseFor, snapshotDayOpen } from '@/sim/clock'
 import { xpForLevel } from '@/sim/progression'
 import { checkQuests } from '@/sim/quests'
 import { ENERGY_MAX } from '@/sim/energy'
+// pure map data, no Phaser — state/ is where the layers meet
+import { SPAWN } from '@/world/map/city'
 
 /** ₹5,00,000 to start. Tunable — this is a game balance number, not a rule. */
 const STARTING_CASH = 5_00_000_00
@@ -38,12 +40,19 @@ export function newGame(name: string): GameState {
         data: 0,
         communication: 0,
       },
-      position: { x: 22, y: 16, scene: 'city' }, // matches SPAWN in world/map/city.ts
+      // read from the map rather than copied — the hardcoded pair that used to
+      // live here went stale when the city was rebuilt and pointed inside a
+      // building, which only showed up once A4 started honouring the field
+      position: { x: SPAWN.x, y: SPAWN.y, scene: 'city' },
       energy: ENERGY_MAX,
     },
     market: {
-      // deep copy — ticks build the game's own stock objects, never the module const
-      stocks: structuredClone(STOCKS),
+      // deep copy — ticks build the game's own stock objects, never the module const.
+      // previousClose is forced to the opening price: every later day opens flat
+      // (rollMarketDay sets previousClose = price), so a seeded day-one gap would
+      // be the one price move in the whole game nothing can account for — see
+      // explainDay in sim/market (issue B6).
+      stocks: structuredClone(STOCKS).map((s) => ({ ...s, previousClose: s.price })),
       activeEvents: [],
       history: {},
     },

@@ -6,6 +6,7 @@ import { checkQuests } from '@/sim/quests'
 import { checkConcepts } from '@/sim/concepts'
 import { playSound } from '@/lib/sound'
 import { PriceChart } from '@/ui/panels/PriceChart'
+import { MoveBreakdown } from '@/ui/panels/MoveBreakdown'
 import { PixelButton } from '@/ui/components/PixelButton'
 import { Explain } from '@/ui/components/Explain'
 
@@ -61,7 +62,8 @@ export function MarketPanel() {
             points={history[active.id] ?? []}
             previousClose={active.previousClose}
           />
-          <div className="flex flex-wrap items-center gap-2 px-3 pb-2">
+          <MoveBreakdown stockId={active.id} />
+          <div className="flex flex-wrap items-center gap-2 px-3 pb-2 pt-2">
             <label className="font-display text-[9px] text-muted uppercase">Qty</label>
             <input
               type="number"
