@@ -158,7 +158,7 @@ responsibility for them.
 
 ## B — Utility
 
-### B1 — The transcript is a clipboard string, not an artifact ⬜ M
+### B1 — The transcript is a clipboard string, not an artifact ✅ M
 
 `ui/panels/TranscriptPanel.tsx` assembles a plain-text blob and offers a
 **Copy** button. That is a demo. Nobody can assess a student from it, submit
@@ -177,9 +177,31 @@ an instructor can check.
 **Done when:** a finished run produces a link or file someone else can open and
 confirm is genuine.
 
+**Landed.** `sim/transcript.ts` builds the report card as a *document* rather
+than a string — resolved labels and sentences, never content ids, so a
+transcript issued today still reads correctly after the module list has been
+rewritten and half the cases retired. One renderer
+(`ui/components/TranscriptView.tsx`) draws it in both places, because if what
+an instructor opens doesn't match what the player saw when they issued it, the
+code is worth nothing.
+
+`/t/<CODE>` is the public page — no sign-in, no game, no save. The code and the
+timestamp are both minted by Postgres, and the `transcripts` table has no
+UPDATE and no DELETE policy at all. That absence is the feature.
+
+**What the code proves, stated in those words on both sides of it:** that the
+document came out of Novus, under that account, at the time the database
+recorded, and that nobody has edited it since. **Not** how the run was played —
+nothing client-side can prove that, and claiming otherwise would be worse than
+claiming nothing.
+
+Verification goes through a `security definer` function rather than a public
+read policy, so one code reads one transcript and gives no way to list or
+enumerate the rest.
+
 ---
 
-### B2 — One save slot, no attempt history ⬜ M
+### B2 — One save slot, no attempt history ✅ M
 
 `state/save.ts` pins `const SLOT = 1`. You cannot retake anything and show
 improvement — which is the entire pedagogy of the scenario drills.
@@ -193,6 +215,30 @@ table (`attempts`)
 **Done when:** a player can see "credit desk: 3/5, then 5/5 two days later".
 
 **Depends on:** nothing. Feeds B1 and B3.
+
+**Landed, and the slot stayed at 1.** The temptation was to turn saves into
+slots; a career run and a record of practice are different things with
+different lifetimes, so the log lives in `state/attempts.ts` against its own
+append-only table and the world save is untouched.
+
+Scores are whole over whole — 3 of 5, never 0.6 — so nothing rounds on the way
+in and the fraction shown is the fraction stored. Spot-the-shock had to change
+to fit that: its old +1 / −1 / −0.5 points total was unstorable and arbitrary.
+It is now marked out of the stocks the headline actually moves, with picks on
+untouched stocks counted separately as stray picks — reading a headline too
+widely is a different error from reading it backwards, and one number hid which
+you made.
+
+The panels show the sequence, not an average: a mean of 3/5 and 5/5 tells a
+teacher nothing about whether the second one was understood.
+
+Local-first like everything else. Signed out, the log still builds up and the
+panels still show it. A `pushed` id set means signing in on a shared browser
+can't claim somebody else's runs.
+
+One thing this exposed: a failed attempt upload was about to light up the HUD
+as if the **world save** had failed. `cloudNote` now separates the two —
+nothing is swallowed, but only `save.ts` may touch the save indicator.
 
 ---
 
@@ -418,9 +464,14 @@ proxy. Do not shortcut this.
 
 ~~2. **B6**~~ — done.
 
-3. **B1, B2** — the transcript becomes a real artifact. This is the wedge. Next up.
+~~3. **B1, B2**~~ — done. The transcript is an artifact and every attempt is
+   kept. Needs `docs/supabase.sql` run once on the Supabase project before the
+   cloud half works; the local half works without it.
+
 4. **B4**, then **B5** — lifts the content ceiling and connects the Casebook.
-5. **B3** — the product bet, once 2–4 make it worth buying.
+   Next up. B4 needs a `sim/types.ts` proposal first.
+5. **B3** — the product bet, once 2–4 make it worth buying. B1 and B2 have
+   now built its two tables and its aggregation shape.
 
 `C1` and `C7` are small enough to slot in anywhere.
 

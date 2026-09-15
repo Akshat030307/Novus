@@ -14,11 +14,15 @@ export function moduleProgress(state: GameState, id: string): ModuleProgress {
   return state.modules[id] ?? BLANK
 }
 
+/** how many questions were answered correctly — whole, for the attempt log (B2) */
+export function countCorrect(module: Module, answers: (number | null)[]): number {
+  return module.quiz.reduce((n, q, i) => n + (answers[i] === q.answer ? 1 : 0), 0)
+}
+
 /** fraction of questions answered correctly */
 export function scoreQuiz(module: Module, answers: (number | null)[]): number {
   if (module.quiz.length === 0) return 0
-  const right = module.quiz.reduce((n, q, i) => n + (answers[i] === q.answer ? 1 : 0), 0)
-  return right / module.quiz.length
+  return countCorrect(module, answers) / module.quiz.length
 }
 
 export function markModuleStarted(state: GameState, id: string): GameState {

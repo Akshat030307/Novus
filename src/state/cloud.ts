@@ -33,3 +33,28 @@ export const useCloudStore = create<CloudStore>((set) => ({
   report: (status, error = null, savedAt) =>
     set((s) => ({ status, error, savedAt: savedAt ?? s.savedAt })),
 }))
+
+/**
+ * A failure of the world save. This is what the HUD indicator means, and
+ * nothing else may set it — see `cloudNote`.
+ */
+export function cloudFailed(where: string, message: string) {
+  useCloudStore.getState().report('error', message)
+  console.warn(`[novus] cloud ${where} failed: ${message}`)
+}
+
+/**
+ * A failure in something that is not the world save — the attempt log, a
+ * transcript. Logged, and surfaced by whichever panel owns it, but it must not
+ * touch the save indicator: telling a player their progress failed to save
+ * because a drill score didn't upload would be a worse lie than saying
+ * nothing. The rule from `save.ts` still holds — nothing is swallowed.
+ */
+export function cloudNote(where: string, message: string): string {
+  console.warn(`[novus] cloud ${where} failed: ${message}`)
+  return message
+}
+
+/** message from anything a Supabase call can hand back or throw */
+export const cloudReason = (e: unknown) =>
+  e instanceof Error ? e.message : typeof e === 'string' ? e : 'Unknown error'
