@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { bridge } from '@/world/bridge'
 import {
+  UNDER,
   GROUND,
   DECOR,
   OBJECTS,
@@ -56,6 +57,11 @@ export class CityScene extends Phaser.Scene {
   }
 
   create() {
+    // footpath under the lawn's rounded corners, so they don't show the canvas
+    const underMap = this.make.tilemap({ data: UNDER, tileWidth: TILE, tileHeight: TILE })
+    const underSet = underMap.addTilesetImage('tiles', 'tiles')!
+    underMap.createLayer(0, underSet, 0, 0)!.setDepth(-1)
+
     const groundMap = this.make.tilemap({ data: GROUND, tileWidth: TILE, tileHeight: TILE })
     const groundSet = groundMap.addTilesetImage('tiles', 'tiles')!
     groundMap.createLayer(0, groundSet, 0, 0)
