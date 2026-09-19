@@ -5,7 +5,17 @@ import { playSound } from '@/lib/sound'
 import { PixelButton } from '@/ui/components/PixelButton'
 
 const ROWS: { key: keyof Settings; label: string; hint: string }[] = [
-  { key: 'sound', label: 'Sound', hint: 'Interface clicks and cues. No music yet.' },
+  { key: 'sound', label: 'Sound', hint: 'Interface clicks and cues.' },
+  {
+    key: 'music',
+    label: 'Music',
+    hint: 'A quiet track while you walk the city. Fades down whenever you are inside, reading.',
+  },
+  {
+    key: 'fullscreen',
+    label: 'Fullscreen on start',
+    hint: 'Goes fullscreen when you start or continue a game. Hold Esc to leave it.',
+  },
   {
     key: 'assist',
     label: 'Assist',

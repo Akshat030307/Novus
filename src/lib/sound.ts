@@ -80,7 +80,8 @@ const CUES: Record<SoundName, Part[]> = {
 
 let ctx: AudioContext | null = null
 
-function audio(): AudioContext | null {
+/** the one AudioContext the game uses — lib/music.ts shares it */
+export function audio(): AudioContext | null {
   if (typeof window === 'undefined') return null
   try {
     if (!ctx) {
