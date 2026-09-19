@@ -92,7 +92,11 @@ export function CasePanel({ building }: { building?: BuildingId } = {}) {
     setFlags([])
   }
 
-  const openCase = openCaseId ? getCase(openCaseId) : undefined
+  // a file left open in one building must not follow the player into another:
+  // walking out of the Bank mid-file and into Risk & Compliance used to show
+  // the Bank's loan there. Each desk only ever shows its own files.
+  const found = openCaseId ? getCase(openCaseId) : undefined
+  const openCase = found && (!building || found.building === building) ? found : undefined
   const openResolved = openCaseId ? resolved.find((r) => r.caseId === openCaseId) : undefined
   const intro = useCaseIntro(openCase) // written brief now, AI phrasing if it resolves
 
