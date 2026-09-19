@@ -18,8 +18,9 @@ import TeachScreen from '@/ui/instructor/TeachScreen'
  * a code should never be shown a title screen first.
  */
 const verifying = codeFromLocation(window.location.search, window.location.pathname)
-/** `/teach` — the instructor surface (issue B3). A teacher is not a player. */
-const teaching = /^\/teach\/?$/.test(window.location.pathname)
+/** `/teach` — the instructor surface (issue B3). A teacher is not a player.
+ * `/teach/sample` is the same surface with an invented class in it. */
+const teaching = /^\/teach(\/sample)?\/?$/.test(window.location.pathname)
 
 export default function App() {
   const screen = useUiStore((s) => s.screen)
