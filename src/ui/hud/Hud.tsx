@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { useGameStore, useUiStore } from '@/state/store'
 import { useCloudStore } from '@/state/cloud'
+import { useSettingsStore } from '@/state/settings'
 import { ENERGY_MAX, isTired } from '@/sim/energy'
 import { rupees } from '@/lib/format'
 import { StatBar } from '@/ui/components/StatBar'
@@ -61,6 +62,8 @@ export function Hud() {
 
       <CloudChip />
 
+      <MusicToggle />
+
       <button
         onClick={() => setOverlay('settings')}
         title="Settings"
@@ -70,6 +73,28 @@ export function Hud() {
         Settings
       </button>
     </header>
+  )
+}
+
+/**
+ * One click from the HUD, not buried in Settings: people play this in a
+ * classroom or at a desk, and the off switch for music should never take
+ * longer to find than the music takes to annoy someone.
+ */
+function MusicToggle() {
+  const on = useSettingsStore((s) => s.music)
+  const set = useSettingsStore((s) => s.set)
+  return (
+    <button
+      onClick={() => set('music', !on)}
+      aria-pressed={on}
+      title={on ? 'Turn the music off' : 'Turn the music on'}
+      className={`font-display text-[9px] uppercase transition-colors hover:text-marigold ${
+        on ? 'text-ink' : 'text-muted'
+      }`}
+    >
+      Music {on ? 'on' : 'off'}
+    </button>
   )
 }
 

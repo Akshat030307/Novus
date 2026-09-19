@@ -4,6 +4,8 @@ import { hasSave, hasCloudSave, loadGame } from '@/state/save'
 import { newGame } from '@/state/newGame'
 import { cloudEnabled, sendMagicLink, signOut } from '@/lib/supabase'
 import { useAuthStore } from '@/state/auth'
+import { useSettingsStore } from '@/state/settings'
+import { enterFullscreen } from '@/lib/fullscreen'
 
 /**
  * The front door — a product page rather than a game title screen: what Novus
@@ -31,12 +33,19 @@ export default function HomeScreen() {
     else setCloudSave(false)
   }, [user])
 
+  // must run inside the click itself — the browser refuses fullscreen after an await
+  const goFullscreen = () => {
+    if (useSettingsStore.getState().fullscreen) enterFullscreen()
+  }
+
   const startNew = () => {
+    goFullscreen()
     load(newGame(name.trim()))
     setScreen('game')
   }
 
   const continueSaved = async () => {
+    goFullscreen()
     const saved = await loadGame()
     if (saved) {
       load(saved)

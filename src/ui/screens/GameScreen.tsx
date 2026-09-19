@@ -1,6 +1,7 @@
 import { useUiStore, useGameStore, type BottomTab } from '@/state/store'
 import { useGameClock } from '@/state/useGameClock'
 import { useSoundCues } from '@/ui/hooks/useSoundCues'
+import { useMusic } from '@/ui/hooks/useMusic'
 import { useGameKeys } from '@/ui/hooks/useGameKeys'
 import { buildDayEndReport, startNextDay } from '@/sim/clock'
 import { saveGame } from '@/state/save'
@@ -41,6 +42,7 @@ export default function GameScreen() {
 
   useGameClock()
   useSoundCues()
+  useMusic()
 
   const active = TABS.find((t) => t.id === tab)
 

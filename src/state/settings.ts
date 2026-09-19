@@ -7,6 +7,10 @@ import { persist } from 'zustand/middleware'
  *
  * `reducedMotion` is mirrored onto <html> by App.tsx; `aiWording` gates the
  * flavour layer (ai/flavour.ts); `sound` gates the interface cues (lib/sound.ts);
+ * `music` gates the background track (lib/music.ts), separately, because the
+ * people who want the clicks off and the people who want the music off are
+ * not the same people; `fullscreen` asks for fullscreen when a game starts
+ * (lib/fullscreen.ts);
  * `assist` shows the case ratios up front instead of behind skill unlocks
  * (step C-b — disclosure, not difficulty; on by default); `colourSafe` swaps
  * the jade/coral up-down pair for one that survives colour blindness, and is
@@ -15,6 +19,8 @@ import { persist } from 'zustand/middleware'
 
 export interface Settings {
   sound: boolean
+  music: boolean
+  fullscreen: boolean
   reducedMotion: boolean
   aiWording: boolean
   assist: boolean
@@ -29,6 +35,8 @@ export const useSettingsStore = create<SettingsStore>()(
   persist(
     (set) => ({
       sound: true,
+      music: true,
+      fullscreen: true,
       reducedMotion: false,
       aiWording: false,
       assist: true,
@@ -39,6 +47,7 @@ export const useSettingsStore = create<SettingsStore>()(
       name: 'novus-settings',
       partialize: (s) => ({
         sound: s.sound,
+        music: s.music,
         reducedMotion: s.reducedMotion,
         aiWording: s.aiWording,
         assist: s.assist,

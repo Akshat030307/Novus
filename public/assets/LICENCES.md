@@ -7,6 +7,7 @@ miserable, and a game with unclear asset licensing cannot be shown publicly.
 | File | Source | Licence | Added |
 |------|--------|---------|-------|
 | `kenney_rpg-urban-pack/` | Kenney — RPG Urban Pack 1.0 (kenney.nl) | CC0 1.0 | 2026-08-30 |
+| `music/summertown.mp3` | "SummerTown" by LushoGames — https://opengameart.org/content/summertown (re-encoded 320 → 128 kbps, metadata stripped) | CC0 1.0 | 2026-09-18 |
 
 ## Fonts already in use
 
