@@ -29,6 +29,8 @@
   --font-display: "Silkscreen", monospace;
   --font-body: "IBM Plex Sans", system-ui, sans-serif;
   --font-num: "IBM Plex Mono", monospace;
+  /* the teacher surface (/teach) only — read like a register, not played */
+  --font-ui: "Inter", system-ui, sans-serif;
 }
 
 /* Issue A3. Green/red is the worst possible pair for up and down — roughly 8%

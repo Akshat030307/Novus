@@ -210,3 +210,88 @@ export function whatToTeachNext(rows: Row[], assignments: Assignment[]): Lesson[
 
   return lessons.sort((a, b) => b.affected / b.of - a.affected / a.of)
 }
+
+/* ---------- the four figures at the top of a class ---------- */
+
+export interface ClassTotals {
+  students: number
+  /** how many have published a progress summary at all */
+  reporting: number
+  /** student × assignment pairs */
+  slots: number
+  attempted: number
+  passed: number
+  late: number
+}
+
+export function classTotals(rows: Row[]): ClassTotals {
+  const cells = rows.flatMap((r) => r.cells)
+  return {
+    students: rows.length,
+    reporting: rows.filter((r) => r.member.summary).length,
+    slots: cells.length,
+    attempted: cells.filter((c) => c.best).length,
+    passed: cells.filter((c) => c.best?.passed).length,
+    late: cells.filter((c) => c.late).length,
+  }
+}
+
+/* ---------- what the performance charts draw ---------- */
+
+export type ResultKind = 'passed' | 'notYet' | 'notStarted'
+
+export interface AssignmentBreakdown {
+  assignment: Assignment
+  /** member ids in each bucket, so a chart can list or filter by them */
+  passed: string[]
+  notYet: string[]
+  notStarted: string[]
+}
+
+/** per assignment: who has passed, who has tried and not yet, who hasn't started */
+export function assignmentBreakdown(rows: Row[], assignments: Assignment[]): AssignmentBreakdown[] {
+  return assignments.map((assignment, i) => {
+    const out: AssignmentBreakdown = { assignment, passed: [], notYet: [], notStarted: [] }
+    for (const r of rows) {
+      const best = r.cells[i].best
+      const bucket = !best ? out.notStarted : best.passed ? out.passed : out.notYet
+      bucket.push(r.member.userId)
+    }
+    return out
+  })
+}
+
+export function resultOf(cell: Cell): ResultKind {
+  return !cell.best ? 'notStarted' : cell.best.passed ? 'passed' : 'notYet'
+}
+
+/** the habits a teacher can act on, in the order the lessons are written */
+export const HABITS = Object.entries(MISTAKE_LESSON).map(([kind, l]) => ({ kind, label: l.headline }))
+
+/**
+ * One bucket per calendar day, oldest first, ending on `now`'s day. Days are
+ * local, because a teacher reads "Tuesday" as their Tuesday. `now` is passed
+ * in so the shape of the chart is a function of its inputs.
+ */
+export function activityByDay(
+  attempts: Attempt[],
+  now: number,
+  days = 14,
+): { day: string; passed: number; notYet: number }[] {
+  const key = (t: number) => {
+    const d = new Date(t)
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  }
+  const buckets = new Map<string, { day: string; passed: number; notYet: number }>()
+  const today = new Date(now)
+  today.setHours(12, 0, 0, 0)
+  for (let i = days - 1; i >= 0; i--) {
+    const k = key(today.getTime() - i * 86_400_000)
+    buckets.set(k, { day: k, passed: 0, notYet: 0 })
+  }
+  for (const a of attempts) {
+    const b = buckets.get(key(Date.parse(a.at)))
+    if (b) b[a.passed ? 'passed' : 'notYet']++
+  }
+  return [...buckets.values()]
+}
