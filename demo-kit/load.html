@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Novus demo loader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  /* the landing page's plum palette, so this never gets mistaken for the game itself */
+  :root { --plum: #140d18; --plum-2: #241430; --line: #4a2a55; --magenta: #ff2d78; --blush: #f5eaf0; --muted: #b9a3c2; --jade: #43c08a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; background: var(--plum); color: var(--blush); font: 15px/1.5 "IBM Plex Sans", system-ui, sans-serif; padding: 40px 16px; }
+  main { max-width: 760px; margin: 0 auto; }
+  h1 { font: 28px "Silkscreen", monospace; margin: 0; letter-spacing: 2px; }
+  .sub { color: var(--magenta); font: 11px "Silkscreen", monospace; letter-spacing: 1px; margin: 6px 0 28px; }
+  .warn { border: 2px solid var(--magenta); background: var(--plum-2); padding: 12px 14px; margin-bottom: 24px; font-size: 13px; }
+  .warn b { color: var(--magenta); }
+  button.save { display: block; width: 100%; text-align: left; background: var(--plum-2); color: var(--blush); border: 2px solid var(--line); padding: 14px 16px; margin: 0 0 10px; cursor: pointer; font: inherit; }
+  button.save:hover { border-color: var(--magenta); }
+  button.save .k { font: 13px "Silkscreen", monospace; color: var(--magenta); }
+  button.save .d { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; }
+  label { display: flex; gap: 10px; align-items: center; margin: 22px 0 8px; font-size: 14px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+  .ghost { background: none; border: 2px solid var(--line); color: var(--muted); padding: 8px 12px; cursor: pointer; font: 12px "Silkscreen", monospace; }
+  .ghost:hover { color: var(--blush); border-color: var(--blush); }
+  #status { margin-top: 18px; color: var(--jade); font-size: 13px; min-height: 20px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>NOVUS · DEMO LOADER</h1>
+  <p class="sub">Load a prepared moment, then press Continue on the title screen</p>
+
+  <div class="warn">
+    <b>Record signed out, or in a throwaway account.</b> Loading a save replaces the one in this
+    browser, and if you are signed in, the game will push it over your cloud save too. Only
+    scene 9 (issuing a transcript) needs you signed in — do that one in a demo account, because
+    an issued transcript can never be deleted.
+  </div>
+
+  <button class="save" data-file="a-morning.json">
+    <span class="k">A · Morning, day 2, 9:05</span>
+    <span class="d">Every file unopened. Scenes 2 city walk, 3 Vector Trading, 4 Anand Dairy, 6 Sahyadri, 7 replay.</span>
+  </button>
+  <button class="save" data-file="b-market.json">
+    <span class="k">B · Market, day 2, 11:14</span>
+    <span class="d">An hour after the infrastructure headline. Scene 5: Sethu Infra against Tarang Payments.</span>
+  </button>
+  <button class="save" data-file="c-closing.json">
+    <span class="k">C · Closing, day 2, 15:25</span>
+    <span class="d">Five seconds before the bell. The day-end report opens by itself. Scene 8.</span>
+  </button>
+  <button class="save" data-file="d-record.json">
+    <span class="k">D · A week in, day 6, 9:10</span>
+    <span class="d">Nine files decided, a practice log, one award ready to issue. Scene 9.</span>
+  </button>
+
+  <label><input type="checkbox" id="music" checked /> Turn the in-game music off (the trailer track goes in during the edit instead)</label>
+
+  <div class="row">
+    <button class="ghost" id="clear">Wipe this browser's save</button>
+    <a class="ghost" href="/" style="text-decoration:none">Back to the game</a>
+  </div>
+  <p id="status"></p>
+</main>
+
+<script>
+  // Same keys the game reads — state/save.ts and state/attempts.ts. The save
+  // timestamp is set to now so Continue always prefers it over an older cloud copy.
+  const KEYS = {
+    save: 'novus:save:1',
+    at: 'novus:save:1:at',
+    attempts: 'novus:attempts:1',
+    pushed: 'novus:attempts:1:pushed',
+    settings: 'novus-settings',
+  }
+  const status = (t) => (document.getElementById('status').textContent = t)
+
+  function setMusic(on) {
+    let stored = {}
+    try { stored = JSON.parse(localStorage.getItem(KEYS.settings)) || {} } catch {}
+    stored.state = { ...(stored.state || {}), music: on }
+    if (stored.version === undefined) stored.version = 0
+    localStorage.setItem(KEYS.settings, JSON.stringify(stored))
+  }
+
+  document.querySelectorAll('button.save').forEach((b) =>
+    b.addEventListener('click', async () => {
+      try {
+        const r = await fetch('/demo-kit/saves/' + b.dataset.file, { cache: 'no-store' })
+        if (!r.ok) throw new Error('HTTP ' + r.status + ' — is this the dev server (npm run dev)?')
+        const { save, attempts } = await r.json()
+        localStorage.setItem(KEYS.save, JSON.stringify(save))
+        localStorage.setItem(KEYS.at, new Date().toISOString())
+        // the practice log only comes with D; the others leave it empty so nothing carries over
+        localStorage.setItem(KEYS.attempts, JSON.stringify(attempts || []))
+        localStorage.removeItem(KEYS.pushed)
+        setMusic(!document.getElementById('music').checked)
+        status('Loaded ' + b.dataset.file + ' — opening the game. Press Continue.')
+        setTimeout(() => (location.href = '/'), 500)
+      } catch (e) {
+        status('Could not load: ' + e.message)
+      }
+    }),
+  )
+
+  document.getElementById('clear').addEventListener('click', () => {
+    Object.values(KEYS).forEach((k) => k !== KEYS.settings && localStorage.removeItem(k))
+    status('This browser has no save now.')
+  })
+</script>
+</body>
+</html>
