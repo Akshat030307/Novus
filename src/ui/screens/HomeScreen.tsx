@@ -155,18 +155,22 @@ export default function HomeScreen() {
               boxShadow: '0 0 60px -20px var(--color-magenta)',
             }}
           >
-            <div style={{ animation: 'float-soft 9s ease-in-out infinite' }}>
-              <img
-                src="/hero-city.png"
-                alt="The city of Novus: the pixel map, your desk, the market feed and the day clock"
-                className="pixel w-full"
-                width={2880}
-                height={1800}
-                loading="eager"
-              />
-            </div>
+            {/* the trailer, not a still. It doesn't float like the old picture did: controls
+                that drift are hard to hit. preload="none" keeps the 11 MB off the page
+                until someone presses play, and it never autoplays, because it has music. */}
+            <video
+              src="/novus-demo.mp4"
+              poster="/novus-demo-poster.jpg"
+              controls
+              playsInline
+              preload="none"
+              width={1920}
+              height={1080}
+              className="block aspect-video h-auto w-full bg-plum"
+              aria-label="Novus gameplay demo: the credit desk, the market, real-case replays, the day-end report, transcripts and the teacher dashboard"
+            />
             <figcaption className="mt-2 px-1 font-display text-[8px] text-blush/35 uppercase">
-              Day one · Meridian Bank · the market opens at 9:15
+              Gameplay demo · 1:24 · sound on
             </figcaption>
           </figure>
         </div>
