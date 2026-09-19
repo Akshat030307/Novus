@@ -1,6 +1,6 @@
 # Shot list
 
-About 1:42 in total, which fits inside one play of the music (1:43).
+1:43 in total, exactly one play of the music.
 
 **Cards** (in `cards/`) are full-frame stills: drop each one on the timeline
 between clips for the time given. Two kinds: **stat cards** (one big figure,
@@ -29,20 +29,39 @@ plaza, just below the fountain.
 
 ---
 
-## 02 · The city — 0:04–0:12
+## 02 · The city — 0:04–0:11
 
 - **Load:** A → Continue. The desk shows *The Bad Loan 0/2*, the job Rao gave
   you yesterday.
-- **Do:** hold **W** to the top edge of the plaza, then **A** along the
-  pavement until you're under the Bank's orange door.
+- **Do:**
+  1. Hold **D** for about three steps. Meera, the reporter, is standing just
+     east of where you appear. Stop beside her and press **E**.
+  2. Click **Heard anything worth hearing?** She tips you off about *Vector
+     Trading Co*, the file scene 03 opens, so this beat sets up the next
+     scene. Click **I'll look.**
+  3. Hold **W** to the top edge of the plaza, then **A** along the pavement
+     until you're under the Bank's orange door. Speed this walk up 3–4× in
+     the edit.
+- **Taking her tip adds a quest,** *Off the Record*, which completes when you
+  decide Vector Trading (+40 XP). The case results in 03 and 04 don't change,
+  because they're fixed by the save's seed. A level-up popup may land at a
+  different moment, though: press **Enter** and trim it, as usual.
 - **Close-up:** none. Let the city breathe.
-- **Caption:** `02-city.png`
+- **Captions:**
+
+  | When | Caption | On screen |
+  |---|---|---|
+  | 0:04–0:06 | `02-city.png` | The first steps across the plaza |
+  | 0:06–0:09 | `02b-talk-to-people.png` · *Talk to people. Some of them know things.* | Meera's tip about Vector Trading |
 - **Reference:** `screenshots/02-city-walk.png`
 
 ---
 
-## 03 · Read the file, make the call — 0:12–0:25
+## 03 · Read the file, make the call — 0:11–0:25
 
+- **Card first:** `03-card-credit-desk.png` from 0:11 to 0:14 (3 s), then cut
+  to the footage at 0:14. It shows the same Vector Trading file the scene
+  opens, so the cut lands on something the viewer has just seen.
 - **Do:** press **W** through the Bank door. The desk opens.
   1. Click **Vector Trading Co — inventory finance**.
   2. Under *Your read*, click **High >40%**.
@@ -60,12 +79,15 @@ plaza, just below the fountain.
 
 ---
 
-## 04 · Even when a good call goes wrong — 0:25–0:32
+## 04 · Even when a good call goes wrong — 0:25–0:34
 
 **This is the scene the whole trailer rests on.** A clean file (8% risk),
 correctly approved, that defaults anyway, and the game still marks the call as
 sound.
 
+- **Card first:** `04-card-sound-call.png` from 0:25 to 0:28 (3 s), then the
+  footage from 0:28. The card gives away the result on purpose: the viewer
+  then watches the click knowing what's coming and looks for *why*.
 - **Do:**
   1. Click **Done**.
   2. Click **Anand Dairy — cold-chain expansion**.
@@ -81,10 +103,13 @@ sound.
 
 ---
 
-## 05 · News, or noise? — 0:32–0:44
+## 05 · News, or noise? — 0:34–0:45
 
 Two stocks with almost the same move and completely different causes.
 
+- **Card first:** `05-card-live-market.png` from 0:34 to 0:37 (3 s): *"A live
+  market. A new price every second."* over the real Sethu Infra chart. Then
+  the footage runs 0:37–0:45, so keep it to 8 s.
 - **Load:** B → Continue. It's 11:14 on day 2, an hour after the headline
   *"Government clears ₹40,000 crore of highway and port projects"*.
 - **Do:**
@@ -101,12 +126,18 @@ Two stocks with almost the same move and completely different causes.
 - The clock keeps running, so the exact figures drift slightly between takes.
   The captions don't depend on them.
 - **Close-up (take 2c, 150%):** the breakdown, for each stock.
-- **Captions:** `05a-same-move.png` on Sethu, `05b-news-or-noise.png` on Tarang.
+- **Captions**, three short beats:
+
+  | When | Caption | On screen |
+  |---|---|---|
+  | 0:37–0:39 | `05c-real-time.png` · *Practise trading in real time.* | The Market tab opening, Sethu's price ticking |
+  | 0:39–0:42 | `05a-same-move.png` | Sethu's breakdown |
+  | 0:42–0:45 | `05b-news-or-noise.png` | Tarang's breakdown |
 - **Reference:** `05a-sethu-news.png`, `05b-tarang-noise.png`
 
 ---
 
-## 06 · Spot the pattern, then meet the real case — 0:44–0:55
+## 06 · Spot the pattern, then meet the real case — 0:45–0:55
 
 - **Load:** carry on from take 1 (save A).
 - **Do:**
@@ -133,7 +164,7 @@ Two stocks with almost the same move and completely different causes.
 
 ---
 
-## 07 · No hindsight — 0:55–1:07
+## 07 · No hindsight — 0:55–1:06
 
 - **Do:**
   1. Press **Esc**, then walk to the **Academy** (south), or just cut to it.
@@ -142,7 +173,12 @@ Two stocks with almost the same move and completely different causes.
   4. Click **Commit and see what happened**.
 - **Result:** ✓ DEFENSIBLE AT THE TIME, with what actually happened next.
 - **Close-up:** optional. The replay's text is already large.
-- **Caption:** `07-no-hindsight.png`
+- **Captions**, over the 4 s of replay footage:
+
+  | When | Caption | On screen |
+  |---|---|---|
+  | 1:00–1:02 | `07d-real-events.png` · *Learn from real events. Then relive them yourself.* | The replay opening: *what was public at this point* |
+  | 1:02–1:04 | `07-no-hindsight.png` | The verdict: ✓ DEFENSIBLE AT THE TIME |
 - **Reference:** `07-replay-ilfs.png`
 - **Cards, in this order:**
 
@@ -150,12 +186,12 @@ Two stocks with almost the same move and completely different causes.
   |---|---|---|
   | 0:55, before the footage | `07a-stat-12-concepts.png` | 2 s |
   | 0:57 | `07b-academy.png` | 3 s |
-  | 1:00–1:05 | the replay footage, cut to 5 s | |
-  | 1:05, after the footage | `07c-stat-2-replays.png` | 2 s |
+  | 1:00–1:04 | the replay footage, cut to 4 s | |
+  | 1:04, after the footage | `07c-stat-2-replays.png` | 2 s |
 
 ---
 
-## 08 · Every day ends with a lesson — 1:07–1:12
+## 08 · Every day ends with a lesson — 1:06–1:10
 
 - **Load:** C → Continue. It's 15:25; the report opens by itself about 5
   seconds later. Trim the wait.
@@ -168,7 +204,7 @@ Two stocks with almost the same move and completely different causes.
 
 ---
 
-## 09 · A transcript anyone can verify — 1:12–1:26
+## 09 · A transcript anyone can verify — 1:10–1:23
 
 - **Before loading:** sign in with the **throwaway** account (see README).
 - **Load:** D → Continue. It's day 6: nine files decided, 12 of 12 concepts,
@@ -187,16 +223,16 @@ Two stocks with almost the same move and completely different causes.
 
   | When | Card | Length |
   |---|---|---|
-  | 1:12, before the footage | `09a-transcript.png` | 3 s |
-  | 1:15–1:21 | Issue transcript → the Verification page, cut to 6 s | |
-  | 1:21, on the cut away from the Verification page | `09b-stat-verify-code.png` | 2 s |
-  | 1:23 | `09c-awards.png`. It replaces the optional Awards beat, so skip recording that | 3 s |
+  | 1:10, before the footage | `09a-transcript.png` | 3 s |
+  | 1:13–1:18 | Issue transcript → the Verification page, cut to 5 s | |
+  | 1:18, on the cut away from the Verification page | `09b-stat-verify-code.png` | 2 s |
+  | 1:20 | `09c-awards.png`. It replaces the optional Awards beat, so skip recording that | 3 s |
 - The code on the stat card is an example in the real format. Your recording will
   show a different one, which is fine: the card says what a code *is*.
 
 ---
 
-## 10 · What to teach next week — 1:26–1:36
+## 10 · What to teach next week — 1:23–1:33
 
 The only scene from the teacher's side. It uses the **sample class**: twelve
 invented students, clearly labelled, built into the page. There's nothing to
@@ -226,23 +262,27 @@ load and no need to sign in.
 
   | When | Card | Length |
   |---|---|---|
-  | 1:26, before the footage | `10a-teachers.png` | 3 s |
-  | 1:29–1:34 | the `/teach/sample` footage, cut to 5 s | |
-  | 1:34, after the footage | `10b-stat-7-of-12.png`. It carries a small *from the sample class* line; keep it | 2 s |
+  | 1:23, before the footage | `10a-teachers.png` | 3 s |
+  | 1:26–1:31 | the `/teach/sample` footage, cut to 5 s | |
+  | 1:31, after the footage | `10b-stat-7-of-12.png`. It carries a small *from the sample class* line; keep it | 2 s |
 
 ---
 
-## 11 · End card — 1:36–1:42
+## 11 · End card — 1:33–1:43
 
 - **Load:** A → Continue (take 5, cursor off in OBS). Touch nothing: the camera
   rests on the plaza with the fountain centred.
-- **Show:** `cards/11-end-card.png`, fading in full-frame over the last 5–6 s.
-- **Music:** ends here.
+- **Show:** the plaza for 3 s (1:33–1:36), then `cards/11b-end-card-more.png`
+  fading in over 0.5 s and holding to the end (1:36–1:43). It lists six things
+  the trailer didn't show, then **PLAY NOVUS** and the address.
+- The original `11-end-card.png` (logo, tagline, address) is still there if
+  you'd rather close on that. Use one or the other, not both.
+- **Music:** fade it out over the last 2 s.
 
 ---
 
 ## The 30-second cut
 
-02 → 03 → 05 → 06 → 11. Use captions `02`, `03b`, `05b`, `06b`, with the end
-card for the last 5 s. If there's room for one card, make it
+02 → 03 → 05 → 06 → 11. Use captions `02`, `03b`, `05b`, `06b`, with
+`11b-end-card-more.png` for the last 5 s. If there's room for one card, make it
 `07c-stat-2-replays.png` just before the end card.
