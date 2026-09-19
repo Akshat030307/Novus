@@ -11,7 +11,13 @@ export function rupees(paise: Paise, opts: { short?: boolean } = {}): string {
     if (Math.abs(r) >= 1e5) return `₹${(r / 1e5).toFixed(2)} L`
     if (Math.abs(r) >= 1e3) return `₹${(r / 1e3).toFixed(1)}k`
   }
-  return `₹${r.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`
+  // whole rupees stay whole (₹5,00,000); anything with paise shows both digits
+  // (₹14,761.50, never ₹14,761.5 — nobody writes money with one decimal)
+  const paiseLeft = Math.round(Math.abs(paise)) % 100 !== 0
+  return `₹${r.toLocaleString('en-IN', {
+    minimumFractionDigits: paiseLeft ? 2 : 0,
+    maximumFractionDigits: 2,
+  })}`
 }
 
 /**
