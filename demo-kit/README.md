@@ -16,7 +16,7 @@ Start here, then work through [`SHOT-LIST.md`](SHOT-LIST.md) scene by scene.
 | `screenshots/` | A reference frame for every scene: what the camera should be seeing |
 | `captions/` | Every caption as a **full-frame transparent overlay**, already positioned lower-left. Drag it onto the timeline above the video; nothing to adjust |
 | `captions/tight/` | The same captions cropped to their size, if you'd rather position them yourself |
-| `cards/` | Title card (`01`), end card (`11`), and eight feature cards for the Academy, transcript, awards and teacher scenes (`07a`–`10b`), all 1920×1080. The shot list says where each goes |
+| `cards/` | Title card (`01`), ten feature cards that open or punctuate scenes 03, 04, 07, 09 and 10, and two end cards (`11`, and `11b` with *…and a lot more · Play Novus*), all 1920×1080. The shot list says where each goes |
 | `background/` | A plum-and-magenta backdrop, if you want the video to sit inside a frame (optional) |
 | `music/` | SummerTown, full quality (320 kbps). CC0 — see `music/LICENCE.md` |
 | `fonts/` | Silkscreen and IBM Plex Mono, if you want to make more captions. OFL |
