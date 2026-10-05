@@ -11,6 +11,7 @@ import { Hud } from '@/ui/hud/Hud'
 import { Panel } from '@/ui/components/Panel'
 import { PixelButton } from '@/ui/components/PixelButton'
 import { QuestPanel } from '@/ui/panels/QuestPanel'
+import { MoneyPanel } from '@/ui/panels/MoneyPanel'
 import { MiniMap } from '@/ui/panels/MiniMap'
 import { MarketPanel } from '@/ui/panels/MarketPanel'
 import { PortfolioPanel } from '@/ui/panels/PortfolioPanel'
@@ -64,15 +65,16 @@ export default function GameScreen() {
     <div className="flex h-full flex-col">
       <Hud />
 
-      <div className="grid min-h-0 flex-1 grid-cols-[260px_1fr_240px] gap-2 p-2">
-        {/* left: what you owe people */}
-        <div className="flex min-h-0 flex-col gap-2">
+      <div className="grid min-h-0 flex-1 grid-cols-[300px_1fr_260px] gap-3 p-3">
+        {/* left: what you owe people, and what you are worth while you do it */}
+        <div className="flex min-h-0 flex-col gap-3">
           <QuestPanel />
+          <MoneyPanel />
         </div>
 
         {/* centre: the city, and the panels that hang off it */}
-        <div className="grid min-h-0 grid-rows-[1fr_300px] gap-2">
-          <div className="relative min-h-0 border-2 border-line bg-night">
+        <div className="grid min-h-0 grid-rows-[1fr_320px] gap-3">
+          <div className="relative min-h-0 overflow-hidden rounded-xl border border-line bg-night shadow-lg shadow-black/40">
             <WorldCanvas />
             <DialogueBox />
           </div>
@@ -90,10 +92,10 @@ export default function GameScreen() {
                       setTab(t.id)
                       playSound('tab')
                     }}
-                    className={`border px-2 py-1 font-display text-[9px] uppercase transition-colors ${
+                    className={`rounded-md px-3 py-1.5 text-[13px] font-semibold tracking-wide uppercase transition-colors ${
                       tab === t.id
-                        ? 'border-marigold text-marigold'
-                        : 'border-line text-muted hover:text-ink'
+                        ? 'bg-marigold/15 text-marigold'
+                        : 'text-muted hover:bg-panel-3 hover:text-ink'
                     }`}
                   >
                     {t.label}
@@ -112,7 +114,7 @@ export default function GameScreen() {
         </div>
 
         {/* right: where you are, what you can do from here */}
-        <div className="flex min-h-0 flex-col gap-2">
+        <div className="flex min-h-0 flex-col gap-3">
           <MiniMap />
           <Panel title="Actions" icon="◆" accent="coral" bodyClassName="p-2">
             <PixelButton
@@ -123,7 +125,7 @@ export default function GameScreen() {
             >
               End day
             </PixelButton>
-            <p className="mt-2 px-1 text-[10px] text-muted">
+            <p className="mt-2 px-1 text-[13px] text-muted">
               The day also ends on its own when the market closes at 3:30.
             </p>
           </Panel>

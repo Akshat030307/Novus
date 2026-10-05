@@ -1,4 +1,4 @@
-import type { GameState, Holding, LevelUpReport, Trade } from '@/sim/types'
+import type { GameState, Holding, LevelUpReport, Paise, Trade } from '@/sim/types'
 import { rupees } from '@/lib/format'
 import { awardProgress, tradeSkillGains, XP_PER_TRADE } from '@/sim/progression'
 import { spendEnergy, tradeEnergyCost } from '@/sim/energy'
@@ -112,5 +112,57 @@ export function applyTrade(state: GameState, order: TradeOrder): TradeResult {
         trades: [...trades, trade],
       },
     },
+  }
+}
+
+/* ---------- what the sidebar shows ---------- */
+
+export interface BookSummary {
+  cash: Paise
+  /** mark-to-market value of everything held right now */
+  holdingsValue: Paise
+  /** what those holdings cost */
+  invested: Paise
+  /** value minus cost — profit that only exists on paper */
+  unrealised: Paise
+  /** cash + holdings, against the same figure when the day opened */
+  net: Paise
+  dayChange: Paise
+  positions: number
+  /** the single biggest position, for the concentration warning */
+  biggest: { name: string; value: Paise; share: number } | null
+}
+
+/**
+ * The book in one object, so the HUD can show money without doing money
+ * maths itself. Shares are a fraction of net worth, not of holdings: a book
+ * that is 90% cash is not concentrated.
+ */
+export function bookSummary(state: GameState): BookSummary {
+  const priceOf = (id: string) => state.market.stocks.find((s) => s.id === id)?.price ?? 0
+  const nameOf = (id: string) => state.market.stocks.find((s) => s.id === id)?.name ?? id
+
+  const invested = state.portfolio.holdings.reduce((t, h) => t + h.averageCost * h.quantity, 0)
+  const holdingsValue = state.portfolio.holdings.reduce((t, h) => t + priceOf(h.stockId) * h.quantity, 0)
+  const net = state.player.cash + holdingsValue
+  const openNet = state.dayOpen.cash + state.dayOpen.holdingsValue
+
+  let biggest: BookSummary['biggest'] = null
+  for (const h of state.portfolio.holdings) {
+    const value = priceOf(h.stockId) * h.quantity
+    if (!biggest || value > biggest.value) {
+      biggest = { name: nameOf(h.stockId), value, share: net > 0 ? value / net : 0 }
+    }
+  }
+
+  return {
+    cash: state.player.cash,
+    holdingsValue,
+    invested,
+    unrealised: holdingsValue - invested,
+    net,
+    dayChange: net - openNet,
+    positions: state.portfolio.holdings.length,
+    biggest,
   }
 }
