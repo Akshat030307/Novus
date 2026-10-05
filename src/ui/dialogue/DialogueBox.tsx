@@ -83,10 +83,10 @@ export function DialogueBox() {
     <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 p-4">
       <div className="anim-rise pointer-events-auto mx-auto max-w-3xl border-2 border-marigold bg-panel p-4">
         <div className="mb-1 flex items-baseline gap-2">
-          <h3 className="font-display text-[11px] text-marigold uppercase">{npc.name}</h3>
-          <span className="font-display text-[9px] text-muted uppercase">{npc.role}</span>
+          <h3 className="text-[14px] text-marigold font-semibold uppercase tracking-wide">{npc.name}</h3>
+          <span className="text-[12px] text-muted font-semibold uppercase tracking-wide">{npc.role}</span>
         </div>
-        <p className="mb-4 text-sm text-ink">{node.text}</p>
+        <p className="mb-4 text-[15px] text-ink">{node.text}</p>
         <div className="flex flex-wrap justify-end gap-2">
           {options.map((o, i) => (
             <PixelButton key={i} className={pickCls(i)} onClick={() => pick(o)}>

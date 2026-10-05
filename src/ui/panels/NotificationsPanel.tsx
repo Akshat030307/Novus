@@ -12,7 +12,7 @@ export function NotificationsPanel() {
   const items = useGameStore((s) => s.state.notifications)
 
   if (items.length === 0) {
-    return <p className="p-3 text-sm text-muted">Quiet so far today.</p>
+    return <p className="p-3 text-[15px] text-muted">Quiet so far today.</p>
   }
 
   return (
@@ -20,10 +20,10 @@ export function NotificationsPanel() {
       {items.map((n) => {
         const k = KIND[n.kind] ?? KIND.city
         return (
-          <li key={n.id} className="anim-feed flex items-baseline gap-2 px-3 py-2 text-sm">
-            <span className="font-num text-[10px] text-muted">{clockTime(n.minute)}</span>
+          <li key={n.id} className="anim-feed flex items-baseline gap-2 px-3 py-2 text-[15px]">
+            <span className="font-num text-[13px] text-muted">{clockTime(n.minute)}</span>
             <span
-              className={`shrink-0 border px-1 font-display text-[8px] uppercase leading-relaxed ${k.cls}`}
+              className={`shrink-0 border px-1 text-[11px] font-semibold uppercase tracking-wide leading-relaxed ${k.cls}`}
             >
               {k.tag}
             </span>

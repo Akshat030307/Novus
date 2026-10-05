@@ -62,7 +62,7 @@ export function ReplayDrill({ replayId }: { replayId: string }) {
 
   const header = (
     <div className="space-y-2">
-      <div className="border-l-2 border-coral bg-panel-3 py-2 pl-3 pr-2 text-[10px] leading-relaxed text-muted">
+      <div className="border-l-2 border-coral bg-panel-3 py-2 pl-3 pr-2 text-[13px] leading-relaxed text-muted">
         {replay.caution}
         {entry && (
           <>
@@ -76,7 +76,7 @@ export function ReplayDrill({ replayId }: { replayId: string }) {
           </>
         )}
       </div>
-      <p className="text-xs text-muted">{replay.role}</p>
+      <p className="text-[14px] text-muted">{replay.role}</p>
     </div>
   )
 
@@ -89,10 +89,10 @@ export function ReplayDrill({ replayId }: { replayId: string }) {
         <div
           className={`border-l-2 pl-3 ${score === replay.steps.length ? 'border-jade' : 'border-marigold'}`}
         >
-          <div className="font-display text-[10px] uppercase text-ink">
+          <div className="text-[13px] font-semibold uppercase tracking-wide text-ink">
             {score}/{replay.steps.length} calls defensible at the time
           </div>
-          <p className="mt-1 text-xs text-muted">
+          <p className="mt-1 text-[14px] text-muted">
             {score === replay.steps.length
               ? 'Every call held up on what was on the table when you made it. That is the only standard anyone can be held to.'
               : 'Go back over the ones that slipped — not because of how it ended, but because of what was already published when you decided.'}
@@ -109,13 +109,13 @@ export function ReplayDrill({ replayId }: { replayId: string }) {
     <div className="space-y-3">
       {header}
 
-      <div className="font-display text-[9px] text-muted uppercase">
+      <div className="text-[12px] text-muted font-semibold uppercase tracking-wide">
         Step {step + 1} of {replay.steps.length} · {s.when}
       </div>
 
       <div>
-        <div className="mb-1 font-display text-[9px] text-muted uppercase">Public at this point</div>
-        <ul className="space-y-1 text-sm text-ink">
+        <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">Public at this point</div>
+        <ul className="space-y-1 text-[15px] text-ink">
           {s.known.map((k) => (
             <li key={k} className="flex gap-2">
               <span className="text-marigold">▪</span>
@@ -125,7 +125,7 @@ export function ReplayDrill({ replayId }: { replayId: string }) {
         </ul>
       </div>
 
-      <p className="text-sm text-ink">{s.question}</p>
+      <p className="text-[15px] text-ink">{s.question}</p>
 
       <div className="flex flex-col gap-1">
         {s.options.map((o) => {
@@ -137,7 +137,7 @@ export function ReplayDrill({ replayId }: { replayId: string }) {
               key={o.id}
               disabled={revealed}
               onClick={() => setPicked(o.id)}
-              className={`border-2 px-2 py-1.5 text-left text-xs transition-colors ${
+              className={`border-2 px-2 py-1.5 text-left text-[14px] transition-colors ${
                 good
                   ? 'border-jade text-jade'
                   : badPick
@@ -171,11 +171,11 @@ export function ReplayDrill({ replayId }: { replayId: string }) {
 function Reveal({ step, ok }: { step: ReplayStep; ok: boolean }) {
   return (
     <div className={`border-l-2 pl-3 ${ok ? 'border-jade' : 'border-coral'}`}>
-      <div className={`font-display text-[9px] uppercase ${ok ? 'text-jade' : 'text-coral'}`}>
+      <div className={`text-[12px] font-semibold uppercase tracking-wide ${ok ? 'text-jade' : 'text-coral'}`}>
         {ok ? '✓ Defensible at the time' : '✕ Not supported by what was known then'}
       </div>
-      <p className="mt-1 text-xs text-ink">{step.outcome}</p>
-      <p className="mt-1 text-xs text-muted">{step.note}</p>
+      <p className="mt-1 text-[14px] text-ink">{step.outcome}</p>
+      <p className="mt-1 text-[14px] text-muted">{step.note}</p>
     </div>
   )
 }

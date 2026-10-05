@@ -32,10 +32,10 @@ export function CreditDeskDrill() {
         <div
           className={`border-l-2 pl-3 ${sound === LOAN_ORDER.length ? 'border-jade' : 'border-marigold'}`}
         >
-          <div className="font-display text-[10px] uppercase text-ink">
+          <div className="text-[13px] font-semibold uppercase tracking-wide text-ink">
             {sound}/{LOAN_ORDER.length} sound · {reads}/{LOAN_ORDER.length} reads right
           </div>
-          <p className="mt-1 text-xs text-muted">
+          <p className="mt-1 text-[14px] text-muted">
             {sound === LOAN_ORDER.length
               ? 'Clean sweep. The reasoning held on every file.'
               : 'Look back at the ones that slipped — the figures were all on the file.'}
@@ -95,12 +95,12 @@ export function CreditDeskDrill() {
 
   return (
     <div className="space-y-3">
-      <div className="font-display text-[9px] text-muted uppercase">
+      <div className="text-[12px] text-muted font-semibold uppercase tracking-wide">
         File {i + 1} of {LOAN_ORDER.length} · {fc.title}
       </div>
-      <p className="text-sm text-ink">{fc.brief}</p>
+      <p className="text-[15px] text-ink">{fc.brief}</p>
 
-      <dl className="grid grid-cols-2 gap-x-6 text-sm">
+      <dl className="grid grid-cols-2 gap-x-6 text-[15px]">
         {rows.map(([k, v]) => (
           <div key={k} className="flex justify-between border-b border-line/50 py-1">
             <dt className="text-muted">{k}</dt>
@@ -110,13 +110,13 @@ export function CreditDeskDrill() {
       </dl>
 
       <div>
-        <div className="mb-1 font-display text-[9px] text-muted uppercase">Your read</div>
+        <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">Your read</div>
         <div className="flex gap-2">
           {(['low', 'mid', 'high'] as const).map((b) => (
             <button
               key={b}
               onClick={() => setBand((x) => (x === b ? null : b))}
-              className={`border-2 px-2 py-1 font-display text-[9px] uppercase ${
+              className={`border-2 px-2 py-1 font-display text-[12px] uppercase ${
                 band === b ? 'border-amethyst text-amethyst' : 'border-line text-muted hover:text-ink'
               }`}
             >
@@ -127,13 +127,13 @@ export function CreditDeskDrill() {
       </div>
 
       <div>
-        <div className="mb-1 font-display text-[9px] text-muted uppercase">Your call</div>
+        <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">Your call</div>
         <div className="flex flex-wrap gap-2">
           {fc.choices.map((ch) => (
             <button
               key={ch.id}
               onClick={() => setChoice(ch.id)}
-              className={`border-2 px-2 py-1 font-display text-[9px] uppercase ${
+              className={`border-2 px-2 py-1 font-display text-[12px] uppercase ${
                 choice === ch.id
                   ? 'border-marigold text-marigold'
                   : 'border-line text-muted hover:text-ink'

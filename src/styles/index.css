@@ -3,14 +3,17 @@
 /* Design tokens. Every colour and font in the game comes from here.
    Do not hard-code hex values in components. */
 @theme {
-  --color-night: #000000;        /* page background */
-  --color-panel: #000000;        /* panel fill */
-  --color-panel-2: #161616;      /* raised panel / hover / header fill */
-  --color-panel-3: #202028;      /* inset well: stat chips, bars, table rows */
-  --color-line: #2e2e2e;         /* borders */
-  --color-hi: #3b3b48;           /* top-edge highlight, so a panel catches light */
-  --color-ink: #e6e8f5;          /* main text */
-  --color-muted: #8d93b5;        /* secondary text */
+  /* Surfaces step up from the page, so a panel reads as a surface rather than
+     a hole. Not pure black any more: black-on-black needs a border to exist,
+     and borders everywhere is what made the old screens feel like a form. */
+  --color-night: #0a0a0e;        /* page background */
+  --color-panel: #121218;        /* panel fill */
+  --color-panel-2: #191921;      /* raised panel / hover / header fill */
+  --color-panel-3: #22222c;      /* inset well: stat chips, bars, table rows */
+  --color-line: #2f2f3b;         /* borders */
+  --color-hi: #3f3f4e;           /* top-edge highlight, so a panel catches light */
+  --color-ink: #eceefb;          /* main text */
+  --color-muted: #a2a7c6;        /* secondary text — lifted for contrast at small sizes */
   --color-marigold: #f2a73b;     /* accent: money, XP, focus */
   --color-amethyst: #8a6be8;     /* reputation, levels */
   --color-jade: #43c08a;         /* up / gain / approve */
@@ -26,10 +29,12 @@
   --color-magenta-soft: #ff7ab0; /* secondary accent, hover ink */
   --color-blush: #f5eaf0;        /* landing body text */
 
+  /* Silkscreen is an accent, not a reading face: the wordmark, panel titles,
+     buttons. Everything you actually read is Inter; numbers are mono so
+     columns line up. */
   --font-display: "Silkscreen", monospace;
-  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
   --font-num: "IBM Plex Mono", monospace;
-  /* the teacher surface (/teach) only — read like a register, not played */
   --font-ui: "Inter", system-ui, sans-serif;
 }
 

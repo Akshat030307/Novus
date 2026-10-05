@@ -51,8 +51,8 @@ export function DayArc({ minute, day }: { minute: number; day: number }) {
         )}
       </svg>
       <div className="leading-tight">
-        <div className="font-num text-sm text-ink">{clockTime(minute)}</div>
-        <div className="font-display text-[9px] text-muted uppercase">
+        <div className="font-num text-[15px] text-ink">{clockTime(minute)}</div>
+        <div className="text-[12px] text-muted font-semibold uppercase tracking-wide">
           Day {day}
           {beforeOpen && ' · pre-open'}
           {afterClose && ' · closed'}

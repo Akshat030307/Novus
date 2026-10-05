@@ -83,18 +83,18 @@ function Cafeteria() {
 
   return (
     <div className="space-y-4 p-6">
-      <p className="text-sm text-muted">
+      <p className="text-[15px] text-muted">
         Filter coffee, a plate of something, and fifteen minutes where nobody asks you for a number.
       </p>
 
       <div className="border-2 border-line bg-panel-3 p-4">
         <div className="flex items-baseline justify-between">
-          <span className="font-display text-[9px] text-muted uppercase">Focus</span>
-          <span className={`font-num text-sm ${isTired(player) ? 'text-coral' : 'text-jade'}`}>
+          <span className="text-[12px] text-muted font-semibold uppercase tracking-wide">Focus</span>
+          <span className={`font-num text-[15px] ${isTired(player) ? 'text-coral' : 'text-jade'}`}>
             {player.energy}/{ENERGY_MAX}
           </span>
         </div>
-        <p className="mt-2 text-xs text-muted">
+        <p className="mt-2 text-[14px] text-muted">
           {rested
             ? "You're sharp already. Save the break for when you need it."
             : usedToday
@@ -130,16 +130,16 @@ export function BuildingOverlay() {
   }
 
   return (
-    <div className="anim-backdrop fixed inset-0 z-50 flex items-center justify-center bg-night/85 p-6">
-      <div className="anim-pop flex max-h-[80vh] w-full max-w-2xl flex-col border-2 border-line bg-panel">
-        <header className="flex shrink-0 items-center justify-between border-b-2 border-line px-5 py-3">
+    <div className="anim-backdrop fixed inset-0 z-50 flex items-center justify-center bg-night/80 p-6 backdrop-blur-sm">
+      <div className="anim-pop flex max-h-[90vh] w-full max-w-[1280px] flex-col overflow-hidden rounded-2xl border border-line bg-panel shadow-2xl shadow-black/60">
+        <header className="flex shrink-0 items-center justify-between border-b border-line bg-panel-2 px-6 py-4">
           <div>
-            <h2 className="font-display text-sm text-ink">{inside.title}</h2>
-            <p className="font-display text-[9px] text-muted uppercase">You stepped inside</p>
+            <h2 className="font-display text-[18px] text-ink">{inside.title}</h2>
+            <p className="mt-0.5 text-[13px] text-muted">You stepped inside</p>
           </div>
           <PixelButton onClick={() => close(null)}>Leave</PixelButton>
         </header>
-        <div className="min-h-0 flex-1 overflow-y-auto p-4">{inside.body}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto p-6">{inside.body}</div>
       </div>
     </div>
   )
@@ -148,7 +148,7 @@ export function BuildingOverlay() {
 function Note({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-full min-h-40 items-center justify-center p-6 text-center">
-      <p className="max-w-sm text-sm text-muted">{children}</p>
+      <p className="max-w-sm text-[15px] text-muted">{children}</p>
     </div>
   )
 }

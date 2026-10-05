@@ -23,14 +23,14 @@ export function ScenariosPanel() {
       <div className="space-y-4">
         <button
           onClick={() => setOpen(null)}
-          className="border border-line px-2 py-1 font-display text-[9px] text-muted uppercase hover:text-ink"
+          className="border border-line px-2 py-1 text-[12px] text-muted font-semibold uppercase tracking-wide hover:text-ink"
         >
           ← All drills
         </button>
         <div>
-          <h3 className="font-display text-[11px] text-marigold uppercase">{open.title}</h3>
-          <p className="mt-1 text-xs text-muted">{open.brief}</p>
-          <p className="mt-1 text-xs text-amethyst">Goal: {open.goal}</p>
+          <h3 className="text-[14px] text-marigold font-semibold uppercase tracking-wide">{open.title}</h3>
+          <p className="mt-1 text-[14px] text-muted">{open.brief}</p>
+          <p className="mt-1 text-[14px] text-amethyst">Goal: {open.goal}</p>
         </div>
         <History id={open.id} attempts={attempts} full />
         <SyncNote error={syncError} />
@@ -44,7 +44,7 @@ export function ScenariosPanel() {
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-muted">
+      <p className="text-[14px] text-muted">
         Practice runs, separate from your career. Your world save is untouched — but every attempt
         is kept, so the improvement is visible and goes on your transcript.
       </p>
@@ -57,10 +57,10 @@ export function ScenariosPanel() {
               className="w-full border-2 border-line bg-panel-3 p-3 text-left hover:border-marigold"
             >
               <div className="flex items-baseline justify-between gap-2">
-                <h3 className="font-display text-[11px] text-ink">{s.title}</h3>
+                <h3 className="font-display text-[14px] text-ink">{s.title}</h3>
                 <Best id={s.id} attempts={attempts} />
               </div>
-              <p className="mt-1 text-xs text-muted">{s.brief}</p>
+              <p className="mt-1 text-[14px] text-muted">{s.brief}</p>
             </button>
           </li>
         ))}
@@ -77,7 +77,7 @@ export function ScenariosPanel() {
 function SyncNote({ error }: { error: string | null }) {
   if (!error) return null
   return (
-    <p className="border-l-2 border-marigold pl-3 text-[10px] text-muted">
+    <p className="border-l-2 border-marigold pl-3 text-[13px] text-muted">
       Your attempts are saved in this browser, but are not reaching the cloud:{' '}
       <span className="text-marigold">{error}</span> They will go up on their own once it works.
     </p>
@@ -91,7 +91,7 @@ function Best({ id, attempts }: { id: string; attempts: Attempt[] }) {
   const tries = attemptsFor(attempts, id).length
   return (
     <span
-      className={`shrink-0 font-display text-[9px] uppercase ${
+      className={`shrink-0 font-display text-[12px] uppercase ${
         best.passed ? 'text-jade' : 'text-marigold'
       }`}
     >
@@ -115,7 +115,7 @@ function History({ id, attempts, full }: { id: string; attempts: Attempt[]; full
 
   return (
     <div className="border-2 border-line bg-panel-3 p-3">
-      <div className="mb-2 font-display text-[9px] text-muted uppercase">
+      <div className="mb-2 text-[12px] text-muted font-semibold uppercase tracking-wide">
         Your attempts — {mine.length}
       </div>
       <ol className="flex flex-wrap gap-1">
@@ -123,7 +123,7 @@ function History({ id, attempts, full }: { id: string; attempts: Attempt[]; full
           <li
             key={a.id}
             title={`${new Date(a.at).toLocaleString('en-IN')} — ${a.score}/${a.outOf}`}
-            className={`border px-1.5 py-0.5 font-num text-[10px] ${
+            className={`border px-1.5 py-0.5 font-num text-[13px] ${
               a.passed ? 'border-jade text-jade' : 'border-line text-muted'
             }`}
           >
@@ -132,7 +132,7 @@ function History({ id, attempts, full }: { id: string; attempts: Attempt[]; full
         ))}
       </ol>
       {full && progress && (
-        <p className="mt-2 text-[10px] text-muted">
+        <p className="mt-2 text-[13px] text-muted">
           First go {progress.first.score}/{progress.first.outOf}, latest{' '}
           {progress.latest.score}/{progress.latest.outOf} —{' '}
           {progress.gained > 0

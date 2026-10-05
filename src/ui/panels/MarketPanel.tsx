@@ -64,13 +64,13 @@ export function MarketPanel() {
           />
           <MoveBreakdown stockId={active.id} />
           <div className="flex flex-wrap items-center gap-2 px-3 pb-2 pt-2">
-            <label className="font-display text-[9px] text-muted uppercase">Qty</label>
+            <label className="text-[12px] text-muted font-semibold uppercase tracking-wide">Qty</label>
             <input
               type="number"
               min={1}
               value={qty}
               onChange={(e) => setQty(e.target.value)}
-              className="w-20 border-2 border-line bg-night px-2 py-1 font-num text-sm text-ink focus:border-marigold focus:outline-none"
+              className="w-20 border-2 border-line bg-night px-2 py-1 font-num text-[15px] text-ink focus:border-marigold focus:outline-none"
             />
             <PixelButton tone="good" onClick={() => trade('buy')}>
               Buy{orderValue > 0 ? ` ${rupees(orderValue, { short: true })}` : ''}
@@ -78,17 +78,17 @@ export function MarketPanel() {
             <PixelButton tone="bad" onClick={() => trade('sell')} disabled={heldQty === 0}>
               Sell
             </PixelButton>
-            <span className="ml-auto font-num text-[11px] text-muted">
+            <span className="ml-auto font-num text-[14px] text-muted">
               hold {heldQty} · cash {rupees(cash, { short: true })}
             </span>
           </div>
-          {error && <p className="px-3 pb-2 text-xs text-coral">{error}</p>}
+          {error && <p className="px-3 pb-2 text-[14px] text-coral">{error}</p>}
         </div>
       )}
 
-      <table className="w-full text-sm">
+      <table className="w-full text-[15px]">
         <thead className="sticky top-0 bg-panel">
-          <tr className="border-b-2 border-line font-display text-[9px] text-muted uppercase">
+          <tr className="border-b-2 border-line text-[12px] text-muted font-semibold uppercase tracking-wide">
             <th className="px-3 py-2 text-left">Company</th>
             <th className="px-3 py-2 text-left">Sector</th>
             <th className="px-3 py-2 text-right">Price</th>
@@ -114,7 +114,7 @@ export function MarketPanel() {
                 }`}
               >
                 <td className="px-3 py-2">
-                  <span className="font-num text-[11px] text-muted">{s.ticker}</span>{' '}
+                  <span className="font-num text-[14px] text-muted">{s.ticker}</span>{' '}
                   <span className={isSel ? 'text-marigold' : 'text-ink'}>{s.name}</span>
                 </td>
                 <td className="px-3 py-2 text-muted capitalize">{s.sector}</td>

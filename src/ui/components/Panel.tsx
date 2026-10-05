@@ -44,17 +44,17 @@ export function Panel({
 }) {
   return (
     <section
-      className={`flex min-h-0 flex-col border-2 border-line border-t-hi bg-panel ${className}`}
+      className={`flex min-h-0 flex-col overflow-hidden rounded-xl border border-line bg-panel shadow-lg shadow-black/40 ${className}`}
     >
       {title && (
         <header
-          className={`flex shrink-0 items-center justify-between gap-2 border-b-2 bg-panel-2 px-3 py-2 ${ACCENT_RULE[accent]}`}
+          className={`flex shrink-0 items-center justify-between gap-2 border-b bg-panel-2 px-4 py-2.5 ${ACCENT_RULE[accent]}`}
         >
           <div className="flex items-center gap-1.5">
             {icon && (
-              <span className={`text-[11px] leading-none ${ACCENT_TEXT[accent]}`}>{icon}</span>
+              <span className={`text-[14px] leading-none ${ACCENT_TEXT[accent]}`}>{icon}</span>
             )}
-            <h2 className="font-display text-[10px] tracking-wide text-muted uppercase">{title}</h2>
+            <h2 className="text-[13px] font-semibold tracking-wide text-muted uppercase">{title}</h2>
           </div>
           {right}
         </header>

@@ -31,7 +31,7 @@ export function ModulesPanel() {
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-muted">
+      <p className="text-[14px] text-muted">
         <span className="font-num text-ink">
           {passed}/{MODULES.length}
         </span>{' '}
@@ -47,9 +47,9 @@ export function ModulesPanel() {
                 className="w-full border-2 border-line bg-panel-3 p-3 text-left hover:border-marigold"
               >
                 <div className="flex items-baseline justify-between gap-2">
-                  <h3 className="font-display text-[11px] text-ink">{m.title}</h3>
+                  <h3 className="font-display text-[14px] text-ink">{m.title}</h3>
                   <span
-                    className={`font-display text-[9px] uppercase ${
+                    className={`font-display text-[12px] uppercase ${
                       p.passed ? 'text-jade' : p.started ? 'text-marigold' : 'text-muted'
                     }`}
                   >
@@ -60,7 +60,7 @@ export function ModulesPanel() {
                         : 'Not started'}
                   </span>
                 </div>
-                <p className="mt-1 text-xs text-muted">{m.blurb}</p>
+                <p className="mt-1 text-[14px] text-muted">{m.blurb}</p>
               </button>
             </li>
           )
@@ -111,21 +111,21 @@ function ModuleDetail({ id, onBack }: { id: string; onBack: () => void }) {
     <div className="space-y-4">
       <button
         onClick={onBack}
-        className="border border-line px-2 py-1 font-display text-[9px] text-muted uppercase hover:text-ink"
+        className="border border-line px-2 py-1 text-[12px] text-muted font-semibold uppercase tracking-wide hover:text-ink"
       >
         ← All modules
       </button>
 
       <div>
-        <h3 className="font-display text-[11px] text-marigold uppercase">{module.title}</h3>
-        <p className="mt-1 text-sm text-ink">{module.blurb}</p>
+        <h3 className="text-[14px] text-marigold font-semibold uppercase tracking-wide">{module.title}</h3>
+        <p className="mt-1 text-[15px] text-ink">{module.blurb}</p>
       </div>
 
       <div>
-        <div className="mb-1 font-display text-[9px] text-muted uppercase">Concepts</div>
+        <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">Concepts</div>
         <div className="flex flex-wrap gap-1.5">
           {module.concepts.map((c) => (
-            <span key={c} className="border border-line px-1.5 py-0.5 text-[10px] text-muted">
+            <span key={c} className="border border-line px-1.5 py-0.5 text-[13px] text-muted">
               {getConcept(c)?.label ?? c}
             </span>
           ))}
@@ -133,8 +133,8 @@ function ModuleDetail({ id, onBack }: { id: string; onBack: () => void }) {
       </div>
 
       <div className="border-l-2 border-marigold pl-3">
-        <div className="font-display text-[9px] text-marigold uppercase">What to do</div>
-        <p className="text-xs text-muted">{module.doWhat}</p>
+        <div className="text-[12px] text-marigold font-semibold uppercase tracking-wide">What to do</div>
+        <p className="text-[14px] text-muted">{module.doWhat}</p>
       </div>
 
       {!quizOpen ? (
@@ -145,7 +145,7 @@ function ModuleDetail({ id, onBack }: { id: string; onBack: () => void }) {
         <div className="space-y-4">
           {module.quiz.map((q, qi) => (
             <div key={qi}>
-              <p className="mb-1 text-sm text-ink">
+              <p className="mb-1 text-[15px] text-ink">
                 {qi + 1}. {q.q}
               </p>
               <div className="flex flex-col gap-1">
@@ -160,7 +160,7 @@ function ModuleDetail({ id, onBack }: { id: string; onBack: () => void }) {
                       onClick={() =>
                         setAnswers((a) => a.map((v, i) => (i === qi ? oi : v)))
                       }
-                      className={`border-2 px-2 py-1 text-left text-xs transition-colors ${
+                      className={`border-2 px-2 py-1 text-left text-[14px] transition-colors ${
                         showRight
                           ? 'border-jade text-jade'
                           : showWrong
@@ -187,7 +187,7 @@ function ModuleDetail({ id, onBack }: { id: string; onBack: () => void }) {
               className={`border-l-2 pl-3 ${result >= PASS_MARK ? 'border-jade' : 'border-coral'}`}
             >
               <div
-                className={`font-display text-[10px] uppercase ${
+                className={`font-display text-[13px] uppercase ${
                   result >= PASS_MARK ? 'text-jade' : 'text-coral'
                 }`}
               >
@@ -195,7 +195,7 @@ function ModuleDetail({ id, onBack }: { id: string; onBack: () => void }) {
               </div>
               <button
                 onClick={open}
-                className="mt-1 text-[10px] text-amethyst underline hover:text-marigold"
+                className="mt-1 text-[13px] text-amethyst underline hover:text-marigold"
               >
                 Retake
               </button>

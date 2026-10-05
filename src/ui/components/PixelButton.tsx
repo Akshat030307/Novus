@@ -17,7 +17,7 @@ export function PixelButton({
   return (
     <button
       {...props}
-      className={`border-2 px-4 py-2 font-display text-[11px] tracking-wide transition-colors
+      className={`rounded-md border px-4 py-2.5 font-display text-[13px] tracking-wide transition-colors
         disabled:cursor-not-allowed disabled:border-line disabled:text-muted/40 disabled:hover:bg-transparent
         ${tones[tone]} ${className}`}
     />

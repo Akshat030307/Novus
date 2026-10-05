@@ -18,7 +18,7 @@ export function PriceChart({
 }) {
   if (points.length < 2) {
     return (
-      <div className="p-3 text-sm text-muted">
+      <div className="p-3 text-[15px] text-muted">
         No price history yet — prices start moving when the market opens at 9:15.
       </div>
     )
@@ -48,12 +48,12 @@ export function PriceChart({
     <div className="p-3">
       <div className="mb-2 flex items-baseline justify-between">
         <div>
-          <span className="font-num text-[11px] text-muted">{ticker}</span>{' '}
-          <span className="text-sm text-ink">{name}</span>
+          <span className="font-num text-[14px] text-muted">{ticker}</span>{' '}
+          <span className="text-[15px] text-ink">{name}</span>
         </div>
         <div className="text-right font-num">
-          <span className="text-sm text-ink">{rupees(last)}</span>{' '}
-          <span className={`text-xs ${up ? 'text-jade' : 'text-coral'}`}>{signed(change)}</span>
+          <span className="text-[15px] text-ink">{rupees(last)}</span>{' '}
+          <span className={`text-[14px] ${up ? 'text-jade' : 'text-coral'}`}>{signed(change)}</span>
         </div>
       </div>
 
@@ -82,7 +82,7 @@ export function PriceChart({
         />
       </svg>
 
-      <div className="mt-1 flex justify-between font-num text-[10px] text-muted">
+      <div className="mt-1 flex justify-between font-num text-[13px] text-muted">
         <span>Low {rupees(lo)}</span>
         <span>Prev close {rupees(previousClose)}</span>
         <span>High {rupees(hi)}</span>

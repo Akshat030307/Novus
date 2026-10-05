@@ -66,8 +66,8 @@ export function SpotTheShockDrill() {
   return (
     <div className="space-y-3">
       <div className="border-l-2 border-marigold pl-3">
-        <div className="font-display text-[9px] text-marigold uppercase">Headline</div>
-        <p className="text-sm text-ink">{event.headline}</p>
+        <div className="text-[12px] text-marigold font-semibold uppercase tracking-wide">Headline</div>
+        <p className="text-[15px] text-ink">{event.headline}</p>
       </div>
 
       <ul className="divide-y divide-line/50">
@@ -75,7 +75,7 @@ export function SpotTheShockDrill() {
           const shock = shockFor(s.sector)
           const chose = picked.has(s.id)
           return (
-            <li key={s.id} className="flex items-center gap-2 py-1.5 text-sm">
+            <li key={s.id} className="flex items-center gap-2 py-1.5 text-[15px]">
               <button
                 onClick={() => toggle(s.id)}
                 className={`grid size-3 shrink-0 place-items-center border ${
@@ -85,10 +85,10 @@ export function SpotTheShockDrill() {
                 x
               </button>
               <span className="flex-1 text-ink">{s.name}</span>
-              <span className="text-xs text-muted capitalize">{s.sector}</span>
+              <span className="text-[14px] text-muted capitalize">{s.sector}</span>
               {revealed && (
                 <span
-                  className={`w-14 text-right font-num text-xs ${
+                  className={`w-14 text-right font-num text-[14px] ${
                     shock > 0 ? 'text-jade' : shock < 0 ? 'text-coral' : 'text-muted'
                   }`}
                 >
@@ -111,11 +111,11 @@ export function SpotTheShockDrill() {
               marks.right === marks.of && marks.stray === 0 ? 'border-jade' : 'border-marigold'
             }`}
           >
-            <div className="font-display text-[10px] uppercase text-ink">
+            <div className="text-[13px] font-semibold uppercase tracking-wide text-ink">
               {marks.right}/{marks.of} read right
               {marks.stray > 0 && ` · ${marks.stray} stray pick${marks.stray === 1 ? '' : 's'}`}
             </div>
-            <p className="mt-1 text-xs text-muted">
+            <p className="mt-1 text-[14px] text-muted">
               Marked on the stocks this headline actually moves — picking the ones it lifts and
               leaving the ones it hurts. A stray pick is a stock the headline doesn't touch at all.
               The map decays over a few game hours, and the weak links move less than a day of

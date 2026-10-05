@@ -55,12 +55,12 @@ export function CertificatesPanel() {
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-muted">
+      <p className="text-[14px] text-muted">
         Named awards with published conditions. Every requirement below is measured, not granted —
         and you can read all of them long before you meet any of them.
       </p>
 
-      {error && <p className="border-l-2 border-coral pl-3 text-xs text-coral">{error}</p>}
+      {error && <p className="border-l-2 border-coral pl-3 text-[14px] text-coral">{error}</p>}
 
       {CERTIFICATES.map((cert) => (
         <Card
@@ -100,20 +100,20 @@ function Card({
   return (
     <div className={`border-2 bg-panel-3 p-3 ${earned ? 'border-marigold' : 'border-line'}`}>
       <div className="flex items-baseline justify-between gap-2">
-        <h3 className="font-display text-[11px] text-ink">{cert.title}</h3>
+        <h3 className="font-display text-[14px] text-ink">{cert.title}</h3>
         <span
-          className={`shrink-0 font-display text-[9px] uppercase ${
+          className={`shrink-0 font-display text-[12px] uppercase ${
             issued ? 'text-jade' : earned ? 'text-marigold' : 'text-muted'
           }`}
         >
           {issued ? '✓ Issued' : earned ? 'Ready' : `${met}/${requirements.length}`}
         </span>
       </div>
-      <p className="mt-1 text-xs text-muted">{cert.blurb}</p>
+      <p className="mt-1 text-[14px] text-muted">{cert.blurb}</p>
 
       <ul className="mt-2 space-y-1">
         {requirements.map((r) => (
-          <li key={r.id} className="flex items-baseline justify-between gap-3 text-xs">
+          <li key={r.id} className="flex items-baseline justify-between gap-3 text-[14px]">
             <span className={r.met ? 'text-ink' : 'text-muted'}>
               <span className={`mr-1.5 font-num ${r.met ? 'text-jade' : 'text-muted'}`}>
                 {r.met ? '✓' : '·'}
@@ -127,18 +127,18 @@ function Card({
         ))}
       </ul>
 
-      <p className="mt-2 border-l-2 border-line pl-2 text-[10px] leading-relaxed text-muted">
+      <p className="mt-2 border-l-2 border-line pl-2 text-[13px] leading-relaxed text-muted">
         {cert.scope}
       </p>
 
       {issued ? (
         <div className="mt-2">
-          <p className="font-num text-xs break-all text-ink">{issued.code}</p>
+          <p className="font-num text-[14px] break-all text-ink">{issued.code}</p>
           <a
             href={verifyUrl(issued.code)}
             target="_blank"
             rel="noreferrer"
-            className="font-display text-[9px] text-amethyst uppercase underline hover:text-marigold"
+            className="text-[12px] text-amethyst font-semibold uppercase tracking-wide underline hover:text-marigold"
           >
             Open it as they will see it
           </a>
@@ -148,9 +148,9 @@ function Card({
           <PixelButton tone="primary" onClick={onIssue} disabled={!earned || !canIssue || busy}>
             {busy ? 'Issuing…' : 'Issue certificate'}
           </PixelButton>
-          {!canIssue && <span className="text-[10px] text-muted">Sign in to issue.</span>}
+          {!canIssue && <span className="text-[13px] text-muted">Sign in to issue.</span>}
           {canIssue && !earned && (
-            <span className="text-[10px] text-muted">
+            <span className="text-[13px] text-muted">
               {requirements.length - met} requirement{requirements.length - met === 1 ? '' : 's'} to
               go.
             </span>

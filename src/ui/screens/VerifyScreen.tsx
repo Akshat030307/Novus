@@ -39,18 +39,18 @@ export default function VerifyScreen({ code }: { code: string }) {
       <div className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6">
         <header className="mb-6 border-b-2 border-line pb-4">
           <h1 className="font-display text-xl text-ink">NOVUS</h1>
-          <p className="mt-1 font-display text-[9px] text-magenta uppercase">
+          <p className="mt-1 text-[12px] text-magenta font-semibold uppercase tracking-wide">
             Gamified Financial Markets Education Platform
           </p>
         </header>
 
-        {state.kind === 'loading' && <p className="text-sm text-muted">Checking {code}…</p>}
+        {state.kind === 'loading' && <p className="text-[15px] text-muted">Checking {code}…</p>}
 
         {state.kind === 'bad' && (
           <div className="border-2 border-coral bg-panel-3 p-4">
-            <h2 className="font-display text-[11px] text-coral uppercase">Not verified</h2>
-            <p className="mt-2 text-sm text-ink">{state.error}</p>
-            <p className="mt-2 text-xs text-muted">
+            <h2 className="text-[14px] text-coral font-semibold uppercase tracking-wide">Not verified</h2>
+            <p className="mt-2 text-[15px] text-ink">{state.error}</p>
+            <p className="mt-2 text-[14px] text-muted">
               Codes look like <span className="font-num">NVS-A2B3C-D4E5F</span>. Check for a typo —
               the alphabet has no letter O and no digit 1, so those are usually a zero and an I.
             </p>
@@ -59,7 +59,7 @@ export default function VerifyScreen({ code }: { code: string }) {
 
         {state.kind === 'ok' && <Verified issued={state.value} />}
 
-        <footer className="mt-8 border-t-2 border-line pt-4 text-[10px] text-muted">
+        <footer className="mt-8 border-t-2 border-line pt-4 text-[13px] text-muted">
           Novus is a teaching simulation. Every company, price and loan file in it is invented.
           Nothing here is investment advice.
         </footer>
@@ -91,8 +91,8 @@ function Verified({ issued }: { issued: IssuedTranscript }) {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="font-display text-[13px] text-marigold uppercase">Report card</h2>
-          <p className="mt-1 text-sm text-ink">
+          <h2 className="text-[15px] text-marigold font-semibold uppercase tracking-wide">Report card</h2>
+          <p className="mt-1 text-[15px] text-ink">
             {doc.player} · Finance Intern · Level {doc.level} · Day {doc.day}
           </p>
         </div>

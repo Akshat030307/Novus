@@ -34,7 +34,7 @@ export function AllocationBar({ slices }: { slices: Slice[] }) {
           <div key={i} className={`flex-1 ${cls}`} />
         ))}
       </div>
-      <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
+      <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-[14px]">
         {slices.map((s) => (
           <li key={s.label} className="flex items-center gap-1.5">
             <span className={`size-2 shrink-0 ${s.cls}`} />

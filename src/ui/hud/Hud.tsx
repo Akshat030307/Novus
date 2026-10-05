@@ -27,12 +27,12 @@ export function Hud() {
       <div className="min-w-40">
         <button
           onClick={() => setScreen('home')}
-          className="font-display text-sm text-ink hover:text-marigold"
+          className="font-display text-[15px] text-ink hover:text-marigold"
           title="Back to the title screen"
         >
           {player.name}
         </button>
-        <div className="font-display text-[9px] text-amethyst uppercase">
+        <div className="text-[12px] text-amethyst font-semibold uppercase tracking-wide">
           Finance Intern · Level {player.level}
         </div>
       </div>
@@ -54,7 +54,7 @@ export function Hud() {
 
       {/* money */}
       <div className="ml-auto text-right">
-        <div className="font-display text-[9px] text-muted uppercase">Cash</div>
+        <div className="text-[12px] text-muted font-semibold uppercase tracking-wide">Cash</div>
         <div className="font-num text-lg text-jade">{rupees(player.cash)}</div>
       </div>
 
@@ -68,7 +68,7 @@ export function Hud() {
         onClick={() => setOverlay('settings')}
         title="Settings"
         aria-label="Settings"
-        className="font-display text-[9px] text-muted uppercase hover:text-marigold"
+        className="text-[13px] font-semibold tracking-wide text-muted uppercase hover:text-marigold"
       >
         Settings
       </button>
@@ -89,7 +89,7 @@ function MusicToggle() {
       onClick={() => set('music', !on)}
       aria-pressed={on}
       title={on ? 'Turn the music off' : 'Turn the music on'}
-      className={`font-display text-[9px] uppercase transition-colors hover:text-marigold ${
+      className={`text-[13px] font-semibold tracking-wide uppercase transition-colors hover:text-marigold ${
         on ? 'text-ink' : 'text-muted'
       }`}
     >
@@ -120,7 +120,7 @@ function CloudChip() {
   }[status]
 
   return (
-    <span className={`font-display text-[9px] uppercase ${chip.cls}`} title={chip.title}>
+    <span className={`text-[13px] font-semibold tracking-wide uppercase ${chip.cls}`} title={chip.title}>
       {chip.text}
     </span>
   )
@@ -129,7 +129,7 @@ function CloudChip() {
 function Gauge({ label, note, children }: { label: string; note: string; children: ReactNode }) {
   return (
     <div className="w-32">
-      <div className="mb-1 flex justify-between font-display text-[9px] text-muted uppercase">
+      <div className="mb-1 flex justify-between text-[12px] text-muted font-semibold uppercase tracking-wide">
         <span>{label}</span>
         <span className="font-num">{note}</span>
       </div>

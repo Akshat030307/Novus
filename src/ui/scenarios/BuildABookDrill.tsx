@@ -56,7 +56,7 @@ export function BuildABookDrill() {
   return (
     <div className="space-y-3">
       <div className="border-2 border-line bg-panel-3 p-3">
-        <div className="mb-2 flex justify-between font-display text-[9px] text-muted uppercase">
+        <div className="mb-2 flex justify-between text-[12px] text-muted font-semibold uppercase tracking-wide">
           <span>Allocation</span>
           <span className="font-num">cash {rupees(cash, { short: true })}</span>
         </div>
@@ -65,20 +65,20 @@ export function BuildABookDrill() {
 
       <ul className="divide-y divide-line/50">
         {snapshot.map((s) => (
-          <li key={s.id} className="flex items-center gap-2 py-1.5 text-sm">
+          <li key={s.id} className="flex items-center gap-2 py-1.5 text-[15px]">
             <span className="flex-1 text-ink">{s.name}</span>
-            <span className="font-num text-xs text-muted">{rupees(s.price)}</span>
-            <span className="w-10 text-right font-num text-xs">{qty[s.id] ?? 0}</span>
+            <span className="font-num text-[14px] text-muted">{rupees(s.price)}</span>
+            <span className="w-10 text-right font-num text-[14px]">{qty[s.id] ?? 0}</span>
             <button
               onClick={() => sell(s.id)}
-              className="border border-line px-1.5 font-num text-xs text-muted hover:text-ink"
+              className="border border-line px-1.5 font-num text-[14px] text-muted hover:text-ink"
             >
               −
             </button>
             <button
               onClick={() => buy(s.id, s.price)}
               disabled={cash < s.price}
-              className="border border-line px-1.5 font-num text-xs text-jade hover:border-jade disabled:opacity-30"
+              className="border border-line px-1.5 font-num text-[14px] text-jade hover:border-jade disabled:opacity-30"
             >
               +
             </button>
@@ -92,10 +92,10 @@ export function BuildABookDrill() {
         </PixelButton>
       ) : (
         <div className={`border-l-2 pl-3 ${pass ? 'border-jade' : 'border-coral'}`}>
-          <div className={`font-display text-[10px] uppercase ${pass ? 'text-jade' : 'text-coral'}`}>
+          <div className={`text-[13px] font-semibold uppercase tracking-wide ${pass ? 'text-jade' : 'text-coral'}`}>
             {pass ? 'Well spread' : 'Not there yet'}
           </div>
-          <p className="mt-1 text-xs text-muted">
+          <p className="mt-1 text-[14px] text-muted">
             {held.length} holding{held.length === 1 ? '' : 's'}, biggest is{' '}
             {Math.round(topShare * 100)}% of the book.{' '}
             {pass
@@ -104,7 +104,7 @@ export function BuildABookDrill() {
           </p>
           <button
             onClick={() => setScored(false)}
-            className="mt-1 text-[10px] text-amethyst underline hover:text-marigold"
+            className="mt-1 text-[13px] text-amethyst underline hover:text-marigold"
           >
             Keep adjusting
           </button>

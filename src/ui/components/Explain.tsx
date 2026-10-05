@@ -19,8 +19,8 @@ export function Explain({ id, children }: { id: string; children: ReactNode }) {
           border-2 border-marigold bg-panel p-2 text-left opacity-0 shadow-lg transition-opacity
           group-hover:opacity-100"
       >
-        <span className="mb-1 block font-display text-[9px] text-marigold uppercase">{concept.label}</span>
-        <span className="block font-body text-xs text-ink">{concept.short}</span>
+        <span className="mb-1 block text-[12px] text-marigold font-semibold uppercase tracking-wide">{concept.label}</span>
+        <span className="block font-body text-[14px] text-ink">{concept.short}</span>
       </span>
     </span>
   )

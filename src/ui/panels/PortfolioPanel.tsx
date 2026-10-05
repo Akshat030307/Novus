@@ -46,20 +46,20 @@ export function PortfolioPanel() {
       </div>
 
       <div className="border-2 border-line bg-panel-3 p-3">
-        <div className="mb-2 font-display text-[9px] text-muted uppercase">
+        <div className="mb-2 text-[12px] text-muted font-semibold uppercase tracking-wide">
           <Explain id="diversification">Where the money is</Explain>
         </div>
         <AllocationBar slices={allocation} />
       </div>
 
       {portfolio.holdings.length === 0 ? (
-        <p className="text-sm text-muted">
+        <p className="text-[15px] text-muted">
           Nothing held yet. Walk to the Exchange and buy something.
         </p>
       ) : (
-        <table className="w-full text-sm">
+        <table className="w-full text-[15px]">
           <thead>
-            <tr className="border-b-2 border-line font-display text-[9px] text-muted uppercase">
+            <tr className="border-b-2 border-line text-[12px] text-muted font-semibold uppercase tracking-wide">
               <th className="py-2 text-left">Holding</th>
               <th className="py-2 text-right">Qty</th>
               <th className="py-2 text-right">Avg cost</th>
@@ -93,7 +93,7 @@ export function PortfolioPanel() {
 function Stat({ label, value, tone = 'text-ink' }: { label: ReactNode; value: string; tone?: string }) {
   return (
     <div className="border-2 border-line bg-panel-3 px-3 py-2">
-      <div className="font-display text-[9px] text-muted uppercase">{label}</div>
+      <div className="text-[12px] text-muted font-semibold uppercase tracking-wide">{label}</div>
       <div className={`font-num text-base ${tone}`}>{value}</div>
     </div>
   )

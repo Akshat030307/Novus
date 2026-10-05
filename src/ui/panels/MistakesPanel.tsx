@@ -25,7 +25,7 @@ export function MistakesPanel() {
 
   if (mistakes.length === 0) {
     return (
-      <p className="text-sm text-muted">
+      <p className="text-[15px] text-muted">
         Nothing logged yet. Slips get recorded here at each day's close, so you can see a pattern
         before it costs you.
       </p>
@@ -42,10 +42,10 @@ export function MistakesPanel() {
     <div className="space-y-3">
       {repeated.map((k) => (
         <div key={k} className="border-l-2 border-coral bg-panel-3 py-2 pl-3 pr-2">
-          <div className="font-display text-[9px] text-coral uppercase">
+          <div className="text-[12px] text-coral font-semibold uppercase tracking-wide">
             {KIND_LABEL[k]} · {counts[k]}×
           </div>
-          <p className="mt-0.5 text-xs text-ink">{PATTERN[k]}</p>
+          <p className="mt-0.5 text-[14px] text-ink">{PATTERN[k]}</p>
         </div>
       ))}
 
@@ -53,10 +53,10 @@ export function MistakesPanel() {
         {[...mistakes].reverse().map((m) => (
           <li key={m.id} className="border-2 border-line/60 p-3">
             <div className="mb-1 flex items-baseline justify-between gap-2">
-              <span className="font-display text-[9px] text-muted uppercase">{KIND_LABEL[m.kind]}</span>
-              <span className="font-num text-[10px] text-muted">Day {m.day}</span>
+              <span className="text-[12px] text-muted font-semibold uppercase tracking-wide">{KIND_LABEL[m.kind]}</span>
+              <span className="font-num text-[13px] text-muted">Day {m.day}</span>
             </div>
-            <p className="text-xs text-ink">{m.note}</p>
+            <p className="text-[14px] text-ink">{m.note}</p>
           </li>
         ))}
       </ul>

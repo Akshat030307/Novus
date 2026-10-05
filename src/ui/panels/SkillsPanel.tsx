@@ -26,7 +26,7 @@ export function SkillsPanel() {
   return (
     <div className="space-y-5">
       <div>
-        <div className="mb-1 flex justify-between font-display text-[9px] text-muted uppercase">
+        <div className="mb-1 flex justify-between text-[12px] text-muted font-semibold uppercase tracking-wide">
           <span>Level {player.level}</span>
           <span className="font-num">
             {player.xp} / {player.xpToNext} XP
@@ -41,7 +41,7 @@ export function SkillsPanel() {
           const lvl = skillLevel(pts)
           return (
             <div key={key}>
-              <div className="mb-1 flex justify-between font-display text-[9px] uppercase">
+              <div className="mb-1 flex justify-between text-[12px] font-semibold uppercase tracking-wide">
                 <span className="text-ink">{label}</span>
                 <span className="font-num text-muted">{lvl}</span>
               </div>
@@ -52,8 +52,8 @@ export function SkillsPanel() {
       </div>
 
       <div>
-        <div className="mb-1 font-display text-[9px] text-muted uppercase">What skills open up</div>
-        <ul className="space-y-1 text-xs">
+        <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">What skills open up</div>
+        <ul className="space-y-1 text-[14px]">
           {SKILL_UNLOCKS.map((u) => {
             const has = skillLevel(player.skills[u.skill]) >= u.level
             return (

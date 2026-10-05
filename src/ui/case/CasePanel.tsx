@@ -141,7 +141,7 @@ export function CasePanel({ building }: { building?: BuildingId } = {}) {
     return (
       <div className="space-y-4 p-4">
         <div>
-          <div className="mb-2 font-display text-[9px] text-muted uppercase">
+          <div className="mb-2 text-[12px] text-muted font-semibold uppercase tracking-wide">
             {building === 'exchange'
               ? 'Books in for review'
               : building === 'risk'
@@ -149,7 +149,7 @@ export function CasePanel({ building }: { building?: BuildingId } = {}) {
                 : "On the manager's desk"}
           </div>
           {pending.length === 0 ? (
-            <p className="text-sm text-muted">Nothing waiting here right now.</p>
+            <p className="text-[15px] text-muted">Nothing waiting here right now.</p>
           ) : (
             <div className="flex flex-col gap-2">
               {pending.map((id) => {
@@ -158,9 +158,9 @@ export function CasePanel({ building }: { building?: BuildingId } = {}) {
                   <button
                     key={id}
                     onClick={() => openFile(id)}
-                    className="border-2 border-line px-3 py-2 text-left text-sm text-ink hover:border-marigold"
+                    className="border-2 border-line px-3 py-2 text-left text-[15px] text-ink hover:border-marigold"
                   >
-                    <span className="block font-display text-[9px] text-muted uppercase">
+                    <span className="block text-[12px] text-muted font-semibold uppercase tracking-wide">
                       {KIND_LABEL[fc.kind]}
                     </span>
                     {fc.title}
@@ -173,13 +173,13 @@ export function CasePanel({ building }: { building?: BuildingId } = {}) {
 
         {closed.length > 0 && (
           <div>
-            <div className="mb-2 font-display text-[9px] text-muted uppercase">Resolved</div>
+            <div className="mb-2 text-[12px] text-muted font-semibold uppercase tracking-wide">Resolved</div>
             <div className="flex flex-col gap-1">
               {closed.map((r, i) => (
                 <button
                   key={`${r.caseId}-${i}`}
                   onClick={() => openFile(r.caseId)}
-                  className="flex items-center justify-between gap-2 border border-line/50 px-3 py-1.5 text-left text-xs hover:border-line"
+                  className="flex items-center justify-between gap-2 border border-line/50 px-3 py-1.5 text-left text-[14px] hover:border-line"
                 >
                   <span className="text-muted">{getCase(r.caseId)?.title ?? r.caseId}</span>
                   <span className={r.judgement === 'sound' ? 'text-jade' : 'text-coral'}>
@@ -207,21 +207,21 @@ export function CasePanel({ building }: { building?: BuildingId } = {}) {
     <div className="space-y-4 p-4">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <span className="font-display text-[9px] text-amethyst uppercase">
+          <span className="text-[12px] text-amethyst font-semibold uppercase tracking-wide">
             {KIND_LABEL[openCase.kind]}
           </span>
-          <h3 className="font-display text-[11px] text-marigold uppercase">{openCase.title}</h3>
-          <p className="font-display text-[9px] text-muted uppercase">At the {openCase.building}</p>
+          <h3 className="text-[14px] text-marigold font-semibold uppercase tracking-wide">{openCase.title}</h3>
+          <p className="text-[12px] text-muted font-semibold uppercase tracking-wide">At the {openCase.building}</p>
         </div>
         <button
           onClick={closeFile}
-          className="shrink-0 border border-line px-2 py-1 font-display text-[9px] text-muted uppercase hover:text-ink"
+          className="shrink-0 border border-line px-2 py-1 text-[12px] text-muted font-semibold uppercase tracking-wide hover:text-ink"
         >
           Close
         </button>
       </div>
 
-      <p className="text-sm text-ink">{intro}</p>
+      <p className="text-[15px] text-ink">{intro}</p>
 
       {openCase.kind === 'loan' && <LoanEvidence fc={openCase} />}
       {openCase.kind === 'allocation' && <BookEvidence fc={openCase} />}
@@ -231,8 +231,8 @@ export function CasePanel({ building }: { building?: BuildingId } = {}) {
 
       {tired && (
         <div className="border-l-2 border-coral bg-panel-3 py-2 pl-3 pr-2">
-          <div className="font-display text-[9px] text-coral uppercase">Running on fumes</div>
-          <p className="mt-0.5 text-xs text-muted">
+          <div className="text-[12px] text-coral font-semibold uppercase tracking-wide">Running on fumes</div>
+          <p className="mt-0.5 text-[14px] text-muted">
             Nothing is jumping out at you. The figures are all still there — you just have to work
             them yourself. A break at the Cafeteria would help.
           </p>
@@ -249,7 +249,7 @@ export function CasePanel({ building }: { building?: BuildingId } = {}) {
       )}
 
       <div>
-        <div className="mb-1 font-display text-[9px] text-muted uppercase">
+        <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">
           Your read <span className="text-muted/60">· optional, before you decide</span>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -257,7 +257,7 @@ export function CasePanel({ building }: { building?: BuildingId } = {}) {
             <button
               key={band}
               onClick={() => setPredRisk((b) => (b === band ? null : band))}
-              className={`border-2 px-3 py-1.5 font-display text-[10px] uppercase transition-colors ${
+              className={`border-2 px-3 py-1.5 font-display text-[13px] uppercase transition-colors ${
                 predRisk === band
                   ? 'border-amethyst text-amethyst'
                   : 'border-line text-muted hover:text-ink'
@@ -271,21 +271,21 @@ export function CasePanel({ building }: { building?: BuildingId } = {}) {
             onChange={(e) => setPredNote(e.target.value)}
             maxLength={80}
             placeholder="why? (one line)"
-            className="min-w-0 flex-1 border-2 border-line bg-night px-2 py-1.5 text-xs text-ink
+            className="min-w-0 flex-1 border-2 border-line bg-night px-2 py-1.5 text-[14px] text-ink
               placeholder:text-muted/50 focus:border-amethyst focus:outline-none"
           />
         </div>
       </div>
 
       <div>
-        <div className="mb-2 font-display text-[9px] text-muted uppercase">Your call</div>
+        <div className="mb-2 text-[12px] text-muted font-semibold uppercase tracking-wide">Your call</div>
         <div className="flex flex-wrap gap-2">
           {openCase.choices.map((ch) => (
             <button
               key={ch.id}
               onClick={() => setChoice(ch.id)}
               title={ch.detail}
-              className={`border-2 px-3 py-2 font-display text-[10px] uppercase transition-colors ${
+              className={`border-2 px-3 py-2 font-display text-[13px] uppercase transition-colors ${
                 choice === ch.id
                   ? 'border-marigold text-marigold'
                   : 'border-line text-muted hover:text-ink'
@@ -301,7 +301,7 @@ export function CasePanel({ building }: { building?: BuildingId } = {}) {
         <PixelButton tone="primary" onClick={submit} disabled={!choice}>
           Submit decision
         </PixelButton>
-        <span className="text-xs text-muted">
+        <span className="text-[14px] text-muted">
           {choice
             ? (openCase.choices.find((c) => c.id === choice)?.detail ?? '')
             : 'The outcome is a roll — the score is on your reasoning.'}
@@ -327,8 +327,8 @@ function LoanEvidence({ fc }: { fc: LoanCase }) {
   ]
   return (
     <div>
-      <div className="mb-1 font-display text-[9px] text-muted uppercase">On the file</div>
-      <dl className="grid grid-cols-2 gap-x-6 text-sm">
+      <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">On the file</div>
+      <dl className="grid grid-cols-2 gap-x-6 text-[15px]">
         {rows.map(([k, v]) => (
           <div key={k} className="flex justify-between border-b border-line/50 py-1">
             <dt className="text-muted">{k}</dt>
@@ -356,7 +356,7 @@ function BookEvidence({ fc }: { fc: AllocationCase }) {
   return (
     <div className="space-y-3">
       <div className="border-2 border-line bg-panel-3 p-3">
-        <div className="mb-2 flex justify-between font-display text-[9px] text-muted uppercase">
+        <div className="mb-2 flex justify-between text-[12px] text-muted font-semibold uppercase tracking-wide">
           <span>The book</span>
           <span className="font-num">{rupees(total, { short: true })}</span>
         </div>
@@ -364,17 +364,17 @@ function BookEvidence({ fc }: { fc: AllocationCase }) {
       </div>
 
       <div>
-        <div className="mb-1 font-display text-[9px] text-muted uppercase">Holdings</div>
-        <ul className="divide-y divide-line/50 text-sm">
+        <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">Holdings</div>
+        <ul className="divide-y divide-line/50 text-[15px]">
           {fc.book.map((b) => (
             <li key={b.name} className="flex items-baseline gap-2 py-1.5">
               <span className="flex-1 text-ink">
                 {b.name}
-                {b.note && <span className="block text-[10px] text-muted">{b.note}</span>}
+                {b.note && <span className="block text-[13px] text-muted">{b.note}</span>}
               </span>
-              <span className="text-xs text-muted capitalize">{b.sector}</span>
-              <span className="w-24 text-right font-num text-xs text-ink">{rupees(b.value)}</span>
-              <span className="w-10 text-right font-num text-xs text-muted">
+              <span className="text-[14px] text-muted capitalize">{b.sector}</span>
+              <span className="w-24 text-right font-num text-[14px] text-ink">{rupees(b.value)}</span>
+              <span className="w-10 text-right font-num text-[14px] text-muted">
                 {Math.round((b.value / total) * 100)}%
               </span>
             </li>
@@ -383,8 +383,8 @@ function BookEvidence({ fc }: { fc: AllocationCase }) {
       </div>
 
       <div className="border-l-2 border-amethyst pl-3">
-        <div className="font-display text-[9px] text-amethyst uppercase">The mandate</div>
-        <ul className="mt-1 space-y-0.5 text-xs text-muted">
+        <div className="text-[12px] text-amethyst font-semibold uppercase tracking-wide">The mandate</div>
+        <ul className="mt-1 space-y-0.5 text-[14px] text-muted">
           {fc.mandate.map((m) => (
             <li key={m} className="flex gap-2">
               <span className="text-amethyst">▪</span>
@@ -414,13 +414,13 @@ function PatternEvidence({
   return (
     <div className="space-y-3">
       <div>
-        <div className="mb-1 font-display text-[9px] text-muted uppercase">The accounts</div>
-        <dl className="text-sm">
+        <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">The accounts</div>
+        <dl className="text-[15px]">
           {fc.accounts.map((a) => (
             <div key={a.label} className="flex justify-between gap-4 border-b border-line/50 py-1">
               <dt className="text-muted">
                 {a.label}
-                {a.note && <span className="block text-[10px] text-muted/70">{a.note}</span>}
+                {a.note && <span className="block text-[13px] text-muted/70">{a.note}</span>}
               </dt>
               <dd className="shrink-0 font-num text-ink">{a.value}</dd>
             </div>
@@ -429,7 +429,7 @@ function PatternEvidence({
       </div>
 
       <div>
-        <div className="mb-1 font-display text-[9px] text-muted uppercase">
+        <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">
           What is the tell? <span className="text-muted/60">· tick only what the lines support</span>
         </div>
         <ul className="space-y-1">
@@ -439,7 +439,7 @@ function PatternEvidence({
               <li key={flag.id}>
                 <button
                   onClick={() => onToggle(flag.id)}
-                  className={`flex w-full items-start gap-2 border-2 px-2 py-1.5 text-left text-xs transition-colors ${
+                  className={`flex w-full items-start gap-2 border-2 px-2 py-1.5 text-left text-[14px] transition-colors ${
                     on ? 'border-marigold text-marigold' : 'border-line text-muted hover:text-ink'
                   }`}
                 >
@@ -450,7 +450,7 @@ function PatternEvidence({
             )
           })}
         </ul>
-        <p className="mt-1 text-[10px] text-muted">
+        <p className="mt-1 text-[13px] text-muted">
           {picked.length} ticked. Flagging everything is the same as flagging nothing.
         </p>
       </div>
@@ -534,21 +534,21 @@ function Outcome({
   return (
     <div className="anim-rise space-y-4 p-4">
       <div className="flex items-start justify-between gap-3">
-        <h3 className="font-display text-[11px] text-marigold uppercase">{fc.title}</h3>
+        <h3 className="text-[14px] text-marigold font-semibold uppercase tracking-wide">{fc.title}</h3>
         <button
           onClick={onDone}
-          className="shrink-0 border border-line px-2 py-1 font-display text-[9px] text-muted uppercase hover:text-ink"
+          className="shrink-0 border border-line px-2 py-1 text-[12px] text-muted font-semibold uppercase tracking-wide hover:text-ink"
         >
           Done
         </button>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <span className={`border-2 border-current px-2 py-1 font-display text-[10px] uppercase ${moneyTone}`}>
+        <span className={`border-2 border-current px-2 py-1 text-[13px] font-semibold uppercase tracking-wide ${moneyTone}`}>
           {moneyLabel}
         </span>
         <span
-          className={`border-2 border-current px-2 py-1 font-display text-[10px] uppercase ${
+          className={`border-2 border-current px-2 py-1 font-display text-[13px] uppercase ${
             r.judgement === 'sound' ? 'text-jade' : 'text-coral'
           }`}
         >
@@ -556,7 +556,7 @@ function Outcome({
         </span>
         {r.prediction && (
           <span
-            className={`border-2 border-current px-2 py-1 font-display text-[10px] uppercase ${
+            className={`border-2 border-current px-2 py-1 font-display text-[13px] uppercase ${
               r.predictionRight ? 'text-jade' : 'text-coral'
             }`}
           >
@@ -565,7 +565,7 @@ function Outcome({
         )}
         {r.flagScore && (
           <span
-            className={`border-2 border-current px-2 py-1 font-display text-[10px] uppercase ${
+            className={`border-2 border-current px-2 py-1 font-display text-[13px] uppercase ${
               r.flagScore.found === r.flagScore.of && r.flagScore.wrong === 0
                 ? 'text-jade'
                 : 'text-marigold'
@@ -579,7 +579,7 @@ function Outcome({
 
       {r.prediction && <PredictionLine r={r} realRisk={ex.realRisk} />}
 
-      <p className="text-sm text-ink">{explanation}</p>
+      <p className="text-[15px] text-ink">{explanation}</p>
 
       <div className="grid grid-cols-3 gap-3">
         <Delta label="Cash" value={cash} tone={r.cashChange >= 0 ? 'text-jade' : 'text-coral'} />
@@ -593,10 +593,10 @@ function Outcome({
 
       {ex.ratios.length > 0 && (
         <div>
-          <div className="mb-1 font-display text-[9px] text-muted uppercase">
+          <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">
             What the numbers said
           </div>
-          <dl className="grid grid-cols-2 gap-x-6 text-sm">
+          <dl className="grid grid-cols-2 gap-x-6 text-[15px]">
             {ex.ratios.map((ratio) => {
               const conceptId = RATIO_CONCEPT[ratio.label]
               return (
@@ -616,10 +616,10 @@ function Outcome({
 
       {ex.flags && (
         <div>
-          <div className="mb-1 font-display text-[9px] text-muted uppercase">
+          <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">
             Which of those were really tells
           </div>
-          <ul className="space-y-1 text-xs">
+          <ul className="space-y-1 text-[14px]">
             {ex.flags.map((f) => (
               <li key={f.label} className="flex items-start gap-2">
                 <span className={`font-num ${f.real ? 'text-jade' : 'text-muted'}`}>
@@ -636,8 +636,8 @@ function Outcome({
       )}
 
       <div>
-        <div className="mb-1 font-display text-[9px] text-muted uppercase">What drove the risk</div>
-        <ul className="space-y-1 text-sm text-muted">
+        <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">What drove the risk</div>
+        <ul className="space-y-1 text-[15px] text-muted">
           {ex.drivers.map((d) => (
             <li key={d} className="flex gap-2">
               <span className="text-marigold">▪</span>
@@ -645,7 +645,7 @@ function Outcome({
             </li>
           ))}
         </ul>
-        <p className="mt-2 text-xs text-muted">
+        <p className="mt-2 text-[14px] text-muted">
           {ex.riskLabel}: {Math.round(ex.realRisk * 100)}%.
         </p>
       </div>
@@ -668,17 +668,17 @@ function SeenBefore({ casebookId }: { casebookId: string }) {
 
   return (
     <div className="border-2 border-amethyst bg-panel-3 p-3">
-      <div className="font-display text-[9px] text-amethyst uppercase">You have seen this before</div>
-      <p className="mt-1 text-xs text-ink">
+      <div className="text-[12px] text-amethyst font-semibold uppercase tracking-wide">You have seen this before</div>
+      <p className="mt-1 text-[14px] text-ink">
         {entry.title} · {entry.year}
       </p>
-      <p className="mt-1 text-[11px] leading-relaxed text-muted">{entry.oneLine}</p>
+      <p className="mt-1 text-[14px] leading-relaxed text-muted">{entry.oneLine}</p>
       <button
         onClick={() => {
           setCasebookEntry(entry.id)
           setOpenBuilding('academy')
         }}
-        className="mt-2 font-display text-[9px] text-amethyst uppercase underline hover:text-marigold"
+        className="mt-2 text-[12px] text-amethyst font-semibold uppercase tracking-wide underline hover:text-marigold"
       >
         Read what actually happened →
       </button>
@@ -689,8 +689,8 @@ function SeenBefore({ casebookId }: { casebookId: string }) {
 function Delta({ label, value, tone }: { label: string; value: string; tone: string }) {
   return (
     <div className="border-2 border-line bg-night px-3 py-2">
-      <div className="font-display text-[9px] text-muted uppercase">{label}</div>
-      <div className={`font-num text-sm ${tone}`}>{value}</div>
+      <div className="text-[12px] text-muted font-semibold uppercase tracking-wide">{label}</div>
+      <div className={`font-num text-[15px] ${tone}`}>{value}</div>
     </div>
   )
 }
@@ -703,8 +703,8 @@ function PredictionLine({ r, realRisk }: { r: ResolvedCase; realRisk: number }) 
   const pct = Math.round(realRisk * 100)
   return (
     <div className="border-l-2 border-amethyst pl-3">
-      <div className="font-display text-[9px] text-amethyst uppercase">Your read</div>
-      <p className="text-xs text-muted">
+      <div className="text-[12px] text-amethyst font-semibold uppercase tracking-wide">Your read</div>
+      <p className="text-[14px] text-muted">
         You called it {BAND_LABEL[p.risk]}
         {p.note ? ` — “${p.note}”` : ''}. The file was {pct}%.{' '}
         {r.predictionRight
@@ -719,8 +719,8 @@ function PredictionLine({ r, realRisk }: { r: ResolvedCase; realRisk: number }) 
 function Aid({ tag, children }: { tag: string; children: ReactNode }) {
   return (
     <div className="border-l-2 border-marigold pl-3">
-      <div className="font-display text-[9px] text-marigold uppercase">{tag}</div>
-      <p className="text-xs text-muted">{children}</p>
+      <div className="text-[12px] text-marigold font-semibold uppercase tracking-wide">{tag}</div>
+      <p className="text-[14px] text-muted">{children}</p>
     </div>
   )
 }

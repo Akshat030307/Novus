@@ -34,17 +34,17 @@ export function DayEndScreen({
 
   return (
     <div className="anim-backdrop fixed inset-0 z-50 flex items-center justify-center bg-night/85 p-6">
-      <div className="anim-pop w-full max-w-lg border-2 border-line bg-panel">
+      <div className="anim-pop w-full max-w-[760px] overflow-hidden rounded-2xl border border-line bg-panel shadow-2xl shadow-black/60">
         <header className="border-b-2 border-line px-5 py-3">
-          <h2 className="font-display text-sm text-ink">Day {report.day} — closed</h2>
-          <p className="font-display text-[9px] text-muted uppercase">Market shut at 3:30 pm</p>
+          <h2 className="font-display text-[18px] text-ink">Day {report.day} — closed</h2>
+          <p className="text-[12px] text-muted font-semibold uppercase tracking-wide">Market shut at 3:30 pm</p>
         </header>
 
         <div className="space-y-5 p-5">
           <div className="anim-rise" style={{ animationDelay: '0ms' }}>
-            <div className="font-display text-[9px] text-muted uppercase">P&amp;L on the day</div>
+            <div className="text-[12px] text-muted font-semibold uppercase tracking-wide">P&amp;L on the day</div>
             <div className={`font-num text-3xl ${gainLoss(dayPnL)}`}>{money(dayPnL)}</div>
-            <p className="mt-1 text-sm text-muted">{verdict}</p>
+            <p className="mt-1 text-[15px] text-muted">{verdict}</p>
           </div>
 
           {report.lesson && (
@@ -52,8 +52,8 @@ export function DayEndScreen({
               className="anim-rise border-l-2 border-amethyst bg-panel-3 py-2 pl-3 pr-2"
               style={{ animationDelay: '40ms' }}
             >
-              <div className="font-display text-[9px] text-amethyst uppercase">Worth noting</div>
-              <p className="mt-0.5 text-sm text-ink">{report.lesson}</p>
+              <div className="text-[12px] text-amethyst font-semibold uppercase tracking-wide">Worth noting</div>
+              <p className="mt-0.5 text-[15px] text-ink">{report.lesson}</p>
             </div>
           )}
 
@@ -84,8 +84,8 @@ export function DayEndScreen({
 
           {report.questsCompleted.length > 0 && (
             <div className="anim-rise border-t-2 border-line pt-4" style={{ animationDelay: '320ms' }}>
-              <div className="mb-1 font-display text-[9px] text-muted uppercase">Finished today</div>
-              <ul className="space-y-1 text-sm text-ink">
+              <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">Finished today</div>
+              <ul className="space-y-1 text-[15px] text-ink">
                 {report.questsCompleted.map((q) => (
                   <li key={q} className="flex gap-2">
                     <span className="text-jade">▪</span>
@@ -98,8 +98,8 @@ export function DayEndScreen({
 
           {report.tomorrowHeadline && (
             <div className="anim-rise border-t-2 border-line pt-4" style={{ animationDelay: '400ms' }}>
-              <div className="mb-1 font-display text-[9px] text-muted uppercase">Tomorrow</div>
-              <p className="text-sm text-ink">{report.tomorrowHeadline}</p>
+              <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">Tomorrow</div>
+              <p className="text-[15px] text-ink">{report.tomorrowHeadline}</p>
             </div>
           )}
         </div>
@@ -125,7 +125,7 @@ function Section({
 }) {
   return (
     <div className="anim-rise border-t-2 border-line pt-4" style={{ animationDelay: `${delay}ms` }}>
-      <div className="mb-2 font-display text-[9px] text-muted uppercase">{title}</div>
+      <div className="mb-2 text-[12px] text-muted font-semibold uppercase tracking-wide">{title}</div>
       <div className="grid grid-cols-3 gap-3">{children}</div>
     </div>
   )
@@ -142,8 +142,8 @@ function Figure({
 }) {
   return (
     <div className="border-2 border-line bg-night px-3 py-2">
-      <div className="font-display text-[9px] text-muted uppercase">{label}</div>
-      <div className={`font-num text-sm ${tone}`}>{value}</div>
+      <div className="text-[12px] text-muted font-semibold uppercase tracking-wide">{label}</div>
+      <div className={`font-num text-[15px] ${tone}`}>{value}</div>
     </div>
   )
 }

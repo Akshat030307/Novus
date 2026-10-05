@@ -68,14 +68,14 @@ export function MoveBreakdown({ stockId }: { stockId: string }) {
     <div className="border-t border-line/50 px-3 py-2">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center gap-2 font-display text-[9px] text-muted uppercase transition-colors hover:text-marigold"
+        className="flex w-full items-center gap-2 text-[12px] text-muted font-semibold uppercase tracking-wide transition-colors hover:text-marigold"
       >
         <span className="text-marigold">{open ? '▾' : '▸'}</span>
         Why did it move today?
       </button>
 
       {open && !attribution && (
-        <p className="mt-2 text-xs text-muted">
+        <p className="mt-2 text-[14px] text-muted">
           {minute < 555
             ? 'Nothing has traded yet — the market opens at 9:15.'
             : "Today can't be reconstructed from this save."}
@@ -84,7 +84,7 @@ export function MoveBreakdown({ stockId }: { stockId: string }) {
 
       {open && attribution && (
         <div className="mt-2 space-y-2">
-          <div className="flex items-baseline justify-between font-num text-[11px]">
+          <div className="flex items-baseline justify-between font-num text-[14px]">
             <span className="text-ink">{signedRupees(move)} on the day</span>
             <span className="text-muted">over {attribution.minutes} min</span>
           </div>
@@ -100,15 +100,15 @@ export function MoveBreakdown({ stockId }: { stockId: string }) {
           <dl className="grid grid-cols-3 gap-2">
             {TERMS.map((t) => (
               <div key={t.key} title={t.hint}>
-                <dt className={`font-display text-[9px] uppercase ${t.text}`}>{t.label}</dt>
-                <dd className="font-num text-[11px] text-ink">
+                <dt className={`text-[12px] font-semibold uppercase tracking-wide ${t.text}`}>{t.label}</dt>
+                <dd className="font-num text-[14px] text-ink">
                   {signedRupees(attribution[t.key])}
                 </dd>
               </div>
             ))}
           </dl>
 
-          <p className="text-[10px] leading-relaxed text-muted">
+          <p className="text-[13px] leading-relaxed text-muted">
             {Math.abs(attribution.noise) > Math.abs(attribution.drift) + Math.abs(attribution.shock)
               ? 'Most of today was noise — movement that means nothing and will not repeat.'
               : 'Today was driven by more than noise. That is the unusual case, not the normal one.'}

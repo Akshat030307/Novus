@@ -22,13 +22,13 @@ export function LevelUpPopup({
     <div className="anim-backdrop fixed inset-0 z-50 flex items-center justify-center bg-night/85 p-6">
       <div className="anim-pop w-full max-w-sm border-2 border-amethyst bg-panel">
         <header className="border-b-2 border-amethyst px-5 py-4 text-center">
-          <div className="font-display text-[10px] text-amethyst uppercase">Level up</div>
+          <div className="text-[13px] text-amethyst font-semibold uppercase tracking-wide">Level up</div>
           <div className="anim-level font-display text-2xl text-ink">Level {report.newLevel}</div>
         </header>
 
         <div className="p-5">
-          <div className="mb-2 font-display text-[9px] text-muted uppercase">Now open to you</div>
-          <ul className="space-y-2 text-sm text-ink">
+          <div className="mb-2 text-[12px] text-muted font-semibold uppercase tracking-wide">Now open to you</div>
+          <ul className="space-y-2 text-[15px] text-ink">
             {report.unlocks.map((u) => (
               <li key={u} className="flex gap-2">
                 <span className="text-marigold">+</span>

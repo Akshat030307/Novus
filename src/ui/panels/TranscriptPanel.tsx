@@ -79,8 +79,8 @@ export function TranscriptPanel() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h3 className="font-display text-[11px] text-marigold uppercase">Report card</h3>
-          <p className="font-display text-[9px] text-muted uppercase">
+          <h3 className="text-[14px] text-marigold font-semibold uppercase tracking-wide">Report card</h3>
+          <p className="text-[12px] text-muted font-semibold uppercase tracking-wide">
             {state.player.name} · Level {state.player.level} · Day {state.clock.day}
           </p>
         </div>
@@ -93,13 +93,13 @@ export function TranscriptPanel() {
       </div>
 
       {!user && (
-        <p className="border-l-2 border-line pl-3 text-xs text-muted">
+        <p className="border-l-2 border-line pl-3 text-[14px] text-muted">
           Sign in to issue a transcript. It has to be written against an account and timestamped by
           the server — a code the game made up on its own would prove nothing.
         </p>
       )}
 
-      {error && <p className="border-l-2 border-coral pl-3 text-xs text-coral">{error}</p>}
+      {error && <p className="border-l-2 border-coral pl-3 text-[14px] text-coral">{error}</p>}
 
       {latest && (
         <div className="space-y-2">
@@ -116,13 +116,13 @@ export function TranscriptPanel() {
               href={verifyUrl(latest.code)}
               target="_blank"
               rel="noreferrer"
-              className="font-display text-[9px] text-amethyst uppercase underline hover:text-marigold"
+              className="text-[12px] text-amethyst font-semibold uppercase tracking-wide underline hover:text-marigold"
             >
               Open it as they will see it
             </a>
           </div>
           {issued.length > 1 && (
-            <p className="text-[10px] text-muted">
+            <p className="text-[13px] text-muted">
               Earlier:{' '}
               {issued.slice(1).map((t, i) => (
                 <span key={t.code}>
@@ -139,7 +139,7 @@ export function TranscriptPanel() {
               ))}
             </p>
           )}
-          <p className="text-[10px] text-muted">
+          <p className="text-[13px] text-muted">
             The one above is a snapshot of the run as it stood when you issued it. Issue another
             later and both stay readable — neither can be edited or withdrawn.
           </p>

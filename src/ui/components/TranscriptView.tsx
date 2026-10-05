@@ -14,24 +14,24 @@ export function TranscriptView({ doc }: { doc: TranscriptDoc }) {
     <div className="space-y-4">
       {doc.award && (
         <div className="border-2 border-marigold bg-panel-3 p-4">
-          <div className="font-display text-[9px] text-marigold uppercase">Certificate</div>
-          <h3 className="mt-1 font-display text-[13px] text-ink">{doc.award.title}</h3>
-          <p className="mt-2 text-xs leading-relaxed text-muted">{doc.award.blurb}</p>
+          <div className="text-[12px] text-marigold font-semibold uppercase tracking-wide">Certificate</div>
+          <h3 className="mt-1 font-display text-[15px] text-ink">{doc.award.title}</h3>
+          <p className="mt-2 text-[14px] leading-relaxed text-muted">{doc.award.blurb}</p>
         </div>
       )}
       <dl className="grid grid-cols-2 gap-px border-2 border-line bg-line sm:grid-cols-4">
         {doc.headline.map((h) => (
           <div key={h.label} className="bg-panel-3 p-2">
-            <dt className="font-display text-[9px] text-muted uppercase">{h.label}</dt>
-            <dd className="font-num text-sm text-ink">{h.value}</dd>
+            <dt className="text-[12px] text-muted font-semibold uppercase tracking-wide">{h.label}</dt>
+            <dd className="font-num text-[15px] text-ink">{h.value}</dd>
           </div>
         ))}
       </dl>
 
       {doc.sections.map((section) => (
         <section key={section.title} className="border-2 border-line bg-panel-3 p-3">
-          <h4 className="font-display text-[10px] text-marigold uppercase">{section.title}</h4>
-          <p className="mt-1 mb-2 text-[11px] leading-relaxed text-muted">{section.summary}</p>
+          <h4 className="text-[13px] text-marigold font-semibold uppercase tracking-wide">{section.title}</h4>
+          <p className="mt-1 mb-2 text-[14px] leading-relaxed text-muted">{section.summary}</p>
           <ul className="space-y-1">
             {section.lines.map((line, i) => (
               <Line key={`${line.label}-${i}`} line={line} />
@@ -51,14 +51,14 @@ function Line({ line }: { line: TranscriptLine }) {
 
   return (
     <li>
-      <div className="flex items-baseline justify-between gap-3 text-xs">
+      <div className="flex items-baseline justify-between gap-3 text-[14px]">
         <span className="text-ink">
           <span className={`mr-1.5 font-num ${tone}`}>{mark}</span>
           {line.label}
         </span>
         <span className="shrink-0 font-num text-muted">{line.value}</span>
       </div>
-      {line.note && <p className="pl-4 text-[10px] text-muted">{line.note}</p>}
+      {line.note && <p className="pl-4 text-[13px] text-muted">{line.note}</p>}
     </li>
   )
 }
@@ -79,13 +79,13 @@ export function TranscriptProvenance({
 }) {
   return (
     <div className="border-2 border-amethyst bg-panel-3 p-3">
-      <div className="font-display text-[9px] text-amethyst uppercase">Verification</div>
-      <p className="mt-1 font-num text-sm break-all text-ink">{code}</p>
-      <p className="mt-1 text-[11px] text-muted">
+      <div className="text-[12px] text-amethyst font-semibold uppercase tracking-wide">Verification</div>
+      <p className="mt-1 font-num text-[15px] break-all text-ink">{code}</p>
+      <p className="mt-1 text-[14px] text-muted">
         Issued to <span className="text-ink">{playerName}</span> on{' '}
         <span className="font-num">{new Date(issuedAt).toLocaleString('en-IN')}</span>.
       </p>
-      <p className="mt-2 text-[10px] leading-relaxed text-muted">
+      <p className="mt-2 text-[13px] leading-relaxed text-muted">
         This code proves the report came out of Novus, under this account, at the time the database
         recorded — and that nothing in it has been edited since. It does not vouch for how the run
         was played.

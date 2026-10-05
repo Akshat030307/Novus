@@ -71,7 +71,7 @@ export default function HomeScreen() {
         {/* logotype */}
         <header className="anim-rise flex items-center gap-2.5">
           <PixelDollar className="aspect-[6/7] h-5 shrink-0" />
-          <span className="font-display text-[11px] tracking-widest text-blush uppercase">Novus</span>
+          <span className="text-[14px] tracking-widest text-blush font-semibold uppercase">Novus</span>
         </header>
 
         {/* hero — centred in whatever room is left between logotype and footer */}
@@ -85,7 +85,7 @@ export default function HomeScreen() {
             </h1>
 
             <p
-              className="anim-rise mt-4 font-display uppercase leading-relaxed tracking-wide text-magenta text-[clamp(0.7rem,1.5vw,1.15rem)]"
+              className="anim-rise mt-4 font-semibold uppercase leading-relaxed tracking-wide text-magenta text-[clamp(0.7rem,1.5vw,1.15rem)]"
               style={{ animationDelay: '120ms' }}
             >
               Gamified Financial Markets Education Platform
@@ -104,7 +104,7 @@ export default function HomeScreen() {
                 <div className="w-full max-w-sm border-2 border-plum-line bg-plum-2 p-4">
                   <label
                     htmlFor="name"
-                    className="mb-2 block font-display text-[10px] text-blush/50 uppercase"
+                    className="mb-2 block text-[13px] text-blush/50 font-semibold uppercase tracking-wide"
                   >
                     What should people call you?
                   </label>
@@ -138,7 +138,7 @@ export default function HomeScreen() {
             </div>
 
             <ul
-              className="anim-rise mt-10 flex flex-wrap gap-x-5 gap-y-2 font-display text-[9px] text-blush/40 uppercase"
+              className="anim-rise mt-10 flex flex-wrap gap-x-5 gap-y-2 text-[12px] text-blush/40 font-semibold uppercase tracking-wide"
               style={{ animationDelay: '300ms' }}
             >
               <Feature>Credit decisions</Feature>
@@ -169,7 +169,7 @@ export default function HomeScreen() {
               className="block aspect-video h-auto w-full bg-plum"
               aria-label="Novus gameplay demo: the credit desk, the market, real-case replays, the day-end report, transcripts and the teacher dashboard"
             />
-            <figcaption className="mt-2 px-1 font-display text-[8px] text-blush/35 uppercase">
+            <figcaption className="mt-2 px-1 text-[11px] text-blush/35 font-semibold uppercase tracking-wide">
               Gameplay demo · 1:24 · sound on
             </figcaption>
           </figure>
@@ -180,17 +180,17 @@ export default function HomeScreen() {
           <div className="max-w-sm">
             {cloudEnabled && authReady ? (
               user ? (
-                <div className="flex items-center gap-3 text-xs">
+                <div className="flex items-center gap-3 text-[14px]">
                   <span className="font-num text-blush/60">{user.email}</span>
                   <button
                     onClick={() => void signOut()}
-                    className="font-display text-[9px] text-blush/40 uppercase transition-colors hover:text-magenta"
+                    className="text-[12px] text-blush/40 font-semibold uppercase tracking-wide transition-colors hover:text-magenta"
                   >
                     Sign out
                   </button>
                 </div>
               ) : linkSent ? (
-                <p className="text-xs text-blush/60">Sign-in link sent — check your email.</p>
+                <p className="text-[14px] text-blush/60">Sign-in link sent — check your email.</p>
               ) : (
                 <>
                   <form onSubmit={sendLink} className="flex gap-3">
@@ -200,21 +200,21 @@ export default function HomeScreen() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@email.com"
-                      className="min-w-0 flex-1 border-2 border-plum-line bg-plum-2 px-3 py-2 font-num text-sm text-blush
+                      className="min-w-0 flex-1 border-2 border-plum-line bg-plum-2 px-3 py-2 font-num text-[15px] text-blush
                         placeholder:text-blush/25 focus:border-magenta focus:outline-none"
                     />
                     <Ghost type="submit">Send link</Ghost>
                   </form>
-                  <p className="mt-2 text-[10px] text-blush/35">
+                  <p className="mt-2 text-[13px] text-blush/35">
                     Optional — sign in to keep your progress across devices.
                   </p>
                 </>
               )
             ) : null}
-            {authError && <p className="mt-2 text-xs text-coral">{authError}</p>}
+            {authError && <p className="mt-2 text-[14px] text-coral">{authError}</p>}
           </div>
 
-          <p className="font-display text-[9px] text-blush/30 uppercase">
+          <p className="text-[12px] text-blush/30 font-semibold uppercase tracking-wide">
             Build 0.1 · single player · plays in the browser
           </p>
         </footer>
@@ -253,7 +253,7 @@ function Cta({ children, onClick }: { children: ReactNode; onClick: () => void }
   return (
     <button
       onClick={onClick}
-      className="border-2 border-magenta bg-magenta px-5 py-2.5 font-display text-[11px] tracking-wide
+      className="border-2 border-magenta bg-magenta px-5 py-2.5 font-display text-[14px] tracking-wide
         text-plum uppercase transition-[box-shadow,background-color]
         hover:bg-magenta-soft hover:[box-shadow:0_0_24px_var(--color-magenta)]"
     >
@@ -282,7 +282,7 @@ function Ghost({
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className="border-2 border-plum-line px-5 py-2.5 font-display text-[11px] tracking-wide
+      className="border-2 border-plum-line px-5 py-2.5 font-display text-[14px] tracking-wide
         text-blush/70 uppercase transition-colors hover:border-magenta hover:text-magenta
         disabled:cursor-not-allowed disabled:border-plum-line disabled:text-blush/20
         disabled:hover:border-plum-line disabled:hover:text-blush/20"

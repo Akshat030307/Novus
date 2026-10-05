@@ -77,7 +77,7 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
     <div className="anim-backdrop fixed inset-0 z-50 flex items-center justify-center bg-night/85 p-6">
       <div className="anim-pop w-full max-w-md border-2 border-line bg-panel">
         <header className="border-b-2 border-line px-5 py-3">
-          <h2 className="font-display text-sm text-ink">Settings</h2>
+          <h2 className="font-display text-[15px] text-ink">Settings</h2>
         </header>
 
         <div className="divide-y-2 divide-line">
@@ -92,8 +92,8 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
                 }`}
               >
                 <div>
-                  <div className="font-display text-[11px] text-ink">{row.label}</div>
-                  <div className="text-xs text-muted">{row.hint}</div>
+                  <div className="font-display text-[14px] text-ink">{row.label}</div>
+                  <div className="text-[14px] text-muted">{row.hint}</div>
                 </div>
                 <button
                   onClick={() => {
@@ -103,7 +103,7 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
                   }}
                   disabled={locked}
                   aria-pressed={on}
-                  className={`shrink-0 border-2 px-3 py-1 font-display text-[10px] uppercase transition-colors disabled:opacity-40 ${
+                  className={`shrink-0 border-2 px-3 py-1 font-display text-[13px] uppercase transition-colors disabled:opacity-40 ${
                     on && !locked
                       ? 'border-jade bg-jade/10 text-jade'
                       : 'border-line bg-panel-2 text-muted'
