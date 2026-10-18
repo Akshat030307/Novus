@@ -9,6 +9,7 @@ import {
   classTotals,
   HABITS,
   resultOf,
+  toCsv,
   whatToTeachNext,
   type Assignment,
   type Cell,
@@ -25,7 +26,8 @@ import {
   removeAssignment,
   type Cohort,
 } from '@/state/cohorts'
-import { SAMPLE_CLASS_NAME, sampleClass } from '@/data/sample-class'
+import { useSampleClass } from '@/state/sampleClass'
+import { StudentDetail } from '@/ui/instructor/StudentDetail'
 import {
   ActivityChart,
   AssignmentResults,
@@ -69,8 +71,8 @@ export default function TeachScreen() {
   const board = sampling || Boolean(ready && user && openId)
 
   return (
-    <div className="flex h-full flex-col bg-night font-ui text-[15px] leading-relaxed text-ink">
-      <header className="shrink-0 border-b border-line bg-panel-2">
+    <div className="teach-root flex h-full flex-col bg-night font-ui text-[15px] leading-relaxed text-ink">
+      <header className="shrink-0 border-b border-line bg-panel-2 print:hidden">
         <div className="mx-auto flex w-full max-w-[1800px] items-center justify-between gap-4 px-4 py-2.5 sm:px-6">
           <a href="/teach" className="flex items-baseline gap-2">
             <span className="font-display text-sm text-marigold">NOVUS</span>
@@ -412,19 +414,36 @@ function CohortView({ cohort, onBack }: { cohort: Cohort; onBack: () => void }) 
 }
 
 /**
- * The sample class. Read-only on purpose: nothing here can be assigned,
- * removed or saved, because there is nobody on the other end.
+ * The sample class, editable.
+ *
+ * Still invented, still nowhere near the database — but every control works,
+ * and what a teacher does here survives a reload because state/sampleClass.ts
+ * keeps it in this browser. It is the product with the data made up, rather
+ * than a picture of the product.
  */
 function SampleClass() {
-  const data = useMemo(() => sampleClass(), [])
+  const c = useSampleClass()
+  const [renaming, setRenaming] = useState(false)
+  const [draftName, setDraftName] = useState(c.name)
+
+  const actions: BoardActions = {
+    renameClass: (n) => c.rename(n),
+    removeStudent: (id) => c.removeStudent(id),
+    addAssignment: (a) => c.addAssignment(a),
+    updateAssignment: (id, patch) => c.updateAssignment(id, patch),
+    removeAssignment: (id) => c.removeAssignment(id),
+    moveAssignment: (id, by) => c.moveAssignment(id, by),
+    reset: () => c.reset(),
+  }
+
   return (
     <ClassBoard
-      name={SAMPLE_CLASS_NAME}
+      name={c.name}
       joinCode={null}
       badge={
         <span
           className="rounded-full border border-marigold/50 bg-marigold/10 px-2.5 py-0.5 text-[13px] font-medium text-marigold"
-          title="An invented class, about a week in, shown through exactly the same page a real class gets. Nothing here is stored, and none of it can be changed."
+          title="An invented class shown through exactly the same page a real class gets. Everything works; nothing leaves this browser."
         >
           Sample data — not real students
         </span>
@@ -434,14 +453,12 @@ function SampleClass() {
           ← Your classes
         </a>
       }
-      {...data}
+      members={c.members}
+      assignments={c.assignments}
+      attempts={c.attempts}
       loading={false}
-      setWork={
-        <Card>
-          <SectionTitle accent="text-marigold">Work set this week</SectionTitle>
-          <AssignmentList assignments={data.assignments} />
-        </Card>
-      }
+      actions={actions}
+      renaming={{ on: renaming, draft: draftName, setDraft: setDraftName, setOn: setRenaming }}
     />
   )
 }
@@ -486,6 +503,19 @@ type Tab = 'overview' | 'students' | 'work'
  * to its card. The long student table and the work form live on their own
  * tabs so nothing has to be scrolled to. Narrower screens stack and scroll.
  */
+/** what a board can change, when it is allowed to change anything */
+export interface BoardActions {
+  renameClass: (name: string) => void
+  removeStudent: (userId: string) => void
+  addAssignment: (a: { kind: 'drill' | 'module'; refId: string; title: string; dueAt: string | null }) => void
+  updateAssignment: (id: string, patch: Partial<Pick<Assignment, 'dueAt' | 'optional'>>) => void
+  removeAssignment: (id: string) => void
+  moveAssignment: (id: string, by: -1 | 1) => void
+  reset: () => void
+}
+
+type SortKey = 'name' | 'day' | 'concepts' | 'passed'
+
 function ClassBoard({
   name,
   joinCode,
@@ -496,6 +526,8 @@ function ClassBoard({
   attempts,
   loading,
   setWork,
+  actions,
+  renaming,
 }: {
   name: string
   /** null for the sample, which nobody can join */
@@ -506,20 +538,29 @@ function ClassBoard({
   assignments: Assignment[]
   attempts: (Attempt & { userId: string })[]
   loading: boolean
-  setWork: ReactNode
+  /** the real class passes its own form; the sample builds one from `actions` */
+  setWork?: ReactNode
+  /** present when this board may be edited */
+  actions?: BoardActions
+  renaming?: { on: boolean; draft: string; setDraft: (v: string) => void; setOn: (v: boolean) => void }
 }) {
   const rows = useMemo(
     () => buildRows(members, assignments, attempts),
     [members, assignments, attempts],
   )
   const lessons = useMemo(() => whatToTeachNext(rows, assignments), [rows, assignments])
-  const totals = useMemo(() => classTotals(rows), [rows])
+  const totals = useMemo(() => classTotals(rows, assignments), [rows, assignments])
   const breakdowns = useMemo(() => assignmentBreakdown(rows, assignments), [rows, assignments])
   const [now] = useState(() => Date.now())
   const [tab, setTab] = useState<Tab>('overview')
 
   // one student picked anywhere is highlighted everywhere
   const [focus, setFocus] = useState<string | null>(null)
+  // the student whose full history is open, which is not the same as the one
+  // the charts are following
+  const [detail, setDetail] = useState<string | null>(null)
+  const [query, setQuery] = useState('')
+  const [sort, setSort] = useState<SortKey>('name')
   // a bar segment clicked in "Results by assignment" narrows the student list to those students
   const [filter, setFilter] = useState<ResultFilter | null>(null)
   const focused = rows.find((r) => r.member.userId === focus) ?? null
@@ -536,8 +577,36 @@ function ClassBoard({
   }, [])
 
   const filterIndex = filter ? assignments.findIndex((a) => a.id === filter.assignmentId) : -1
-  const tableRows =
-    filter && filterIndex >= 0 ? rows.filter((r) => resultOf(r.cells[filterIndex]) === filter.kind) : rows
+  const tableRows = useMemo(() => {
+    let out = filter && filterIndex >= 0
+      ? rows.filter((r) => resultOf(r.cells[filterIndex]) === filter.kind)
+      : rows
+    const q = query.trim().toLowerCase()
+    if (q) out = out.filter((r) => r.member.displayName.toLowerCase().includes(q))
+    const by: Record<SortKey, (r: (typeof rows)[number]) => number | string> = {
+      name: (r) => r.member.displayName,
+      day: (r) => -(r.member.summary?.day ?? -1),
+      concepts: (r) => -(r.member.summary?.conceptsLearned ?? -1),
+      passed: (r) => -r.passed,
+    }
+    return [...out].sort((a, b) => {
+      const x = by[sort](a)
+      const y = by[sort](b)
+      return typeof x === 'string' ? x.localeCompare(y as string) : (x as number) - (y as number)
+    })
+  }, [rows, filter, filterIndex, query, sort])
+
+  const detailRow = rows.find((r) => r.member.userId === detail) ?? null
+
+  const download = () => {
+    const csv = toCsv(rows, assignments)
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }))
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${name.replace(/[^\w]+/g, '-').toLowerCase()}-results.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
   const RESULT_WORD = { passed: 'passed', notYet: 'not yet passed', notStarted: 'not started' } as const
   const hasClass = !loading && members.length > 0
 
@@ -545,7 +614,48 @@ function ClassBoard({
     <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
       <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-1">
         {back}
-        <h1 className="text-xl font-semibold text-ink">{name}</h1>
+        {renaming?.on ? (
+          <form
+            className="flex items-center gap-2"
+            onSubmit={(e) => {
+              e.preventDefault()
+              actions?.renameClass(renaming.draft)
+              renaming.setOn(false)
+            }}
+          >
+            <input
+              autoFocus
+              value={renaming.draft}
+              onChange={(e) => renaming.setDraft(e.target.value)}
+              maxLength={60}
+              className={`w-[26rem] max-w-full ${field}`}
+            />
+            <Button variant="primary" type="submit">
+              Save
+            </Button>
+            <button
+              type="button"
+              onClick={() => renaming.setOn(false)}
+              className="text-sm text-muted hover:text-ink"
+            >
+              Cancel
+            </button>
+          </form>
+        ) : (
+          <h1 className="text-xl font-semibold text-ink">{name}</h1>
+        )}
+        {actions && !renaming?.on && (
+          <button
+            onClick={() => {
+              renaming?.setDraft(name)
+              renaming?.setOn(true)
+            }}
+            className="text-sm text-muted hover:text-ink"
+            title="Rename this class"
+          >
+            Rename
+          </button>
+        )}
         {badge}
       </div>
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
@@ -745,13 +855,65 @@ function ClassBoard({
         </div>
       )}
 
-      {tab === 'work' && <div className="xl:min-h-0 xl:flex-1 xl:overflow-y-auto">{setWork}</div>}
+      {tab === 'work' && (
+        <div className="xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
+          {actions ? <WorkEditor assignments={assignments} actions={actions} /> : setWork}
+        </div>
+      )}
+
+      {detailRow && (
+        <StudentDetail
+          row={detailRow}
+          assignments={assignments}
+          attempts={attempts}
+          onClose={() => setDetail(null)}
+        />
+      )}
 
       {tab === 'students' && (
         <section className="flex flex-col gap-3 xl:min-h-0 xl:flex-1">
+          <div className="flex flex-wrap items-end justify-between gap-3 print:hidden">
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Find a student"
+                aria-label="Find a student"
+                className={`w-56 ${field}`}
+              />
+              <label className="flex items-center gap-2 text-sm text-muted">
+                Sort
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as SortKey)}
+                  className={field}
+                  aria-label="Sort students"
+                >
+                  <option value="name">by name</option>
+                  <option value="day">by day reached</option>
+                  <option value="concepts">by concepts learned</option>
+                  <option value="passed">by work passed</option>
+                </select>
+              </label>
+              {query && (
+                <button onClick={() => setQuery('')} className="text-sm text-muted hover:text-ink">
+                  Clear
+                </button>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <Button onClick={download} title="Download these results as a spreadsheet">
+                Export CSV
+              </Button>
+              <Button onClick={() => window.print()} title="Print, or save as PDF">
+                Print report
+              </Button>
+            </div>
+          </div>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm text-muted">
-              Click a name to follow that student through the charts on the Overview.
+              Click a name to open their full history. The arrow follows them through the charts on
+              the Overview.
             </p>
             {filter && filterIndex >= 0 && (
               <button
@@ -786,16 +948,41 @@ function ClassBoard({
                   return (
                     <tr
                       key={row.member.userId}
-                      className={`border-b border-line last:border-b-0 ${on ? 'bg-marigold/10' : 'hover:bg-panel-2'}`}
+                      className={`group border-b border-line last:border-b-0 ${on ? 'bg-marigold/10' : 'hover:bg-panel-2'}`}
                     >
                       <td className="px-4 py-2.5">
-                        <button
-                          onClick={() => setFocus(on ? null : row.member.userId)}
-                          className={`text-left font-medium hover:underline ${on ? 'text-marigold' : 'text-ink'}`}
-                          title="Follow this student through the charts"
-                        >
-                          {row.member.displayName}
-                        </button>
+                        <span className="flex items-center gap-2">
+                          <button
+                            onClick={() => setDetail(row.member.userId)}
+                            className={`text-left font-medium hover:underline ${on ? 'text-marigold' : 'text-ink'}`}
+                            title="Open this student's full history"
+                          >
+                            {row.member.displayName}
+                          </button>
+                          <button
+                            onClick={() => setFocus(on ? null : row.member.userId)}
+                            className={`print:hidden ${on ? 'text-marigold' : 'text-muted hover:text-ink'}`}
+                            title={on ? 'Stop following them in the charts' : 'Follow them through the charts'}
+                            aria-label="Follow in charts"
+                          >
+                            →
+                          </button>
+                          {actions && (
+                            <button
+                              onClick={() => {
+                                if (confirm(`Remove ${row.member.displayName} from this class?`)) {
+                                  if (focus === row.member.userId) setFocus(null)
+                                  actions.removeStudent(row.member.userId)
+                                }
+                              }}
+                              className="text-muted opacity-0 group-hover:opacity-100 hover:text-coral focus:opacity-100 print:hidden"
+                              title="Remove from the class"
+                              aria-label={`Remove ${row.member.displayName}`}
+                            >
+                              ×
+                            </button>
+                          )}
+                        </span>
                         {!s && <span className="block text-xs text-muted">no progress shared yet</span>}
                       </td>
                       <td className="px-4 py-2.5 text-right font-num text-muted">{s?.day ?? '—'}</td>
@@ -823,6 +1010,151 @@ function ClassBoard({
           </p>
         </section>
       )}
+    </div>
+  )
+}
+
+/**
+ * Setting work, for a board that may be edited. The real class has its own
+ * form (it has to talk to the database); this one edits in place: due dates
+ * change where they are shown, and optional work is marked rather than
+ * deleted, because "practice, not homework" is a real distinction to a class.
+ */
+function WorkEditor({ assignments, actions }: { assignments: Assignment[]; actions: BoardActions }) {
+  const [pick, setPick] = useState(ASSIGNABLE[0].refId)
+  const [due, setDue] = useState('')
+  // the same drill set twice is almost always a slip, and it doubles the
+  // class figures, so the button says so instead of letting it happen
+  const already = assignments.some((a) => a.refId === pick)
+
+  const add = () => {
+    const chosen = ASSIGNABLE.find((a) => a.refId === pick)
+    if (!chosen || already) return
+    actions.addAssignment({
+      kind: chosen.kind,
+      refId: chosen.refId,
+      title: chosen.title,
+      dueAt: due ? new Date(due).toISOString() : null,
+    })
+    setDue('')
+  }
+
+  /** <input type="date"> wants YYYY-MM-DD in local time, not an ISO instant */
+  const asDateValue = (iso: string | null) => {
+    if (!iso) return ''
+    const d = new Date(iso)
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  }
+
+  return (
+    <div className="space-y-4">
+      <Card>
+        <SectionTitle
+          accent="text-marigold"
+          note="Drills and module checks. Students see them in the game under Academy → Class."
+        >
+          Set work
+        </SectionTitle>
+        <div className="flex flex-wrap items-center gap-2">
+          <select value={pick} onChange={(e) => setPick(e.target.value)} className={field}>
+            {ASSIGNABLE.map((a) => (
+              <option key={a.refId} value={a.refId}>
+                {a.kind === 'drill' ? 'Drill' : 'Module'}: {a.title}
+              </option>
+            ))}
+          </select>
+          <label className="flex items-center gap-2 text-sm text-muted">
+            Due
+            <input type="date" value={due} onChange={(e) => setDue(e.target.value)} className={field} />
+          </label>
+          <Button variant="primary" onClick={add} disabled={already}>
+            Assign
+          </Button>
+          {already && <span className="text-sm text-muted">Already set for this class.</span>}
+        </div>
+
+        {assignments.length === 0 ? (
+          <p className="mt-4 text-sm text-muted">Nothing set yet.</p>
+        ) : (
+          <ul className="mt-4 divide-y divide-line border-t border-line">
+            {assignments.map((a, i) => (
+              <li key={a.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
+                <span className="min-w-56 flex-1">
+                  <span className="text-ink">{a.title}</span>
+                  <span className="ml-2 text-sm text-muted">
+                    {a.kind === 'drill' ? 'Drill' : 'Module'}
+                  </span>
+                  {a.optional && (
+                    <span className="ml-2 rounded-full border border-line px-2 py-0.5 text-xs text-muted">
+                      optional · not counted
+                    </span>
+                  )}
+                </span>
+                <span className="flex flex-wrap items-center gap-2">
+                  <label className="flex items-center gap-2 text-sm text-muted">
+                    Due
+                    <input
+                      type="date"
+                      value={asDateValue(a.dueAt)}
+                      onChange={(e) =>
+                        actions.updateAssignment(a.id, {
+                          dueAt: e.target.value ? new Date(e.target.value).toISOString() : null,
+                        })
+                      }
+                      className={field}
+                    />
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-muted">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(a.optional)}
+                      onChange={(e) => actions.updateAssignment(a.id, { optional: e.target.checked })}
+                    />
+                    Optional
+                  </label>
+                  <span className="flex items-center">
+                    <button
+                      onClick={() => actions.moveAssignment(a.id, -1)}
+                      disabled={i === 0}
+                      className="rounded-md px-2 py-1 text-muted hover:text-ink disabled:opacity-30"
+                      aria-label={`Move ${a.title} up`}
+                    >
+                      ↑
+                    </button>
+                    <button
+                      onClick={() => actions.moveAssignment(a.id, 1)}
+                      disabled={i === assignments.length - 1}
+                      className="rounded-md px-2 py-1 text-muted hover:text-ink disabled:opacity-30"
+                      aria-label={`Move ${a.title} down`}
+                    >
+                      ↓
+                    </button>
+                  </span>
+                  <button
+                    onClick={() => actions.removeAssignment(a.id)}
+                    className="text-sm text-muted hover:text-coral"
+                  >
+                    Remove
+                  </button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
+
+      <Card>
+        <SectionTitle note="Everything on this page is invented and lives only in this browser.">
+          The sample class
+        </SectionTitle>
+        <Button
+          onClick={() => {
+            if (confirm('Put the sample class back the way it started?')) actions.reset()
+          }}
+        >
+          Reset the sample
+        </Button>
+      </Card>
     </div>
   )
 }

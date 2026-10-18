@@ -119,3 +119,30 @@ canvas, img.pixel { image-rendering: pixelated; }
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
 }
+
+/* Printing the teacher dashboard. The screen version is dark; paper is not,
+   so the tokens are remapped for print rather than restyling every element.
+   Controls carry `print:hidden` where they would be noise on a page. */
+@media print {
+  .teach-root {
+    --color-night: #ffffff;
+    --color-panel: #ffffff;
+    --color-panel-2: #ffffff;
+    --color-panel-3: #f2f2f5;
+    --color-line: #c7c7d1;
+    --color-hi: #c7c7d1;
+    --color-ink: #101014;
+    --color-muted: #4a4a55;
+    background: #ffffff !important;
+  }
+  .teach-root * {
+    box-shadow: none !important;
+  }
+  /* a class on one screen should not be cut in half by a page break */
+  .teach-root table {
+    break-inside: auto;
+  }
+  .teach-root tr {
+    break-inside: avoid;
+  }
+}

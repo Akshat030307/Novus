@@ -46,6 +46,8 @@ export interface Assignment {
   refId: string
   title: string
   dueAt: string | null
+  /** set work that does not count towards the class figures — practice, not homework */
+  optional?: boolean
 }
 
 /**
@@ -185,6 +187,7 @@ export function whatToTeachNext(rows: Row[], assignments: Assignment[]): Lesson[
   }
 
   assignments.forEach((assignment, i) => {
+    if (assignment.optional) return
     const attempted = rows.filter((r) => r.cells[i].best)
     const failing = attempted.filter((r) => !r.cells[i].best!.passed).length
     if (attempted.length >= threshold && failing >= threshold) {
@@ -224,8 +227,11 @@ export interface ClassTotals {
   late: number
 }
 
-export function classTotals(rows: Row[]): ClassTotals {
-  const cells = rows.flatMap((r) => r.cells)
+export function classTotals(rows: Row[], assignments: Assignment[] = []): ClassTotals {
+  // optional work is shown in the table but kept out of the figures: a teacher
+  // asking "how far is my class" means the homework, not the extras
+  const counts = (i: number) => !assignments[i]?.optional
+  const cells = rows.flatMap((r) => r.cells.filter((_, i) => counts(i)))
   return {
     students: rows.length,
     reporting: rows.filter((r) => r.member.summary).length,
@@ -294,4 +300,56 @@ export function activityByDay(
     if (b) b[a.passed ? 'passed' : 'notYet']++
   }
   return [...buckets.values()]
+}
+
+/* ---------- taking the class out of the browser ---------- */
+
+/** one CSV cell, quoted only when it has to be */
+const cell = (v: string | number) => {
+  const t = String(v)
+  return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t
+}
+
+/**
+ * The class as a spreadsheet: one row per student, one column per assignment,
+ * plus the summary figures. Pure string building, so it can be tested and so
+ * the download button has nothing to decide.
+ */
+export function toCsv(rows: Row[], assignments: Assignment[]): string {
+  const head = [
+    'Student',
+    'Day',
+    'Level',
+    'Modules passed',
+    'Modules total',
+    'Concepts learned',
+    'Concepts total',
+    'Sound calls',
+    'Unsound calls',
+    ...assignments.flatMap((a) => [`${a.title} — result`, `${a.title} — score`, `${a.title} — attempts`]),
+    ...HABITS.map((h) => `Habit: ${h.label}`),
+  ]
+
+  const body = rows.map((r) => {
+    const s = r.member.summary
+    return [
+      r.member.displayName,
+      s?.day ?? '',
+      s?.level ?? '',
+      s?.modulesPassed ?? '',
+      s?.modulesTotal ?? '',
+      s?.conceptsLearned ?? '',
+      s?.conceptsTotal ?? '',
+      s?.soundCalls ?? '',
+      s?.unsoundCalls ?? '',
+      ...r.cells.flatMap((c) => [
+        !c.best ? 'not started' : c.best.passed ? 'passed' : 'not yet',
+        c.best ? `${c.best.score}/${c.best.outOf}` : '',
+        c.tries,
+      ]),
+      ...HABITS.map((h) => s?.mistakes[h.kind] ?? 0),
+    ]
+  })
+
+  return [head, ...body].map((r) => r.map(cell).join(',')).join('\n')
 }
