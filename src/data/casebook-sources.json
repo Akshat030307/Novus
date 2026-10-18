@@ -1,5 +1,96 @@
 {
-  "checkedAt": null,
+  "checkedAt": "2026-10-18T16:39:44.036Z",
   "checkedBy": "TinyFish Fetch API",
-  "sources": {}
+  "sources": {
+    "https://en.wikipedia.org/wiki/Satyam_scandal": {
+      "ok": true,
+      "title": "Satyam scandal - Wikipedia",
+      "finalUrl": null,
+      "words": 2024,
+      "label": "Wikipedia — Satyam scandal",
+      "cited": [
+        "satyam"
+      ]
+    },
+    "https://www.sebi.gov.in/": {
+      "ok": true,
+      "title": "Securities and Exchange Board of India",
+      "finalUrl": null,
+      "words": 79,
+      "label": "SEBI",
+      "cited": [
+        "satyam"
+      ]
+    },
+    "https://en.wikipedia.org/wiki/IL%26FS": {
+      "ok": true,
+      "title": "Infrastructure Leasing & Financial Services - Wikipedia",
+      "finalUrl": "https://en.wikipedia.org/wiki/Infrastructure_Leasing_%26_Financial_Services",
+      "words": 2847,
+      "label": "Wikipedia — IL&FS",
+      "cited": [
+        "ilfs"
+      ]
+    },
+    "https://www.rbi.org.in/": {
+      "ok": true,
+      "title": "Home | Official website of Reserve Bank of India",
+      "finalUrl": null,
+      "words": 70,
+      "label": "Reserve Bank of India",
+      "cited": [
+        "ilfs"
+      ]
+    },
+    "https://en.wikipedia.org/wiki/Punjab_National_Bank_Scam": {
+      "ok": true,
+      "title": "Punjab National Bank Scam - Wikipedia",
+      "finalUrl": null,
+      "words": 2720,
+      "label": "Wikipedia — Punjab National Bank Scam",
+      "cited": [
+        "pnb-lou"
+      ]
+    },
+    "https://en.wikipedia.org/wiki/1992_Indian_stock_market_scam": {
+      "ok": true,
+      "title": "1992 Indian stock market scam - Wikipedia",
+      "finalUrl": null,
+      "words": 2976,
+      "label": "Wikipedia — 1992 Indian stock market scam",
+      "cited": [
+        "harshad-mehta"
+      ]
+    },
+    "https://en.wikipedia.org/wiki/Kingfisher_Airlines": {
+      "ok": true,
+      "title": "Kingfisher Airlines - Wikipedia",
+      "finalUrl": null,
+      "words": 3074,
+      "label": "Wikipedia — Kingfisher Airlines",
+      "cited": [
+        "kingfisher"
+      ]
+    },
+    "https://en.wikipedia.org/wiki/2007%E2%80%932008_financial_crisis": {
+      "ok": true,
+      "title": "2008 financial crisis - Wikipedia",
+      "finalUrl": null,
+      "words": 27785,
+      "label": "Wikipedia — 2007–2008 financial crisis",
+      "cited": [
+        "gfc-2008"
+      ]
+    },
+    "https://en.wikipedia.org/wiki/Bankruptcy_of_Lehman_Brothers": {
+      "ok": true,
+      "title": "Bankruptcy of Lehman Brothers - Wikipedia",
+      "finalUrl": null,
+      "words": 5459,
+      "label": "Wikipedia — Bankruptcy of Lehman Brothers",
+      "cited": [
+        "gfc-2008"
+      ]
+    }
+  }
 }
