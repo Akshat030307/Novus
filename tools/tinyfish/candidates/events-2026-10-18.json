@@ -1,0 +1,389 @@
+{
+  "harvestedAt": "2026-10-18T16:51:07.663Z",
+  "harvestedBy": "TinyFish Search API",
+  "window": "45 days",
+  "note": "Candidates only. A human promotes these into src/data/events.ts after playing them.",
+  "candidates": [
+    {
+      "event": {
+        "id": "rate-hike",
+        "headline": "Central bank raises the policy rate by 25 basis points",
+        "sectorShocks": {
+          "banking": -0.035,
+          "energy": -0.02,
+          "consumer": -0.015,
+          "it": 0.012
+        },
+        "decayMinutes": 260
+      },
+      "replaces": "rate-hike",
+      "signal": 7,
+      "magnitudesFound": {
+        "bp": 25,
+        "crore": null,
+        "pct": 5.5
+      },
+      "leaked": [],
+      "seenIn": [
+        {
+          "title": "India’s central bank hikes rates for the first time since 2023 as inflation risks build",
+          "url": "https://www.cnbc.com/2026/10/07/india-rbi-interest-rates-inflation.html",
+          "site": "www.cnbc.com"
+        },
+        {
+          "title": "India’s Central Bank Raises Rates For First Time Since 2023",
+          "url": "https://www.wsj.com/economy/central-banking/indias-central-bank-raises-rates-for-first-time-since-2023-1466a08a",
+          "site": "www.wsj.com"
+        },
+        {
+          "title": "RBI raises rates amid rising inflation and global risks outlook",
+          "url": "https://www.bbc.com/news/articles/c5j9kngz3j1go",
+          "site": "www.bbc.com"
+        },
+        {
+          "title": "RBI raises rates for first time in nearly 4 years, opens door to more hikes",
+          "url": "https://finance.yahoo.com/economy/policy/articles/rbi-hikes-rates-first-time-051555644.html",
+          "site": "finance.yahoo.com"
+        },
+        {
+          "title": "Norway’s central bank raises policy rate to 4.50%",
+          "url": "https://www.investing.com/news/stock-market-news/norways-central-bank-raises-policy-rate-to-450-93CH-4914578",
+          "site": "www.investing.com"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": "infra-spend",
+        "headline": "Government clears ₹40,000 crore of highway and port projects",
+        "sectorShocks": {
+          "construction": 0.06,
+          "steel": 0.045,
+          "cement": 0.04,
+          "it": -0.012
+        },
+        "decayMinutes": 220
+      },
+      "replaces": "infra-spend",
+      "signal": 7,
+      "magnitudesFound": {
+        "bp": null,
+        "crore": 35000,
+        "pct": null
+      },
+      "leaked": [],
+      "seenIn": [
+        {
+          "title": "Modi to unveil ₹35,000 crore Gujarat infra push as Western Freight Corridor goes fully operational - CNBC TV18",
+          "url": "https://www.linkedin.com/posts/cnbc-tv18_modi-to-unveil-35000-crore-gujarat-infra-activity-7502686002357092352-6tXF",
+          "site": "www.linkedin.com"
+        },
+        {
+          "title": "India weighs Rs 20,000-crore AI fund. What will the money actually build?",
+          "url": "https://www.firstpost.com/business/india-ai-fund-rs-20000-crore-frontier-ai-compute-infrastructure-14048314.html",
+          "site": "www.firstpost.com"
+        },
+        {
+          "title": "India needs ₹168-172 lakh crore infrastructure investment by FY31; ₹78-80 lakh crore yet to enter project pipeline: NaBFID-BCG",
+          "url": "https://www.fortuneindia.com/economy/india-needs-168-172-trillion-in-infrastructure-investment-by-fy31-but-78-80-trillion-is-yet-to-enter-project-pipeline-nabfid-bcg/159732",
+          "site": "www.fortuneindia.com"
+        },
+        {
+          "title": "Alpha Alternatives raises over Rs 6,000 crore for first infrastructure fund",
+          "url": "https://m.economictimes.com/markets/stocks/news/alpha-alternatives-raises-6000-crore/articleshow/134980480.cms",
+          "site": "m.economictimes.com"
+        },
+        {
+          "title": "PM GatiShakti Marks Fifth Anniversary With Approval Recommendations For 400 Projects Valued At Rs 20.23 Lakh Crore",
+          "url": "https://swarajyamag.com/news-brief/pm-gatishakti-marks-fifth-anniversary-with-approval-recommendations-for-projects-valued-at-2023-lakh-crore",
+          "site": "swarajyamag.com"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": "bank-asset-quality",
+        "headline": "Bad-loan ratios tick up across the banking system",
+        "sectorShocks": {
+          "banking": -0.045,
+          "payments": -0.015,
+          "consumer": -0.012
+        },
+        "decayMinutes": 240
+      },
+      "replaces": null,
+      "signal": 11,
+      "magnitudesFound": {
+        "bp": 30,
+        "crore": 3462,
+        "pct": 32
+      },
+      "leaked": [],
+      "seenIn": [
+        {
+          "title": "Modi@25 | India's Banking Overhaul — How 40x Credit Boom, NPA Clean-Up Rewrote The Sector",
+          "url": "https://www.ndtvprofit.com/business/modi-25-the-great-indian-banking-overhaul-how-40x-credit-boom-npa-clean-up-rewrote-the-sector-12075614",
+          "site": "www.ndtvprofit.com"
+        },
+        {
+          "title": "From 32% bad loans to Rs 52,878-crore Fairfax deal: How IDBI Bank's strategic sale unfolded",
+          "url": "https://www.moneycontrol.com/news/business/cabinet-approves-idbi-bank-strategic-restructuring-clears-rs-52-878-crore-sale-to-fairfax-here-s-how-it-unfolded-14052167.html",
+          "site": "www.moneycontrol.com"
+        },
+        {
+          "title": "Indian Bank Q2 FY27: Net Profit Up 15% to ₹3,462 Crore",
+          "url": "https://www.kalkine.co.in/article/financial/indian-bank-q2-profit-rises-15-to-3462-crore-as-asset-quality-improves-sharply",
+          "site": "www.kalkine.co.in"
+        },
+        {
+          "title": "Indian Bank Q2 Net Profit Jumps 15% to Rs 3,462 Cr",
+          "url": "https://money.rediff.com/news/market/indian-bank-q2-net-profit-jumps-15-to-rs-3-462-cr/56269620261015",
+          "site": "money.rediff.com"
+        },
+        {
+          "title": "Indian Bank Q2 FY27 slides: profit up 15%, asset quality improves",
+          "url": "https://www.investing.com/news/company-news/indian-bank-q2-fy27-slides-profit-up-15-asset-quality-improves-93CH-4951857",
+          "site": "www.investing.com"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": "freight-squeeze",
+        "headline": "Freight rates spike as port congestion builds",
+        "sectorShocks": {
+          "logistics": 0.045,
+          "consumer": -0.018,
+          "steel": -0.012
+        },
+        "decayMinutes": 200
+      },
+      "replaces": null,
+      "signal": 19,
+      "magnitudesFound": {
+        "bp": null,
+        "crore": null,
+        "pct": 6
+      },
+      "leaked": [],
+      "seenIn": [
+        {
+          "title": "India’s changing shipping networks add pressure to US supply chains",
+          "url": "https://www.metro.global/2026/10/14/indias-changing-shipping-networks-add-pressure-to-us-supply-chains/",
+          "site": "www.metro.global"
+        },
+        {
+          "title": "Ocean freight rates cool despite continued price elevation",
+          "url": "https://www.supplychaindive.com/news/ocean-freight-rates-cool-despite-continued-price-elevation/829800/",
+          "site": "www.supplychaindive.com"
+        },
+        {
+          "title": "Asian port congestion raises supply chain risks for 2027",
+          "url": "https://tlimagazine.com/news/asian-port-backlogs-leave-shippers-facing-a-difficult-2027/",
+          "site": "tlimagazine.com"
+        },
+        {
+          "title": "Hapag-Lloyd Raises Guidance Again on Strong Demand, Freight Rates",
+          "url": "https://www.wsj.com/business/logistics/hapag-lloyd-raises-guidance-again-on-strong-demand-freight-rates-917dd8c6",
+          "site": "www.wsj.com"
+        },
+        {
+          "title": "Freightos’ ocean freight update: Escalating ME conflict, port congestion, volume and rate trends",
+          "url": "https://www.ajot.com/insights/full/ai-freightos-ocean-freight-update-escalating-me-conflict-port-congestion-volume-and-rate-trends",
+          "site": "www.ajot.com"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": "fuel-spike",
+        "headline": "Global crude jumps 12% after a supply disruption",
+        "sectorShocks": {
+          "energy": 0.04,
+          "logistics": -0.03,
+          "consumer": -0.02,
+          "cement": -0.015
+        },
+        "decayMinutes": 200
+      },
+      "replaces": "fuel-spike",
+      "signal": 17,
+      "magnitudesFound": {
+        "bp": null,
+        "crore": null,
+        "pct": 67
+      },
+      "leaked": [],
+      "seenIn": [
+        {
+          "title": "'Saved the day': How China helped keep the lid on oil price surge as Iran war disrupted supplies",
+          "url": "https://www.cnbc.com/2026/09/10/china-crude-oil-iran-hormuz-war-trump-brent-prices-.html",
+          "site": "www.cnbc.com"
+        },
+        {
+          "title": "Oil prices settle down as IEA agrees to accelerate oil stock release",
+          "url": "https://www.reuters.com/business/energy/oil-prices-rise-storms-air-strikes-threaten-supply-2026-10-07/",
+          "site": "www.reuters.com"
+        },
+        {
+          "title": "Oil Is Getting Through From The Middle East—Here’s Why Prices Are Still High",
+          "url": "https://www.investopedia.com/oil-is-getting-through-from-the-middle-east-heres-why-prices-are-still-high-12177905",
+          "site": "www.investopedia.com"
+        },
+        {
+          "title": "Oil Prices Jump as Middle East Shipping Attacks and US Gulf Coast Storm Threaten Supply",
+          "url": "https://finance.yahoo.com/energy/articles/oil-prices-jump-middle-east-095219966.html",
+          "site": "finance.yahoo.com"
+        },
+        {
+          "title": "Why oil prices rise, fall and ripple through the U.S. economy",
+          "url": "https://wtop.com/sponsored-content/2026/09/why-oil-prices-rise-fall-and-ripple-through-the-u-s-economy/",
+          "site": "wtop.com"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": "power-shortage",
+        "headline": "Peak power demand sets a record and strains the grid",
+        "sectorShocks": {
+          "energy": 0.04,
+          "steel": -0.018,
+          "cement": -0.015,
+          "it": -0.01
+        },
+        "decayMinutes": 210
+      },
+      "replaces": null,
+      "signal": 7,
+      "magnitudesFound": {
+        "bp": null,
+        "crore": null,
+        "pct": 25
+      },
+      "leaked": [],
+      "seenIn": [
+        {
+          "title": "India’s power demand was supposed to ease by this time of the year. Why hasn’t that happened?",
+          "url": "https://indianexpress.com/article/explained/explained-economics/india-power-demand-september-2026-heat-rainfall-explained-10875197/",
+          "site": "indianexpress.com"
+        },
+        {
+          "title": "Electricity shortage rises fivefold in September, remains low in volume",
+          "url": "https://www.business-standard.com/industry/news/electricity-shortage-rises-fivefold-in-september-remains-low-in-volume-126100101256_1.html",
+          "site": "www.business-standard.com"
+        },
+        {
+          "title": "India faces power crunch as coal stocks at thermal plants hit critical levels",
+          "url": "https://www.rediff.com/business/report/indias-coal-stock-crisis-power-plants-face-critical-shortages-amid-high-demand/20261005.htm",
+          "site": "www.rediff.com"
+        },
+        {
+          "title": "Why Are Electricity Prices Rising in 2026? Global Causes and Market Impact",
+          "url": "https://www.ebc.com/forex/why-electricity-prices-rising-2026",
+          "site": "www.ebc.com"
+        },
+        {
+          "title": "Gujarat Records All-Time High Electricity Demand of 29,822 MW as State Ramps Up Power Supply",
+          "url": "https://nationpathindia.com/national/gujarat-record-electricity-demand-29822-mw-october-2026",
+          "site": "nationpathindia.com"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": "export-incentive",
+        "headline": "Manufacturing incentive scheme widened to more sectors",
+        "sectorShocks": {
+          "steel": 0.035,
+          "it": 0.02,
+          "logistics": 0.018,
+          "banking": 0.01
+        },
+        "decayMinutes": 220
+      },
+      "replaces": null,
+      "signal": 8,
+      "magnitudesFound": {
+        "bp": null,
+        "crore": 36754,
+        "pct": null
+      },
+      "leaked": [],
+      "seenIn": [
+        {
+          "title": "Semiconductor Industry in India: Incentives and Key Players",
+          "url": "https://www.india-briefing.com/news/setting-up-a-semiconductor-fabrication-plant-in-india-what-foreign-investors-should-know-22009.html/",
+          "site": "www.india-briefing.com"
+        },
+        {
+          "title": "Policy Update: Boosting Manufacturing GDP: Analyzing the Impact of PLI Schemes in 2026 and Beyond",
+          "url": "https://www.impriindia.com/insights/policy-update/boostingmanufacturinggdp-analyzing-the-impact-of-pli-schemes-in-2026-and-beyond/",
+          "site": "www.impriindia.com"
+        },
+        {
+          "title": "Beyond assembly: how India's next telecom PLI wants to build the supply chain from within",
+          "url": "https://www.tradingview.com/news/moodys:d874f1bb46542:0-beyond-assembly-how-india-s-next-telecom-pli-wants-to-build-the-supply-chain-from-within/",
+          "site": "www.tradingview.com"
+        },
+        {
+          "title": "Widening trade deficit: The missing link is domestic value | Policy Circle",
+          "url": "https://www.policycircle.org/economy/widening-trade-deficit-domestic-value/",
+          "site": "www.policycircle.org"
+        },
+        {
+          "title": "India’s Electronics Sector Secures $2.3bn Under Production Incentive Scheme",
+          "url": "https://www.electronicsforyou.biz/industry-buzz/indias-electronics-sector-secures-2-3bn-under-production-incentive-scheme/",
+          "site": "www.electronicsforyou.biz"
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": "pharma-pricing",
+        "headline": "Price caps extended to another list of essential medicines",
+        "sectorShocks": {
+          "pharma": -0.05,
+          "consumer": 0.01
+        },
+        "decayMinutes": 230
+      },
+      "replaces": null,
+      "signal": 7,
+      "magnitudesFound": {
+        "bp": null,
+        "crore": null,
+        "pct": 30
+      },
+      "leaked": [],
+      "seenIn": [
+        {
+          "title": "NPPA seeks data for ceiling price fixation of certain IV fluids",
+          "url": "https://www.pharmabiz.com/NewsDetails.aspx?aid=188436&sid=1",
+          "site": "www.pharmabiz.com"
+        },
+        {
+          "title": "Government Caps Trade Margins on 137 Cancer Drugs at 30%; Prices May Fall by Up to 70% From November 9",
+          "url": "https://nationpathindia.com/health/india-caps-trade-margins-137-anti-cancer-drugs-2026",
+          "site": "nationpathindia.com"
+        },
+        {
+          "title": "Supreme Court call to reduce drug prices puts focus on scope and extent of mark ups",
+          "url": "https://timesofindia.indiatimes.com/business/india-business/supreme-court-call-to-reduce-drug-prices-puts-focus-on-scope-and-extent-of-mark-ups/articleshow/134792405.cms",
+          "site": "timesofindia.indiatimes.com"
+        },
+        {
+          "title": "Non-Scheduled Drugs Price Control Needs Reform",
+          "url": "https://www.thefinancialworld.com/non-scheduled-drugs-price-control-needs-reform/",
+          "site": "www.thefinancialworld.com"
+        },
+        {
+          "title": "Karnataka FDA Proposes Price Caps on Critical Devices",
+          "url": "https://www.ocacademy.in/blogs/karnataka-fda-medical-device-price-cap",
+          "site": "www.ocacademy.in"
+        }
+      ]
+    }
+  ],
+  "rejected": []
+}
