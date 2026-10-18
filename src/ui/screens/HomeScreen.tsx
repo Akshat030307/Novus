@@ -69,9 +69,21 @@ export default function HomeScreen() {
 
       <div className="relative z-10 flex min-h-full w-full flex-col px-6 py-8 sm:px-10 lg:px-16 lg:py-10">
         {/* logotype */}
-        <header className="anim-rise flex items-center gap-2.5">
-          <PixelDollar className="aspect-[6/7] h-5 shrink-0" />
-          <span className="text-[14px] tracking-widest text-blush font-semibold uppercase">Novus</span>
+        <header className="anim-rise flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <PixelDollar className="aspect-[6/7] h-5 shrink-0" />
+            <span className="text-[14px] tracking-widest text-blush font-semibold uppercase">Novus</span>
+          </div>
+
+          {/* the other door. A teacher arriving here is not going to press
+              "Start playing" — they want to see the class, so say so. */}
+          <a
+            href="/teach"
+            className="border-2 border-plum-line px-4 py-2 font-display text-[12px] tracking-wide
+              text-blush/70 uppercase transition-colors hover:border-magenta hover:text-magenta"
+          >
+            For teachers
+          </a>
         </header>
 
         {/* hero — centred in whatever room is left between logotype and footer */}
@@ -136,6 +148,14 @@ export default function HomeScreen() {
                 </div>
               )}
             </div>
+
+            <p className="anim-rise mt-4 text-[13px] text-blush/40" style={{ animationDelay: '270ms' }}>
+              Teaching with it?{' '}
+              <a href="/teach" className="text-magenta underline hover:text-blush">
+                Open the teacher dashboard
+              </a>
+              .
+            </p>
 
             <ul
               className="anim-rise mt-10 flex flex-wrap gap-x-5 gap-y-2 text-[12px] text-blush/40 font-semibold uppercase tracking-wide"
