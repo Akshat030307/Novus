@@ -28,6 +28,7 @@ import {
 } from '@/state/cohorts'
 import { useSampleClass } from '@/state/sampleClass'
 import { StudentDetail } from '@/ui/instructor/StudentDetail'
+import { DemoLogin, demoUnlocked } from '@/ui/instructor/DemoLogin'
 import {
   ActivityChart,
   AssignmentResults,
@@ -69,6 +70,9 @@ export default function TeachScreen() {
   }, [user])
   // a class is open: the page becomes a full-window dashboard
   const board = sampling || Boolean(ready && user && openId)
+  // the demo dashboard sits behind a gate so a stray visitor does not land in
+  // it mid-presentation; it is a stage prop, not security — see DemoLogin
+  const [unlocked, setUnlocked] = useState(demoUnlocked)
 
   return (
     <div className="teach-root flex h-full flex-col bg-night font-ui text-[15px] leading-relaxed text-ink">
@@ -95,7 +99,7 @@ export default function TeachScreen() {
         <div
           className={`mx-auto w-full px-4 sm:px-6 ${board ? 'max-w-[1800px] py-4 xl:h-full' : 'max-w-6xl py-8'}`}
         >
-        {sampling && <SampleClass />}
+        {sampling && (unlocked ? <SampleClass /> : <DemoLogin onUnlock={() => setUnlocked(true)} />)}
         {!sampling && !ready && <p className="text-muted">Loading…</p>}
         {!sampling && ready && !user && <SignIn />}
         {!sampling && ready && user && !openId && (
