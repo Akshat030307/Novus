@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import sourceCheck from '@/data/casebook-sources.json'
 import { useGameStore, useUiStore } from "@/state/store";
 import {
   CASEBOOK,
@@ -170,12 +171,12 @@ function Detail({
           </Block>
 
           <div>
-            <div className="mb-1 text-[12px] text-muted font-semibold uppercase tracking-wide">
+            <div className="mb-1 text-[12px] font-semibold tracking-wide text-muted uppercase">
               Sources
             </div>
-            <ul className="flex flex-col gap-1">
+            <ul className="flex flex-col gap-1.5">
               {entry.sources.map((s) => (
-                <li key={s.url}>
+                <li key={s.url} className="flex flex-wrap items-baseline gap-x-2">
                   <a
                     href={s.url}
                     target="_blank"
@@ -184,9 +185,11 @@ function Detail({
                   >
                     {s.label} ↗
                   </a>
+                  <SourceState url={s.url} />
                 </li>
               ))}
             </ul>
+            <CheckedLine />
           </div>
         </div>
       </div>
@@ -197,6 +200,56 @@ function Detail({
       </p>
     </div>
   );
+}
+
+/* ---------- what the TinyFish check found ---------- */
+
+type Checked = {
+  ok: boolean
+  title?: string | null
+  finalUrl?: string | null
+  error?: string
+}
+const CHECK = sourceCheck as {
+  checkedAt: string | null
+  checkedBy: string
+  sources: Record<string, Checked>
+}
+
+/** a citation that has been opened recently says so; one that broke says that louder */
+function SourceState({ url }: { url: string }) {
+  const found = CHECK.sources[url]
+  if (!found) return null
+  if (!found.ok) {
+    return (
+      <span className="text-[12px] text-coral" title={found.error}>
+        could not be reached when last checked
+      </span>
+    )
+  }
+  return (
+    <span className="text-[12px] text-jade" title={found.title ?? undefined}>
+      ✓ reachable{found.finalUrl ? ' · redirects' : ''}
+    </span>
+  )
+}
+
+/** one line saying when an agent last opened every link on this page */
+function CheckedLine() {
+  if (!CHECK.checkedAt) return null
+  const when = new Date(CHECK.checkedAt).toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
+  const all = Object.values(CHECK.sources)
+  const broken = all.filter((s) => !s.ok).length
+  return (
+    <p className="mt-2 text-[12px] text-muted">
+      Every source in the Casebook was opened by a {CHECK.checkedBy} agent on {when}
+      {broken === 0 ? ' and all of them resolved.' : ` — ${broken} did not resolve.`}
+    </p>
+  )
 }
 
 /**
