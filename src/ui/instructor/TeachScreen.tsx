@@ -337,13 +337,16 @@ function CohortView({ cohort, onBack }: { cohort: Cohort; onBack: () => void }) 
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [attempts, setAttempts] = useState<(Attempt & { userId: string })[]>([])
   const [loading, setLoading] = useState(true)
+  const [seenAt, setSeenAt] = useState<number | null>(null)
+  const [live, setLive] = useState(false)
 
-  const refresh = async () => {
-    setLoading(true)
+  const refresh = async (quiet = false) => {
+    if (!quiet) setLoading(true)
     const [m, a] = await Promise.all([listMembers(cohort.id), listAssignments(cohort.id)])
     setMembers(m)
     setAssignments(a)
     setAttempts(await cohortAttempts(m.map((x) => x.userId)))
+    setSeenAt(Date.now())
     setLoading(false)
   }
 
@@ -351,6 +354,19 @@ function CohortView({ cohort, onBack }: { cohort: Cohort; onBack: () => void }) 
     void refresh()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cohort.id])
+
+  /**
+   * Watch the class while it works. Off by default — a dashboard that polls
+   * all afternoon is somebody's bill — but with a room watching, a student
+   * finishing a drill should appear without anyone reloading anything.
+   * The refetch is quiet: no loading state, so nothing flickers mid-sentence.
+   */
+  useEffect(() => {
+    if (!live) return
+    const t = setInterval(() => void refresh(true), 10_000)
+    return () => clearInterval(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [live, cohort.id])
 
   const assign = async (a: NewAssignment) => {
     await addAssignment(cohort.id, a)
@@ -371,6 +387,7 @@ function CohortView({ cohort, onBack }: { cohort: Cohort; onBack: () => void }) 
       attempts={attempts}
       loading={loading}
       onAssign={(a) => void assign(a)}
+      watch={{ live, setLive, seenAt, refresh: () => void refresh(true) }}
       setWork={
         <Card>
           <SectionTitle
@@ -388,7 +405,7 @@ function CohortView({ cohort, onBack }: { cohort: Cohort; onBack: () => void }) 
           <AssignmentList
             assignments={assignments}
             members={members}
-            onRemove={(id) => void removeAssignment(id).then(refresh)}
+            onRemove={(id) => void removeAssignment(id).then(() => refresh())}
           />
         </Card>
       }
@@ -486,6 +503,58 @@ function AssignmentList({
   )
 }
 
+/**
+ * "Is this live?" — the question a room asks when a dashboard is on a screen.
+ *
+ * Shows when the figures were last read, refetches on demand, and will watch
+ * the class every ten seconds while somebody is actually playing. Polling is
+ * opt-in: left on by accident it is a request every ten seconds for as long
+ * as the tab is open, and nobody wants that bill for a page nobody is reading.
+ */
+function Watching({
+  live,
+  setLive,
+  seenAt,
+  refresh,
+}: {
+  live: boolean
+  setLive: (v: boolean) => void
+  seenAt: number | null
+  refresh: () => void
+}) {
+  const [, tick] = useState(0)
+  useEffect(() => {
+    const t = setInterval(() => tick((n) => n + 1), 5_000)
+    return () => clearInterval(t)
+  }, [])
+
+  const ago = seenAt === null ? null : Math.round((Date.now() - seenAt) / 1000)
+  const when =
+    ago === null ? 'not yet' : ago < 10 ? 'just now' : ago < 90 ? `${ago}s ago` : `${Math.round(ago / 60)}m ago`
+
+  return (
+    <div className="flex items-center gap-3 print:hidden">
+      <label className="flex cursor-pointer items-center gap-2 text-sm text-muted">
+        <input
+          type="checkbox"
+          checked={live}
+          onChange={(e) => setLive(e.target.checked)}
+          className="accent-marigold"
+        />
+        Watch live
+      </label>
+      <button
+        onClick={refresh}
+        className="rounded-md border border-line px-3 py-1.5 text-sm text-muted hover:text-ink"
+        title="Read the class again now"
+      >
+        Refresh
+      </button>
+      <span className={`text-xs ${live ? 'text-jade' : 'text-muted'}`}>read {when}</span>
+    </div>
+  )
+}
+
 type Tab = 'class' | 'student' | 'students' | 'work'
 
 /**
@@ -520,6 +589,7 @@ function ClassBoard({
   loading,
   setWork,
   onAssign,
+  watch,
   actions,
   renaming,
 }: {
@@ -536,6 +606,13 @@ function ClassBoard({
   setWork?: ReactNode
   /** the real class's way of setting work, for the one-click recommendation */
   onAssign?: (a: NewAssignment) => void
+  /** live watching, for a real class only — the sample has nothing to wait for */
+  watch?: {
+    live: boolean
+    setLive: (v: boolean) => void
+    seenAt: number | null
+    refresh: () => void
+  }
   /** present when this board may be edited */
   actions?: BoardActions
   renaming?: { on: boolean; draft: string; setDraft: (v: string) => void; setOn: (v: boolean) => void }
@@ -699,6 +776,7 @@ function ClassBoard({
             ))}
           </nav>
         )}
+        {watch && <Watching {...watch} />}
         {joinCode ? (
           <div className="text-right leading-tight">
             <div className="text-xs text-muted">Join code</div>
