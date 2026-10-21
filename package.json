@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "tinyfish:check": "node tools/tinyfish/check-sources.mjs",
-    "tinyfish:recommend": "node tools/tinyfish/recommend.mjs"
+    "tinyfish:recommend": "node tools/tinyfish/recommend.mjs",
+    "tinyfish:casebook": "node tools/tinyfish/casebook-leads.mjs",
+    "tinyfish:official": "node tools/tinyfish/official-figures.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",
