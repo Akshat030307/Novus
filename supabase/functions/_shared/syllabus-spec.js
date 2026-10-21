@@ -15,9 +15,9 @@ export const SYLLABUS_GOAL =
   'This is a university or college syllabus, possibly a PDF. It usually contains several courses ' +
   '(often five to ten, across one or more semesters). Go through every page to the end; do not stop ' +
   'after the first course. List every course (also called a paper or subject). For each course give its title ' +
-  'and semester as written. For each unit or module of that course give its title, the topics it ' +
-  'lists as short phrases in the order written, and the teaching hours or number of lectures if the ' +
-  'document states them. Also give the institution and programme name if shown. Use only what the ' +
+  'and semester as written. For each unit or module of that course give its title, every topic it ' +
+  'lists as short phrases in the order written (all of them, not a summary), and the teaching hours or number of lectures if the ' +
+  'document states them, or the number of weeks if it states weeks instead. Also give the institution and programme name if shown. Use only what the ' +
   'document says; leave a field empty rather than guess.'
 
 export const SYLLABUS_SCHEMA = {
@@ -40,6 +40,7 @@ export const SYLLABUS_SCHEMA = {
                 title: { type: 'string' },
                 topics: { type: 'array', items: { type: 'string' } },
                 hours: { type: 'number' }, // teaching hours or lectures, if stated
+                weeks: { type: 'number' }, // or the weeks, where a syllabus counts in weeks
               },
               required: ['title'],
             },
@@ -64,6 +65,9 @@ export function cleanSyllabus(raw) {
   // the site carries no em dashes, so text from somebody else's document loses its own
   const str = (v, n = 160) =>
     typeof v === 'string' ? v.replace(/\s*\u2014\s*/g, ': ').replace(/\s+/g, ' ').trim().slice(0, n) : ''
+  // what an Agent writes when a document has no detail for something: a
+  // placeholder is not a unit, and a course of placeholders is not a course
+  const filler = (v) => !v || /^(n\/?a|none|nil|-+|not (detailed|specified|available|given|stated)\b.*)$/i.test(v)
   const data = raw?.result && !raw.courses ? raw.result : raw ?? {}
   const courses = (Array.isArray(data.courses) ? data.courses : [])
     .slice(0, 40)
@@ -74,13 +78,15 @@ export function cleanSyllabus(raw) {
         .slice(0, 12)
         .map((u) => {
           const hours = Number(u?.hours)
+          const weeks = Number(u?.weeks)
           return {
             title: str(u?.title),
-            topics: (Array.isArray(u?.topics) ? u.topics : []).map((t) => str(t, 120)).filter(Boolean).slice(0, 20),
+            topics: (Array.isArray(u?.topics) ? u.topics : []).map((t) => str(t, 120)).filter((t) => !filler(t)).slice(0, 20),
             hours: Number.isFinite(hours) && hours > 0 && hours <= 120 ? hours : null,
+            weeks: Number.isFinite(weeks) && weeks > 0 && weeks <= 20 ? weeks : null,
           }
         })
-        .filter((u) => u.title),
+        .filter((u) => !filler(u.title)),
     }))
     .filter((c) => c.title && c.units.length)
   return { institution: str(data.institution), programme: str(data.programme), courses }

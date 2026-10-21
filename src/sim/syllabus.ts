@@ -19,6 +19,8 @@ export interface SyllabusUnit {
   title: string
   topics: string[]
   hours: number | null
+  /** where a syllabus counts in weeks instead, that wins */
+  weeks?: number | null
 }
 
 export interface SyllabusCourse {
@@ -62,7 +64,7 @@ const plain = (d: string) => ({ drill: d, focus: null, count: null, hard: false 
  * Order matters only for ties: the more specific idea is listed first.
  */
 const TARGETS: Target[] = [
-  mod('cash-vs-profit', 'cash against reported profit', ['working capital', 'cash management', 'cash flow', 'cash budget', 'operating cycle', 'receivables', 'liquidity', 'fund flow']),
+  mod('cash-vs-profit', 'cash against reported profit', ['working capital', 'cash management', 'cash flow statement', 'operating cash flow', 'cash budget', 'operating cycle', 'receivables', 'liquidity', 'fund flow']),
   drill({ drill: 'credit-desk', focus: 'cash', count: 3, hard: false }, 'lending decisions where cash and profit disagree', ['working capital financing', 'cash management', 'credit policies', 'receivables management']),
   mod('balance-sheet', 'leverage and collateral cover', ['capital structure', 'leverage', 'debt equity', 'debt-equity', 'financial statement analysis', 'balance sheet', 'ratio analysis', 'solvency']),
   drill({ drill: 'credit-desk', focus: 'leverage', count: 3, hard: false }, 'a balance sheet that cannot carry more debt', ['capital structure', 'debt vs equity', 'financial risk', 'types of leverage', 'cost of capital']),
@@ -71,7 +73,7 @@ const TARGETS: Target[] = [
   drill(plain('credit-desk'), 'five real-looking credit decisions', ['credit appraisal', 'credit policies', 'kyc', 'npa', 'non-performing', 'loan', 'advances']),
   mod('diversification', 'spreading risk, not just counting holdings', ['portfolio', 'diversif', 'mutual fund', 'asset allocation', 'risk and return', 'systematic investment']),
   drill({ drill: 'build-a-book', focus: 'concentration', count: null, hard: false }, 'building a book under a concentration cap', ['portfolio', 'mutual fund', 'asset allocation', 'balanced fund', 'diversif']),
-  mod('reading-the-tape', 'telling news from noise in prices', ['stock market', 'share price', 'capital market', 'secondary market', 'stock exchange', 'market index', 'equity share', 'sensex', 'nifty']),
+  mod('reading-the-tape', 'telling news from noise in prices', ['stock market', 'share price', 'capital market', 'secondary market', 'stock exchange', 'market index', 'equity share', 'sensex', 'nifty', 'demat', 'trading mechanism', 'derivative']),
   drill({ drill: 'spot-the-shock', focus: 'noise', count: null, hard: false }, 'which sectors a headline actually moves', ['monetary policy', 'rbi', 'interest rate', 'inflation', 'repo', 'reserve bank', 'fiscal']),
   drill(plain('replay-ilfs'), 'a funding squeeze, replayed from the record', ['nbfc', 'asset liability', 'refinanc', 'credit rating', 'rating agenc', 'money market']),
   drill(plain('replay-satyam'), 'accounts that could not be trusted, replayed', ['corporate governance', 'fraud', 'audit', 'window dressing', 'creative accounting']),
@@ -104,9 +106,9 @@ export interface TermPlan {
 const has = (text: string, word: string) =>
   new RegExp(`(^|[^a-z])${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`).test(text)
 
-/** how many weeks a unit takes: stated hours over the class's weekly hours, or two */
+/** how many weeks a unit takes: stated weeks, else stated hours over the class's weekly hours, else two */
 const weeksFor = (u: SyllabusUnit, hoursPerWeek: number) =>
-  u.hours ? Math.max(1, Math.round(u.hours / hoursPerWeek)) : 2
+  u.weeks ? Math.round(u.weeks) : u.hours ? Math.max(1, Math.round(u.hours / hoursPerWeek)) : 2
 
 /**
  * One course becomes a week-by-week plan. Each unit gets its share of the

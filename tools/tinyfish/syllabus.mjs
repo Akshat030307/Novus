@@ -42,7 +42,7 @@ const secs = Math.round((Date.now() - started) / 1000)
 console.log(`done in ${secs}s, ${run.steps ?? '?'} steps · ${clean.institution || 'institution not stated'} · ${clean.programme || ''}`)
 for (const c of clean.courses) {
   console.log(`\n  ${c.title}${c.semester ? `  (${c.semester})` : ''}`)
-  for (const u of c.units) console.log(`    · ${u.title}${u.hours ? ` [${u.hours}h]` : ''}  ${u.topics.slice(0, 4).join('; ')}`)
+  for (const u of c.units) console.log(`    · ${u.title}${u.hours ? ` [${u.hours}h]` : ''}${u.weeks ? ` [${u.weeks} wk]` : ''}  ${u.topics.slice(0, 4).join('; ')}`)
 }
 if (out) {
   writeFileSync(out, JSON.stringify({ url, readAt: new Date().toISOString(), readBy: 'TinyFish Agent API', runId: run.runId, seconds: secs, ...clean }, null, 2) + '\n')
