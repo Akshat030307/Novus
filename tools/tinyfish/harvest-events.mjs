@@ -26,7 +26,7 @@
  *   node tools/tinyfish/harvest-events.mjs --days 90
  *   node tools/tinyfish/harvest-events.mjs --dry        # no API calls
  */
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -67,6 +67,7 @@ const ARCHETYPES = [
     keywords: ['repo rate', 'policy rate', 'rate hike', 'raises rate', 'tighten'],
     template: 'Central bank raises the policy rate by {bp} basis points',
     fill: (m) => ({ bp: bucket(m.bp, [25, 35, 40, 50], 40) }),
+    official: (f) => rateDecision(f, 'raised'),
     sectorShocks: { banking: -0.035, energy: -0.02, consumer: -0.015, it: 0.012 },
     decayMinutes: 260,
   },
@@ -76,6 +77,7 @@ const ARCHETYPES = [
     keywords: ['rate cut', 'cuts rate', 'lowers rate', 'easing', 'reduced repo'],
     template: 'Central bank cuts the policy rate by {bp} basis points',
     fill: (m) => ({ bp: bucket(m.bp, [25, 35, 50], 25) }),
+    official: (f) => rateDecision(f, 'cut'),
     sectorShocks: { banking: 0.03, construction: 0.025, consumer: 0.02, it: -0.01 },
     decayMinutes: 250,
   },
@@ -86,6 +88,7 @@ const ARCHETYPES = [
     keywords: ['highway', 'infrastructure', 'port', 'corridor', 'approved', 'cabinet'],
     template: 'Government clears ₹{crore} crore of highway and port projects',
     fill: (m) => ({ crore: comma(bucket(m.crore, [20000, 40000, 60000, 90000], 40000)) }),
+    official: (f) => (f['infra-approvals'] ? { crore: f['infra-approvals'].crore } : undefined),
     sectorShocks: { construction: 0.06, steel: 0.045, cement: 0.04, it: -0.012 },
     decayMinutes: 220,
   },
@@ -162,6 +165,32 @@ function bucket(value, options, fallback) {
 }
 const comma = (n) => n.toLocaleString('en-IN')
 
+/* ---------------- figures read from the source ----------------
+ *
+ * official-figures.mjs sends the TinyFish Agent to the RBI's policy statement
+ * and the Cabinet's approvals and writes what they say. When a recent file is
+ * there, its numbers beat the headline regex — and a decision that went the
+ * other way rules an archetype out, however many headlines speculated about
+ * it. `official` returns magnitudes to use, null to drop the archetype, or
+ * undefined when there is nothing official to go on.
+ */
+function loadOfficial() {
+  if (!existsSync(OUT_DIR)) return null
+  const files = readdirSync(OUT_DIR).filter((f) => /^official-\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort()
+  if (!files.length) return null
+  const data = JSON.parse(readFileSync(`${OUT_DIR}/${files.at(-1)}`, 'utf8'))
+  const age = (Date.now() - Date.parse(data.readAt)) / 86_400_000
+  if (!(age <= days)) return null // older than the window being harvested
+  return { file: files.at(-1), figures: data.figures ?? {} }
+}
+
+function rateDecision(f, wanted) {
+  const p = f['policy-rate']
+  if (!p) return undefined
+  if (p.direction !== wanted) return null
+  return Number.isFinite(p.bp) ? { bp: p.bp } : undefined
+}
+
 /** the only numbers allowed to cross over from a real page */
 function magnitudes(text) {
   const bp = text.match(/(\d{2,3})\s*(?:bps|basis points)/i)
@@ -202,8 +231,17 @@ if (!key) {
   process.exit(1)
 }
 
+const official = loadOfficial()
+console.log(official ? `official figures from ${official.file}` : 'no recent official figures — magnitudes come from headlines')
+
 const candidates = []
 for (const a of ARCHETYPES) {
+  const fromSource = official && a.official ? a.official(official.figures) : undefined
+  if (fromSource === null) {
+    console.log(`· ${a.id} skipped: the official decision went the other way`)
+    continue
+  }
+
   const hits = []
   for (const q of a.queries) {
     process.stdout.write(`· ${a.id} ← "${q}" `)
@@ -224,7 +262,7 @@ for (const a of ARCHETYPES) {
 
   if (hits.length < 2) continue // one stray article is not weather
 
-  const found = magnitudes(hits.map((h) => `${h.title} ${h.snippet ?? ''}`).join(' '))
+  const found = { ...magnitudes(hits.map((h) => `${h.title} ${h.snippet ?? ''}`).join(' ')), ...(fromSource ?? {}) }
   const filled = a.fill(found)
   const headline = a.template.replace(/\{(\w+)\}/g, (_, k) => String(filled[k] ?? ''))
 
@@ -248,6 +286,7 @@ for (const a of ARCHETYPES) {
     replaces: a.replaces ?? null,
     signal: hits.length,
     magnitudesFound: found,
+    magnitudesFrom: fromSource ? 'official' : 'headlines',
     leaked,
     // provenance stays here, in the candidate file — it never ships with the game
     seenIn: hits.slice(0, 5).map((h) => ({ title: h.title, url: h.url, site: h.site_name })),
