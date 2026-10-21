@@ -415,3 +415,30 @@ revoke all on function public.novus_num(jsonb, text) from public;
 revoke all on function public.novus_flag(jsonb, text) from public;
 revoke all on function public.class_board(uuid) from public;
 grant execute on function public.class_board(uuid) to authenticated;
+
+-- -------------------------------------------- b11: work aimed at a person ----
+-- Set work could only ever be set for everybody. A class is not one student
+-- repeated nineteen times, so an assignment may now name who it is for:
+-- `for_user` null is the whole class, as before, and a user id is one person.
+--
+-- The drill itself is carried in `ref_id`, which already held a drill id and
+-- now may hold an aimed one — `credit-desk?focus=collateral&n=3&hard=1`. That
+-- is deliberately not a new table: attempts, the completion table, the badge
+-- in the game and the leaderboard all key off ref_id and keep working
+-- untouched.
+
+alter table public.assignments
+  add column if not exists for_user uuid references auth.users (id) on delete cascade;
+
+create index if not exists assignments_for_user on public.assignments (cohort_id, for_user);
+
+-- A student may read what was set for the class and what was set for them.
+-- Work aimed at somebody else is not theirs to see: a dashboard that shows
+-- the class who has been given remedial work has told the class something it
+-- had no business knowing.
+drop policy if exists "cohort reads assignments" on public.assignments;
+create policy "cohort reads assignments" on public.assignments
+  for select using (
+    public.owns_cohort(cohort_id)
+    or (public.in_cohort(cohort_id) and (for_user is null or for_user = auth.uid()))
+  );

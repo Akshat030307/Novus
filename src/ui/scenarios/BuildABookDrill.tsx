@@ -3,14 +3,23 @@ import { STOCKS } from '@/data/stocks'
 import { rupees } from '@/lib/format'
 import { AllocationBar, type Slice } from '@/ui/components/AllocationBar'
 import { logAttempt } from '@/state/attempts'
+import { encodeSpec, plainSpec, type ScenarioSpec } from '@/sim/aim'
 import { PixelButton } from '@/ui/components/PixelButton'
 
 const START_CASH = 5_00_000_00
 const LOT = 50_000_00 // ₹50,000 a click
 const SLICE_CLS = ['bg-marigold', 'bg-amethyst', 'bg-coral', 'bg-marigold/50', 'bg-amethyst/50', 'bg-coral/50', 'bg-ink/40']
 
-/** An allocation exercise. Prices are a frozen snapshot — shape, not timing. */
-export function BuildABookDrill() {
+/**
+ * An allocation exercise. Prices are a frozen snapshot — shape, not timing.
+ *
+ * Set strict by a teacher (issue B11), the cap on a single name drops from
+ * 40% to 30% and a fifth holding is asked for. The exercise is the same; what
+ * counts as spread is tighter.
+ */
+export function BuildABookDrill({ spec = plainSpec('build-a-book') }: { spec?: ScenarioSpec }) {
+  const names = spec.hard ? 5 : 4
+  const cap = spec.hard ? 0.3 : 0.4
   const snapshot = useMemo(() => STOCKS.map((s) => ({ id: s.id, name: s.name, price: s.price })), [])
   const [qty, setQty] = useState<Record<string, number>>({})
   const [scored, setScored] = useState(false)
@@ -30,7 +39,7 @@ export function BuildABookDrill() {
 
   const bookValue = invested
   const topShare = bookValue > 0 ? Math.max(...held.map((s) => (s.price * (qty[s.id] ?? 0)) / bookValue)) : 0
-  const pass = held.length >= 4 && topShare <= 0.4 && bookValue > 0
+  const pass = held.length >= names && topShare <= cap && bookValue > 0
 
   // two things are being asked for — enough names, and none of them dominating
   // — so the attempt is scored out of two rather than as a bare pass/fail
@@ -38,8 +47,8 @@ export function BuildABookDrill() {
     setScored(true)
     logAttempt({
       kind: 'drill',
-      refId: 'build-a-book',
-      score: (held.length >= 4 ? 1 : 0) + (topShare <= 0.4 ? 1 : 0),
+      refId: encodeSpec(spec),
+      score: (held.length >= names ? 1 : 0) + (topShare <= cap ? 1 : 0),
       outOf: 2,
       passed: pass,
       detail: { holdings: held.length, biggestSharePct: Math.round(topShare * 100) },

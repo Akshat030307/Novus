@@ -3,6 +3,7 @@ import { STOCKS } from '@/data/stocks'
 import { EVENTS } from '@/data/events'
 import { signed } from '@/lib/format'
 import { logAttempt } from '@/state/attempts'
+import { encodeSpec, plainSpec, type ScenarioSpec } from '@/sim/aim'
 import { PixelButton } from '@/ui/components/PixelButton'
 
 /** below this the shock is lost inside a normal day of noise, so it isn't marked */
@@ -16,8 +17,13 @@ const MOVED = 0.005
  * touch are counted separately as stray picks rather than folded into the
  * score — reading a headline too widely is a different error from reading it
  * backwards, and a single number would hide which one you made.
+ *
+ * A teacher can set it (issue B11), but not loosen or tighten it: the mark is
+ * already "the whole sector map, no stray picks", and there is nothing
+ * sensible between that and guessing. What `spec` changes here is only which
+ * assignment the run is logged against.
  */
-export function SpotTheShockDrill() {
+export function SpotTheShockDrill({ spec = plainSpec('spot-the-shock') }: { spec?: ScenarioSpec }) {
   const [seed, setSeed] = useState(0)
   const event = useMemo(() => EVENTS[seed % EVENTS.length], [seed])
   const [picked, setPicked] = useState<Set<string>>(new Set())
@@ -49,7 +55,7 @@ export function SpotTheShockDrill() {
     if (marks.of === 0) return // nothing to mark — don't log an empty attempt
     logAttempt({
       kind: 'drill',
-      refId: 'spot-the-shock',
+      refId: encodeSpec(spec),
       score: marks.right,
       outOf: marks.of,
       passed: marks.right === marks.of && marks.stray === 0,

@@ -212,7 +212,13 @@ export function StudentReport({
                               : 'text-muted'
                         }`}
                       >
-                        {kind === 'passed' ? 'Passed' : kind === 'notYet' ? 'Not yet' : 'Not started'}
+                        {kind === 'passed'
+                          ? 'Passed'
+                          : kind === 'notYet'
+                            ? 'Not yet'
+                            : kind === 'notTheirs'
+                              ? 'Not set for them'
+                              : 'Not started'}
                         {cell.best && (
                           <span className="font-num">
                             {' '}

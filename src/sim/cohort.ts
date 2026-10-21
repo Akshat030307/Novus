@@ -67,7 +67,20 @@ export interface Assignment {
   dueAt: string | null
   /** set work that does not count towards the class figures — practice, not homework */
   optional?: boolean
+  /**
+   * Issue B11. Null, or missing, means the whole class. A user id means this
+   * was set for one student — different students need different weeks, and a
+   * class is not one student repeated nineteen times.
+   */
+  forUser?: string | null
 }
+
+/** what a teacher hands over when setting something; the store mints the id */
+export type NewAssignment = Omit<Assignment, 'id'>
+
+/** is this piece of work this person's to do? */
+export const appliesTo = (a: Assignment, userId: string): boolean =>
+  !a.forUser || a.forUser === userId
 
 /**
  * What a member shares. Deliberately a summary rather than the save: an
@@ -151,6 +164,8 @@ export function dueState(work: SetWork, passed: boolean, now: string): DueState 
 /* ---------- the completion table ---------- */
 
 export interface Cell {
+  /** this work was aimed at somebody else, so there is nothing to report */
+  na?: boolean
   /** null where they have not attempted it at all */
   best: Attempt | null
   tries: number
@@ -184,6 +199,9 @@ export function buildRows(
     .map((member) => {
       const mine = byUser.get(member.userId) ?? []
       const cells = assignments.map((assignment) => {
+        if (!appliesTo(assignment, member.userId)) {
+          return { na: true, best: null, tries: 0, gained: null, late: false }
+        }
         const best = bestAttempt(mine, assignment.refId)
         const prog = progressOn(mine, assignment.refId)
         const all = mine.filter((a) => a.refId === assignment.refId)
@@ -346,7 +364,7 @@ export function weakAreas(row: Row, assignments: Assignment[], attempts: Attempt
 
   assignments.forEach((assignment, i) => {
     const cell = row.cells[i]
-    if (!cell || !cell.best || cell.best.passed) return
+    if (!cell || cell.na || !cell.best || cell.best.passed) return
     const tries = cell.tries
     const all = mine.filter((a) => a.refId === assignment.refId)
     const bestPct = percent(cell.best)
@@ -398,7 +416,10 @@ export function classTotals(rows: Row[], assignments: Assignment[] = []): ClassT
   // optional work is shown in the table but kept out of the figures: a teacher
   // asking "how far is my class" means the homework, not the extras
   const counts = (i: number) => !assignments[i]?.optional
-  const cells = rows.flatMap((r) => r.cells.filter((_, i) => counts(i)))
+  // a slot only exists where the work was actually set for that student:
+  // counting "not started" against somebody it was never aimed at would make
+  // a class look further behind every time a teacher helped one person
+  const cells = rows.flatMap((r) => r.cells.filter((c, i) => counts(i) && !c.na))
   return {
     students: rows.length,
     reporting: rows.filter((r) => r.member.summary).length,
@@ -413,6 +434,9 @@ export function classTotals(rows: Row[], assignments: Assignment[] = []): ClassT
 
 export type ResultKind = 'passed' | 'notYet' | 'notStarted'
 
+/** what one cell says — the three outcomes, or "this was never theirs" */
+export type CellResult = ResultKind | 'notTheirs'
+
 export interface AssignmentBreakdown {
   assignment: Assignment
   /** member ids in each bucket, so a chart can list or filter by them */
@@ -426,6 +450,7 @@ export function assignmentBreakdown(rows: Row[], assignments: Assignment[]): Ass
   return assignments.map((assignment, i) => {
     const out: AssignmentBreakdown = { assignment, passed: [], notYet: [], notStarted: [] }
     for (const r of rows) {
+      if (r.cells[i].na) continue
       const best = r.cells[i].best
       const bucket = !best ? out.notStarted : best.passed ? out.passed : out.notYet
       bucket.push(r.member.userId)
@@ -434,7 +459,8 @@ export function assignmentBreakdown(rows: Row[], assignments: Assignment[]): Ass
   })
 }
 
-export function resultOf(cell: Cell): ResultKind {
+export function resultOf(cell: Cell): CellResult {
+  if (cell.na) return 'notTheirs'
   return !cell.best ? 'notStarted' : cell.best.passed ? 'passed' : 'notYet'
 }
 

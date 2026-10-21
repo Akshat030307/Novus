@@ -70,6 +70,11 @@ insert into public.cohort_members (cohort_id, user_id, display_name, summary) va
 insert into public.assignments (id, cohort_id, kind, ref_id, title) values
   ('bbbbbbbb-0000-0000-0000-000000000001','aaaaaaaa-0000-0000-0000-000000000001','drill','credit-desk','The credit desk');
 
+-- aimed work: one for the student, one for their classmate (issue B11)
+insert into public.assignments (cohort_id, kind, ref_id, title, for_user) values
+  ('aaaaaaaa-0000-0000-0000-000000000001','drill','credit-desk?focus=collateral&n=3','The credit desk — collateral cover','22222222-2222-2222-2222-222222222222'),
+  ('aaaaaaaa-0000-0000-0000-000000000001','drill','build-a-book?hard=1','Build a book (strict)','33333333-3333-3333-3333-333333333333');
+
 insert into public.attempts (user_id, kind, ref_id, score, out_of, passed) values
   ('22222222-2222-2222-2222-222222222222','drill','credit-desk',3,5,false),
   ('55555555-5555-5555-5555-555555555555','drill','credit-desk',5,5,true);
@@ -100,7 +105,7 @@ select pg_temp.check('cannot add themselves to another class',
   pg_temp.denied($q$insert into public.cohort_members (cohort_id, user_id, display_name)
                     values ('aaaaaaaa-0000-0000-0000-000000000002','22222222-2222-2222-2222-222222222222','Gatecrash')$q$));
 select pg_temp.check('can read the work their class set',
-  (select count(*) = 1 from public.assignments where cohort_id = 'aaaaaaaa-0000-0000-0000-000000000001'));
+  (select count(*) = 2 from public.assignments where cohort_id = 'aaaaaaaa-0000-0000-0000-000000000001'));
 select pg_temp.check('cannot read another class''s work',
   (select count(*) = 0 from public.assignments where cohort_id = 'aaaaaaaa-0000-0000-0000-000000000002'));
 select pg_temp.check('cannot read a classmate''s attempts',
@@ -109,6 +114,10 @@ select pg_temp.check('sees classmates on the board, and only names and figures',
   (select count(*) = 2 from public.class_board('aaaaaaaa-0000-0000-0000-000000000001')));
 select pg_temp.check('cannot see the board of a class they are not in',
   (select count(*) = 0 from public.class_board('aaaaaaaa-0000-0000-0000-000000000002')));
+select pg_temp.check('sees work aimed at them',
+  (select count(*) = 1 from public.assignments where ref_id = 'credit-desk?focus=collateral&n=3'));
+select pg_temp.check('cannot see work aimed at a classmate',
+  (select count(*) = 0 from public.assignments where ref_id = 'build-a-book?hard=1'));
 select pg_temp.check('can edit their own display name',
   (select not pg_temp.denied($q$update public.cohort_members set display_name = 'Student K'
                                where user_id = '22222222-2222-2222-2222-222222222222'$q$)));

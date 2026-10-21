@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Assignment, CohortMember } from '@/sim/cohort'
+import type { NewAssignment, Assignment, CohortMember } from '@/sim/cohort'
 import type { Attempt } from '@/sim/attempts'
 import { SAMPLE_CLASS_NAME, sampleClass } from '@/data/sample-class'
 
@@ -26,7 +26,7 @@ export interface SampleClassState {
 
   rename: (name: string) => void
   removeStudent: (userId: string) => void
-  addAssignment: (a: { kind: 'drill' | 'module'; refId: string; title: string; dueAt: string | null }) => void
+  addAssignment: (a: NewAssignment) => void
   updateAssignment: (id: string, patch: Partial<Pick<Assignment, 'dueAt' | 'optional' | 'title'>>) => void
   removeAssignment: (id: string) => void
   moveAssignment: (id: string, by: -1 | 1) => void

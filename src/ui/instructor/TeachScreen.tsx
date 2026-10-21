@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { cloudEnabled, sendMagicLink, signOut } from '@/lib/supabase'
 import { useAuthStore } from '@/state/auth'
-import { SCENARIOS } from '@/data/scenarios'
-import { MODULES } from '@/data/modules'
 import {
   assignmentBreakdown,
   buildRows,
@@ -14,6 +12,7 @@ import {
   type Assignment,
   type Cell,
   type CohortMember,
+  type NewAssignment,
 } from '@/sim/cohort'
 import type { Attempt } from '@/sim/attempts'
 import {
@@ -28,6 +27,7 @@ import {
 } from '@/state/cohorts'
 import { useSampleClass } from '@/state/sampleClass'
 import { StudentReport } from '@/ui/instructor/StudentReport'
+import { SetWorkForm } from '@/ui/instructor/SetWorkForm'
 import { ClassBoards } from '@/ui/panels/ClassBoards'
 import type { BoardMember } from '@/sim/leaderboard'
 import { DemoLogin, demoUnlocked } from '@/ui/instructor/DemoLogin'
@@ -332,17 +332,10 @@ function CohortList({
 
 /* ---------- one class ---------- */
 
-const ASSIGNABLE = [
-  ...SCENARIOS.map((s) => ({ kind: 'drill' as const, refId: s.id, title: s.title })),
-  ...MODULES.map((m) => ({ kind: 'module' as const, refId: m.id, title: m.title })),
-]
-
 function CohortView({ cohort, onBack }: { cohort: Cohort; onBack: () => void }) {
   const [members, setMembers] = useState<CohortMember[]>([])
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [attempts, setAttempts] = useState<(Attempt & { userId: string })[]>([])
-  const [pick, setPick] = useState(ASSIGNABLE[0].refId)
-  const [due, setDue] = useState('')
   const [loading, setLoading] = useState(true)
 
   const refresh = async () => {
@@ -359,16 +352,8 @@ function CohortView({ cohort, onBack }: { cohort: Cohort; onBack: () => void }) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cohort.id])
 
-  const assign = async () => {
-    const chosen = ASSIGNABLE.find((a) => a.refId === pick)
-    if (!chosen) return
-    await addAssignment(cohort.id, {
-      kind: chosen.kind,
-      refId: chosen.refId,
-      title: chosen.title,
-      dueAt: due ? new Date(due).toISOString() : null,
-    })
-    setDue('')
+  const assign = async (a: NewAssignment) => {
+    await addAssignment(cohort.id, a)
     await refresh()
   }
 
@@ -389,28 +374,19 @@ function CohortView({ cohort, onBack }: { cohort: Cohort; onBack: () => void }) 
         <Card>
           <SectionTitle
             accent="text-marigold"
-            note="Drills and module checks. Students see them in the game under Academy → Class."
+            note="Drills and module checks, aimed where you want them. Students see them in the game under Academy → Drills."
           >
             Set work
           </SectionTitle>
-          <div className="flex flex-wrap items-center gap-2">
-            <select value={pick} onChange={(e) => setPick(e.target.value)} className={field}>
-              {ASSIGNABLE.map((a) => (
-                <option key={a.refId} value={a.refId}>
-                  {a.kind === 'drill' ? 'Drill' : 'Module'}: {a.title}
-                </option>
-              ))}
-            </select>
-            <label className="flex items-center gap-2 text-sm text-muted">
-              Due
-              <input type="date" value={due} onChange={(e) => setDue(e.target.value)} className={field} />
-            </label>
-            <Button variant="primary" onClick={() => void assign()}>
-              Assign
-            </Button>
-          </div>
+          <SetWorkForm
+            members={members}
+            assignments={assignments}
+            onAdd={(a) => void assign(a)}
+            field={field}
+          />
           <AssignmentList
             assignments={assignments}
+            members={members}
             onRemove={(id) => void removeAssignment(id).then(refresh)}
           />
         </Card>
@@ -471,12 +447,17 @@ function SampleClass() {
 
 function AssignmentList({
   assignments,
+  members = [],
   onRemove,
 }: {
   assignments: Assignment[]
+  /** so work aimed at one person can say whose it is */
+  members?: CohortMember[]
   onRemove?: (id: string) => void
 }) {
   if (assignments.length === 0) return null
+  const nameOf = (id: string) =>
+    members.find((m) => m.userId === id)?.displayName ?? 'one student'
   return (
     <ul className="mt-4 divide-y divide-line border-t border-line">
       {assignments.map((a) => (
@@ -487,6 +468,11 @@ function AssignmentList({
               {a.kind === 'drill' ? 'Drill' : 'Module'}
               {a.dueAt && ` · due ${shortDate(a.dueAt)}`}
             </span>
+            {a.forUser && (
+              <span className="ml-2 rounded-full border border-amethyst/50 px-2 py-0.5 text-xs text-amethyst">
+                {nameOf(a.forUser)} only
+              </span>
+            )}
           </span>
           {onRemove && (
             <button onClick={() => onRemove(a.id)} className="text-sm text-muted hover:text-coral">
@@ -513,7 +499,7 @@ type Tab = 'class' | 'student' | 'students' | 'work'
 export interface BoardActions {
   renameClass: (name: string) => void
   removeStudent: (userId: string) => void
-  addAssignment: (a: { kind: 'drill' | 'module'; refId: string; title: string; dueAt: string | null }) => void
+  addAssignment: (a: NewAssignment) => void
   updateAssignment: (id: string, patch: Partial<Pick<Assignment, 'dueAt' | 'optional'>>) => void
   removeAssignment: (id: string) => void
   moveAssignment: (id: string, by: -1 | 1) => void
@@ -897,7 +883,11 @@ function ClassBoard({
 
       {tab === 'work' && (
         <div className="xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
-          {actions ? <WorkEditor assignments={assignments} actions={actions} /> : setWork}
+          {actions ? (
+            <WorkEditor assignments={assignments} members={members} actions={actions} />
+          ) : (
+            setWork
+          )}
         </div>
       )}
 
@@ -1061,25 +1051,15 @@ function ClassBoard({
  * change where they are shown, and optional work is marked rather than
  * deleted, because "practice, not homework" is a real distinction to a class.
  */
-function WorkEditor({ assignments, actions }: { assignments: Assignment[]; actions: BoardActions }) {
-  const [pick, setPick] = useState(ASSIGNABLE[0].refId)
-  const [due, setDue] = useState('')
-  // the same drill set twice is almost always a slip, and it doubles the
-  // class figures, so the button says so instead of letting it happen
-  const already = assignments.some((a) => a.refId === pick)
-
-  const add = () => {
-    const chosen = ASSIGNABLE.find((a) => a.refId === pick)
-    if (!chosen || already) return
-    actions.addAssignment({
-      kind: chosen.kind,
-      refId: chosen.refId,
-      title: chosen.title,
-      dueAt: due ? new Date(due).toISOString() : null,
-    })
-    setDue('')
-  }
-
+function WorkEditor({
+  assignments,
+  members,
+  actions,
+}: {
+  assignments: Assignment[]
+  members: CohortMember[]
+  actions: BoardActions
+}) {
   /** <input type="date"> wants YYYY-MM-DD in local time, not an ISO instant */
   const asDateValue = (iso: string | null) => {
     if (!iso) return ''
@@ -1092,27 +1072,16 @@ function WorkEditor({ assignments, actions }: { assignments: Assignment[]; actio
       <Card>
         <SectionTitle
           accent="text-marigold"
-          note="Drills and module checks. Students see them in the game under Academy → Class."
+          note="Drills and module checks, aimed where you want them. Students see them in the game under Academy → Drills."
         >
           Set work
         </SectionTitle>
-        <div className="flex flex-wrap items-center gap-2">
-          <select value={pick} onChange={(e) => setPick(e.target.value)} className={field}>
-            {ASSIGNABLE.map((a) => (
-              <option key={a.refId} value={a.refId}>
-                {a.kind === 'drill' ? 'Drill' : 'Module'}: {a.title}
-              </option>
-            ))}
-          </select>
-          <label className="flex items-center gap-2 text-sm text-muted">
-            Due
-            <input type="date" value={due} onChange={(e) => setDue(e.target.value)} className={field} />
-          </label>
-          <Button variant="primary" onClick={add} disabled={already}>
-            Assign
-          </Button>
-          {already && <span className="text-sm text-muted">Already set for this class.</span>}
-        </div>
+        <SetWorkForm
+          members={members}
+          assignments={assignments}
+          onAdd={(a) => actions.addAssignment(a)}
+          field={field}
+        />
 
         {assignments.length === 0 ? (
           <p className="mt-4 text-sm text-muted">Nothing set yet.</p>
@@ -1128,6 +1097,11 @@ function WorkEditor({ assignments, actions }: { assignments: Assignment[]; actio
                   {a.optional && (
                     <span className="ml-2 rounded-full border border-line px-2 py-0.5 text-xs text-muted">
                       optional · not counted
+                    </span>
+                  )}
+                  {a.forUser && (
+                    <span className="ml-2 rounded-full border border-amethyst/50 px-2 py-0.5 text-xs text-amethyst">
+                      {members.find((m) => m.userId === a.forUser)?.displayName ?? 'one student'} only
                     </span>
                   )}
                 </span>
@@ -1288,7 +1262,14 @@ function FocusStrip({
                   : 'border-line text-muted'
             return (
               <span key={a.id} className={`rounded-full border px-2.5 py-0.5 text-[13px] ${look}`}>
-                {a.title}: {k === 'passed' ? 'passed' : k === 'notYet' ? 'not yet' : 'not started'}
+                {a.title}:{' '}
+                {k === 'passed'
+                  ? 'passed'
+                  : k === 'notYet'
+                    ? 'not yet'
+                    : k === 'notTheirs'
+                      ? 'not set for them'
+                      : 'not started'}
               </span>
             )
           })}
@@ -1308,6 +1289,10 @@ function FocusStrip({
 
 /** one student × one assignment. The word carries the result, so colour is never the only signal. */
 function Result({ cell }: { cell: Cell }) {
+  // work aimed at somebody else: a dash, not "not started". Holding a student
+  // to an assignment that was never theirs is the kind of quiet unfairness a
+  // table makes easy.
+  if (cell.na) return <span className="text-sm text-muted/50" title="Not set for them">—</span>
   if (!cell.best) return <span className="text-sm text-muted">Not started</span>
   const extra = [cell.tries > 1 && `${cell.tries} attempts`, cell.late && 'late'].filter(Boolean)
   return (

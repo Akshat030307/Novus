@@ -1,5 +1,13 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { SCENARIOS, type Scenario } from '@/data/scenarios'
+import {
+  decodeSpec,
+  focusById,
+  isAimed,
+  plainSpec,
+  specPreview,
+  type ScenarioSpec,
+} from '@/sim/aim'
 import { useAttemptsStore } from '@/state/attempts'
 import { attemptsFor, bestAttempt, progressOn, type Attempt } from '@/sim/attempts'
 import { CreditDeskDrill } from '@/ui/scenarios/CreditDeskDrill'
@@ -16,13 +24,46 @@ import { SetWorkBadge, SetWorkNote } from '@/ui/components/SetWork'
  * the first is the entire point of a drill.
  */
 export function ScenariosPanel() {
-  const [open, setOpen] = useState<Scenario | null>(null)
+  const [open, setOpen] = useState<string | null>(null)
   const attempts = useAttemptsStore((s) => s.attempts)
   const syncError = useAttemptsStore((s) => s.error)
   const { classes, work } = useClasswork()
   const drills = work.filter((w) => w.kind === 'drill')
 
-  if (open) {
+  /**
+   * Everything runnable: the drills that always exist, plus any aimed version
+   * a teacher has set for this student (issue B11). An aimed run is its own
+   * thing — its own refId, its own attempt history — because "the credit desk,
+   * collateral files only, strict" is not the same exercise as the credit
+   * desk, and a shared score would hide which one somebody actually passed.
+   */
+  const runnable = useMemo<Runnable[]>(() => {
+    const aimed = drills
+      .filter((w) => isAimed(w.refId))
+      .map((w): Runnable | null => {
+        const spec = decodeSpec(w.refId)
+        const base = SCENARIOS.find((x) => x.id === spec.drill)
+        return base
+          ? { refId: w.refId, scenario: base, spec, title: w.title, setBy: w.cohortName }
+          : null
+      })
+      .filter((r): r is Runnable => r !== null)
+    const plain: Runnable[] = SCENARIOS.map((sc) => ({
+      refId: sc.id,
+      scenario: sc,
+      spec: plainSpec(sc.id),
+      title: sc.title,
+    }))
+    return [...aimed, ...plain]
+  }, [drills])
+
+  const current = runnable.find((r) => r.refId === open) ?? null
+  const aimed = runnable.filter((r) => isAimed(r.refId))
+  const plain = runnable.filter((r) => !isAimed(r.refId))
+
+  if (current) {
+    const { scenario, spec, refId } = current
+    const focus = focusById(spec.focus)
     return (
       <div className="space-y-4">
         <button
@@ -33,22 +74,35 @@ export function ScenariosPanel() {
         </button>
         <div>
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h3 className="text-[14px] text-marigold font-semibold uppercase tracking-wide">{open.title}</h3>
+            <h3 className="text-[14px] text-marigold font-semibold uppercase tracking-wide">
+              {current.title}
+            </h3>
             <SetWorkBadge
               work={drills}
-              refId={open.id}
-              passed={Boolean(bestAttempt(attempts, open.id)?.passed)}
+              refId={refId}
+              passed={Boolean(bestAttempt(attempts, refId)?.passed)}
             />
           </div>
-          <p className="mt-1 text-[14px] text-muted">{open.brief}</p>
-          <p className="mt-1 text-[14px] text-amethyst">Goal: {open.goal}</p>
+          {/* the base brief would say "five loan files" on a run of two, so an
+              aimed drill describes itself instead */}
+          {focus || spec.count !== null || spec.hard ? (
+            <p className="mt-1 text-[14px] text-muted">
+              {focus && <span className="text-ink">Aimed at {focus.label.toLowerCase()}. </span>}
+              {specPreview(spec, 0)}
+            </p>
+          ) : (
+            <p className="mt-1 text-[14px] text-muted">{scenario.brief}</p>
+          )}
+          <p className="mt-1 text-[14px] text-amethyst">
+            Goal: {spec.hard ? 'the call and the reasoning, on every file.' : scenario.goal}
+          </p>
         </div>
-        <History id={open.id} attempts={attempts} full />
+        <History id={refId} attempts={attempts} full />
         <SyncNote error={syncError} />
-        {open.kind === 'credit-desk' && <CreditDeskDrill />}
-        {open.kind === 'build-a-book' && <BuildABookDrill />}
-        {open.kind === 'spot-the-shock' && <SpotTheShockDrill />}
-        {open.kind === 'replay' && open.replayId && <ReplayDrill replayId={open.replayId} />}
+        {scenario.kind === 'credit-desk' && <CreditDeskDrill spec={spec} />}
+        {scenario.kind === 'build-a-book' && <BuildABookDrill spec={spec} />}
+        {scenario.kind === 'spot-the-shock' && <SpotTheShockDrill spec={spec} />}
+        {scenario.kind === 'replay' && scenario.replayId && <ReplayDrill replayId={scenario.replayId} />}
       </div>
     )
   }
@@ -61,30 +115,86 @@ export function ScenariosPanel() {
       </p>
       <SetWorkNote work={drills} inAClass={classes.length > 0} kind="drills" />
       <SyncNote error={syncError} />
-      <ul className="space-y-2">
-        {SCENARIOS.map((s) => (
-          <li key={s.id}>
-            <button
-              onClick={() => setOpen(s)}
-              className="w-full border-2 border-line bg-panel-3 p-3 text-left hover:border-marigold"
-            >
-              <div className="flex items-baseline justify-between gap-2">
-                <h3 className="font-display text-[14px] text-ink">{s.title}</h3>
-                <span className="flex shrink-0 items-baseline gap-2">
-                  <SetWorkBadge
-                    work={drills}
-                    refId={s.id}
-                    passed={Boolean(bestAttempt(attempts, s.id)?.passed)}
-                  />
-                  <Best id={s.id} attempts={attempts} />
-                </span>
-              </div>
-              <p className="mt-1 text-[14px] text-muted">{s.brief}</p>
-            </button>
-          </li>
-        ))}
-      </ul>
+
+      {aimed.length > 0 && (
+        <section>
+          <div className="mb-2 text-[12px] text-marigold font-semibold uppercase tracking-wide">
+            Set for you
+          </div>
+          <ul className="space-y-2">
+            {aimed.map((r) => (
+              <Entry key={r.refId} run={r} attempts={attempts} drills={drills} onOpen={setOpen} />
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section>
+        {aimed.length > 0 && (
+          <div className="mb-2 text-[12px] text-muted font-semibold uppercase tracking-wide">
+            Every drill
+          </div>
+        )}
+        <ul className="space-y-2">
+          {plain.map((r) => (
+            <Entry key={r.refId} run={r} attempts={attempts} drills={drills} onOpen={setOpen} />
+          ))}
+        </ul>
+      </section>
     </div>
+  )
+}
+
+/** a drill as it can be run: the base exercise, plus how it has been aimed */
+interface Runnable {
+  refId: string
+  scenario: Scenario
+  spec: ScenarioSpec
+  title: string
+  /** the class that set it, where one did */
+  setBy?: string
+}
+
+function Entry({
+  run,
+  attempts,
+  drills,
+  onOpen,
+}: {
+  run: Runnable
+  attempts: Attempt[]
+  drills: import('@/sim/cohort').SetWork[]
+  onOpen: (refId: string) => void
+}) {
+  const focus = focusById(run.spec.focus)
+  return (
+    <li>
+      <button
+        onClick={() => onOpen(run.refId)}
+        className="w-full border-2 border-line bg-panel-3 p-3 text-left hover:border-marigold"
+      >
+        <div className="flex items-baseline justify-between gap-2">
+          <h3 className="font-display text-[14px] text-ink">{run.title}</h3>
+          <span className="flex shrink-0 items-baseline gap-2">
+            <SetWorkBadge
+              work={drills}
+              refId={run.refId}
+              passed={Boolean(bestAttempt(attempts, run.refId)?.passed)}
+            />
+            <Best id={run.refId} attempts={attempts} />
+          </span>
+        </div>
+        <p className="mt-1 text-[14px] text-muted">
+          {focus ? specPreview(run.spec, 0) : run.scenario.brief}
+        </p>
+        {run.setBy && (
+          <p className="mt-1 text-[13px] text-muted/80">
+            Set by {run.setBy}. It is kept apart from your own practice, so this score is the one
+            your teacher sees against it.
+          </p>
+        )}
+      </button>
+    </li>
   )
 }
 

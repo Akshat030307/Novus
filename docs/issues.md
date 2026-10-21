@@ -523,6 +523,35 @@ nothing is inferred.
 
 ---
 
+### B11 — One week for everybody ✅ L
+
+Set work was the same five drills for the whole class, so the student who
+keeps misreading collateral and the student who has passed everything got the
+same homework. Every child's learning curve is different and the dashboard
+could already see the difference; it just could not act on it.
+
+A teacher now picks a drill, points it at one thing it covers, sets how many
+files and how strict, and gives it to the whole class or to the three people
+who need it. What they cannot do is write new cases in a form — a badly
+written case teaches the wrong thing very efficiently, and the library is
+where that argument belongs.
+
+The aim lives in the ref id — `credit-desk?focus=collateral&n=2&hard=1` — so
+attempts, the completion table, the leaderboard and the badge in the game all
+keep working with no new table and no join. A plain `credit-desk` still means
+what it always did. `for_user` on an assignment is the only schema change:
+null is the class, a user id is one person, and the select policy makes sure a
+student never sees what was aimed at somebody else — a class that can see who
+was given remedial work has been told something it had no business knowing.
+
+A run that was set is kept apart from the same student's own practice, because
+"the credit desk, collateral files, strict" is not the credit desk, and one
+score covering both would hide which one they actually passed.
+
+**Depends on:** B2, B3, B10.
+
+---
+
 ## C — Reach and polish
 
 ### C1 — No onboarding ⬜ S

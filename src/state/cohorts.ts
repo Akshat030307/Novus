@@ -119,7 +119,7 @@ export async function listAssignments(cohortId: string): Promise<Assignment[]> {
   try {
     const { data, error } = await supabase
       .from('assignments')
-      .select('id, kind, ref_id, title, due_at')
+      .select('id, kind, ref_id, title, due_at, for_user')
       .eq('cohort_id', cohortId)
       .order('created_at', { ascending: true })
     if (error) {
@@ -127,13 +127,21 @@ export async function listAssignments(cohortId: string): Promise<Assignment[]> {
       return []
     }
     return (data ?? []).map((r) => {
-      const row = r as { id: string; kind: string; ref_id: string; title: string; due_at: string | null }
+      const row = r as {
+        id: string
+        kind: string
+        ref_id: string
+        title: string
+        due_at: string | null
+        for_user: string | null
+      }
       return {
         id: row.id,
         kind: row.kind === 'module' ? 'module' : 'drill',
         refId: row.ref_id,
         title: row.title,
         dueAt: row.due_at ? String(row.due_at) : null,
+        forUser: row.for_user,
       }
     })
   } catch (e) {
@@ -156,12 +164,14 @@ export async function addAssignment(
         ref_id: assignment.refId,
         title: assignment.title,
         due_at: assignment.dueAt,
+        // null is the whole class; a user id is one student (issue B11)
+        for_user: assignment.forUser ?? null,
       })
-      .select('id, kind, ref_id, title, due_at')
+      .select('id, kind, ref_id, title, due_at, for_user')
       .single()
     if (error) return fail(readable(cloudNote('assign', error.message)))
-    const row = data as { id: string; due_at: string | null }
-    return { ok: true, value: { ...assignment, id: row.id, dueAt: row.due_at } }
+    const row = data as { id: string; due_at: string | null; for_user: string | null }
+    return { ok: true, value: { ...assignment, id: row.id, dueAt: row.due_at, forUser: row.for_user } }
   } catch (e) {
     return fail(readable(cloudNote('assign', cloudReason(e))))
   }
