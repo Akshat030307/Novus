@@ -1,0 +1,384 @@
+{
+  "url": "https://ves.ac.in/vesasc/wp-content/uploads/2025/10/SYBBI.pdf",
+  "readAt": "2026-10-21T18:42:28.363Z",
+  "readBy": "TinyFish Agent API",
+  "runId": "1c5fcc31-b1aa-4df0-add7-22a7839c9341",
+  "seconds": 109,
+  "institution": "Vivekanand Education Society’s College of Arts, Science and Commerce (Autonomous)",
+  "programme": "B.Com. (Banking & Insurance): S.Y.B.B.I. (Second Year B.Com. Banking & Insurance)",
+  "courses": [
+    {
+      "title": "Fundamentals of Banking",
+      "semester": "Semester-III",
+      "units": [
+        {
+          "title": "An Overview of Banking Industry",
+          "topics": [
+            "Definition of Banks, Types of Banks, Principles of Banking",
+            "Banking System in India, Overview of RBI, Public, Private, Co-operative, Payment Bank, Regional Rural Banks",
+            "Emerging trends of banking - Universal banking, electronic banking, globalization of banking.",
+            "Brief history of banking sector reforms from 1991-2000 and Current developments in banking sector",
+            "Regulatory Architecture – Overview of Banking Regulation Act 1949, Banking Regulation Act (Amendment 2015), Payment and ",
+            "Bank Crises in India",
+            "Critical Evaluation of Banking Industry in India"
+          ],
+          "hours": 10
+        },
+        {
+          "title": "Commercial Banking & Banking Ombudsman",
+          "topics": [
+            "Definition and meaning of Commercial Bank, Evolution of Commercial Banking in India, Functions of Commercial Bank, Servi",
+            "Retail Banking – Meaning, Features, Significance of Retail Banking and Overview of its products",
+            "Corporate Banking -Meaning, Features, Significance of Corporate Banking and Overview of its products",
+            "Rural Banking - Meaning, Features, Significance of Rural Banking and Overview of its products",
+            "Banking Ombudsman – Meaning and Functions"
+          ],
+          "hours": 15
+        },
+        {
+          "title": "Universal Banking & Technology in Banking sector",
+          "topics": [
+            "Concept of Universal Banking, Evolution of Universal banking, Services to Government, Payment & Settlement, Merchant Ban",
+            "Features, norms and Limitations of E- banking, Mobile Banking, Internet Banking, RTGS, POS Terminal, NEFT, IMPS, Brown L",
+            "Applicability of KYC norms in Banking Sector."
+          ],
+          "hours": 15
+        },
+        {
+          "title": "Microfinance & Financial Inclusion",
+          "topics": [
+            "Introduction, Need and Code of Conduct for Microfinance Institutions in India, Advantages, Purpose, Limitations and Mode",
+            "Need & Extent, RBI Committee Report of Medium-Term Path on Financial Inclusion 2015, World Findex Report 2015, NISM Repo",
+            "Features, procedures and significance of Stand-up India Scheme for Green Field",
+            "JAM Trinity concept"
+          ],
+          "hours": 15
+        }
+      ]
+    },
+    {
+      "title": "Financial Management - I",
+      "semester": "Semester-III",
+      "units": [
+        {
+          "title": "Introduction to Finance and Financial Management",
+          "topics": [
+            "A) Introduction to Finance: Meaning, definition and importance of finance",
+            "Sources of finance: Long Term Sources & Short Term Sources",
+            "B) Financial Management: Meaning, Importance and Scope of Financial Management",
+            "Functions and Objectives of Financial Management",
+            "Emerging role of Finance Managers in India",
+            "C) Objectives of the Firm: Profit Maximization and Shareholders Wealth Maximization, Profit V/s Value Maximization"
+          ],
+          "hours": 15
+        },
+        {
+          "title": "Financial Goal Setting & Time value of Money",
+          "topics": [
+            "A) Financial Goal Setting: Introduction, Financial Forecasting – Meaning, Techniques, Benefits, Economic Value Added (EV",
+            "B) Time Value of Money: Concept, Techniques of Discounting and Compounding"
+          ],
+          "hours": 10
+        },
+        {
+          "title": "Investment Decisions: Capital Budgeting",
+          "topics": [
+            "Capital Budgeting: Nature and Purpose of Capital Budgeting",
+            "Types of Capital Investment",
+            "Basic Principle of Measuring Project Cash Flows"
+          ],
+          "hours": 15
+        },
+        {
+          "title": "Financial Decisions",
+          "topics": [
+            "A) Cost of Capital: Introduction and Definition of Cost of Capital",
+            "Measurement of WACC using book value and market value method",
+            "B) Capital Structure Decisions: Meaning and Choice of Capital Structure",
+            "Importance of Optimal Capital Structure",
+            "EBIT-EPS Analysis",
+            "Capital Structure Theories"
+          ],
+          "hours": 20
+        }
+      ]
+    },
+    {
+      "title": "Mutual Fund Management",
+      "semester": "Semester-III",
+      "units": [
+        {
+          "title": "Introduction to Mutual Fund",
+          "topics": [
+            "History & Origin",
+            "Definition, Meaning, Characteristics, Advantages, Disadvantages, Limitations of Mutual Funds",
+            "Ethics in Mutual Fund",
+            "Entities involved – Sponsor, Trust, Trustee, Asset Management Company, Registrar and Transfer Agent (RTA) and Fund House",
+            "Legal Framework - Role of regulatory agencies for Mutual funds – SEBI, RBI, AMFI, Ministry of Finance, SRO",
+            "MF guidelines on advertisement",
+            "Revised Rules and Regulations in Mutual Fund"
+          ],
+          "hours": 15
+        },
+        {
+          "title": "Classification of Mutual Fund",
+          "topics": [
+            "Types of Mutual Fund (introduction and Characteristics)",
+            "Functional/Operational – Open ended, Close ended, Interval",
+            "Portfolio – Income, Growth, Balanced, MMMF, Geographical / Location (Domestic, Offshore)",
+            "Miscellaneous - Tax Saving Funds, Exchange Traded Funds, Balance Funds, Fixed Term Plan, Debt Funds, Systematic Investme",
+            "Portfolio Maturity",
+            "Calculations of NAV"
+          ],
+          "hours": 15
+        }
+      ]
+    },
+    {
+      "title": "An Introduction to Insurance Sector",
+      "semester": "Semester-III",
+      "units": [
+        {
+          "title": "Understanding the insurance sector",
+          "topics": [
+            "Basic terminologies related to life insurance and general insurance",
+            "Structure of insurance industry",
+            "Regulatory environment and authorities - IRDA",
+            "Role of insurance agents and brokers",
+            "An introduction to life insurance (Products of life insurance – only concepts and non-traditional plans – only concepts)"
+          ],
+          "hours": 15
+        },
+        {
+          "title": "An introduction to Non-life insurance",
+          "topics": [
+            "Fire insurance",
+            "Marine insurance",
+            "Health insurance – meaning, need, importance, procedure, claim, determinants of risk premium",
+            "Vehicle insurance – meaning, need & importance, determinants of risk premium, procedure, claim procedure",
+            "Miscellaneous insurance"
+          ],
+          "hours": 15
+        }
+      ]
+    },
+    {
+      "title": "Management Accounting (Minor)",
+      "semester": "Semester-III",
+      "units": [
+        {
+          "title": "Introduction to Management Accounting",
+          "topics": [
+            "Meaning and Definition",
+            "Scope",
+            "Functions",
+            "Objectives",
+            "Importance",
+            "Role of Management Accounting",
+            "Management Accounting Framework",
+            "Tools of Management Accounting"
+          ],
+          "hours": 15
+        },
+        {
+          "title": "Financial Statement Analysis",
+          "topics": [
+            "Introduction to Corporate Financial Statements: Understanding the Balance Sheet and Revenue Statements with the headings",
+            "Uses of financial statements",
+            "Users of financial statements",
+            "Introduction and Meaning of Financial Statement Analysis",
+            "Steps, Objective, Types of Analysis",
+            "Ratio analysis: Meaning, classification, Du Pont Chart, advantages & limitations",
+            "Balance Sheet Ratios / Revenue Statement Ratios / Combined Ratios"
+          ],
+          "hours": 15
+        },
+        {
+          "title": "Working Capital Management",
+          "topics": [
+            "Concept and Nature of Working Capital",
+            "Planning of Working Capital",
+            "Estimation / Projection of Working Capital Requirements in case of Trading and Manufacturing Organizations",
+            "Operating Cycle"
+          ],
+          "hours": 15
+        },
+        {
+          "title": "Management of Profits/Dividend Policy",
+          "topics": [
+            "Meaning and Types of dividend",
+            "Factors influencing dividend policy",
+            "Forms of dividend",
+            "Determinants of Dividend Policy: factors affecting dividend decisions",
+            "Dividend Policy in India",
+            "Bonus Shares (Stock dividend) and Stock (Share) Splits",
+            "Legal, Procedural and Tax Aspects associated with Dividend Decision"
+          ],
+          "hours": 15
+        }
+      ]
+    },
+    {
+      "title": "Fundamentals of Insurance",
+      "semester": "Semester-IV",
+      "units": [
+        {
+          "title": "An Introduction to Life Insurance",
+          "topics": [
+            "Life Insurance Business – Components, Human Life Value Approach, Mutuality, Principle of Risk Pooling, Life Insurance Co",
+            "Products of LIC – introduction of life insurance plans; riders in plans; forms and procedures",
+            "Non-Traditional Life Insurance Products",
+            "Careers in Insurance – job roles (underwriter, actuary, surveyor, claim manager, account officer etc.), qualifications a",
+            "Insurance schemes given by Government"
+          ],
+          "hours": null
+        },
+        {
+          "title": "An Introduction to Health Insurance",
+          "topics": [
+            "Health Insurance – meaning, IRDA regulations, determinants of health insurance, health insurance market in India and det",
+            "SBI – introduction and forms and procedures of hospitalization, indemnity products, top-up covers, cashless insurance, s"
+          ],
+          "hours": null
+        },
+        {
+          "title": "An Introduction to Home and Motor Insurance",
+          "topics": [
+            "Home Insurance – introduction, forms and procedures, inclusions and exclusions in policies, determinants of risk premium",
+            "Vehicle Insurance – SBI and ICICI plans: introduction, forms and procedures, determinants of risk premium, inclusions an"
+          ],
+          "hours": null
+        },
+        {
+          "title": "Role of Insurance in Logistic",
+          "topics": [
+            "Role of Insurance in Logistics – meaning & importance, hazards, protection, social security – types of risks and acciden",
+            "Fire Insurance – SBI and ICICI plans: introduction, forms and procedures, standard fire and special perils policy, tarif"
+          ],
+          "hours": null
+        }
+      ]
+    },
+    {
+      "title": "Financial Management - II",
+      "semester": "Semester-IV",
+      "units": [
+        {
+          "title": "Working Capital Financing and Cash Management",
+          "topics": [
+            "Management of cash and marketable securities",
+            "Motives for holding cash; objectives of cash management; factors determining cash needs",
+            "Basic strategies of cash management; cash management techniques/processes",
+            "Marketable securities; cash management practices in India"
+          ],
+          "hours": 15
+        },
+        {
+          "title": "Management of Components of Working Capital",
+          "topics": [
+            "Receivables management: objectives; credit policies; credit terms; collection policies",
+            "Inventory management: objectives and techniques"
+          ],
+          "hours": 15
+        },
+        {
+          "title": "Financial Planning & Budgeting",
+          "topics": [
+            "Introduction; meaning and essentials of budget; types of budget; advantages of budgeting",
+            "Sales budget, cash budget, and flexible budget"
+          ],
+          "hours": 15
+        },
+        {
+          "title": "Financial Policy and Corporate Strategy",
+          "topics": [
+            "Meaning of strategic financial management; strategic financial decision-making framework; functions of strategic financi",
+            "Business risk and financial risk; debt vs equity financing",
+            "Types of leverage"
+          ],
+          "hours": 15
+        }
+      ]
+    },
+    {
+      "title": "Business Law",
+      "semester": "Semester-IV",
+      "units": [
+        {
+          "title": "Negotiable Instrument Act",
+          "topics": [
+            "Promissory Note, Bill of Exchange and Cheque",
+            "Holder and Holder in Due Course",
+            "Kinds of Negotiable Instruments",
+            "Parties to a Negotiable Instrument",
+            "Negotiation, Endorsement and Maturity of Instruments",
+            "Presumption as to Negotiable Instruments",
+            "Estoppels under Negotiable Instruments",
+            "Case studies / case laws: Great Western Railway Co. Ltd. vs. London and County Banking Co.; U. Ponnappa Moothan Sons, Pa"
+          ],
+          "hours": 10
+        },
+        {
+          "title": "Insurance as a Contract",
+          "topics": [
+            "Essentials of an insurance contract",
+            "Nature of an insurance contract",
+            "Parties to a contract of insurance"
+          ],
+          "hours": null
+        },
+        {
+          "title": "Insurance and Consumer Protection Act",
+          "topics": [
+            "Insurance as a service",
+            "Misrepresentation and non-settlement of claims as deficiency in services",
+            "Case laws: National Insurance Co. Ltd. vs Hindustan Safety Glass Works Ltd.; Bajaj Allianz General Insurance Co. Ltd. vs"
+          ],
+          "hours": null
+        }
+      ]
+    },
+    {
+      "title": "Cost Accounting (Minor)",
+      "semester": "Semester-IV",
+      "units": [
+        {
+          "title": "Introduction to Cost Accounting and Classification of Costs",
+          "topics": [
+            "Objectives and scope of cost accounting",
+            "Cost centres and cost units",
+            "Cost classification for stock valuation, profit measurement, decision making and control; coding systems",
+            "Elements of cost"
+          ],
+          "hours": 15
+        },
+        {
+          "title": "Cost Sheet and Reconciliation",
+          "topics": [
+            "Classification of costs, cost of sales, cost centre, cost unit, profit centre and investment centre",
+            "Cost sheet (normal cost sheet and estimated cost sheet) – practical problems",
+            "Reconciliation of cost and financial accounts – practical problems"
+          ],
+          "hours": 20
+        },
+        {
+          "title": "Standard Costing",
+          "topics": [
+            "Various types of standards; setting of standards",
+            "Basic concepts of material, labour and overhead (fixed and variable) variance analysis"
+          ],
+          "hours": 10
+        },
+        {
+          "title": "Introduction to Marginal Costing",
+          "topics": [
+            "Marginal costing: meaning, application, advantages, limitations",
+            "Contribution; breakeven analysis and profit-volume graph",
+            "Practical problems based on marginal costing (excluding decision making)"
+          ],
+          "hours": 15
+        }
+      ]
+    }
+  ]
+}

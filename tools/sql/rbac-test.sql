@@ -49,6 +49,7 @@ truncate public.cohorts cascade;
 truncate public.attempts;
 truncate public.transcripts;
 truncate public.saves;
+truncate public.syllabus_runs;
 delete from auth.users;
 
 insert into auth.users (id, email) values
@@ -78,6 +79,9 @@ insert into public.assignments (cohort_id, kind, ref_id, title, for_user) values
 insert into public.attempts (user_id, kind, ref_id, score, out_of, passed) values
   ('22222222-2222-2222-2222-222222222222','drill','credit-desk',3,5,false),
   ('55555555-5555-5555-5555-555555555555','drill','credit-desk',5,5,true);
+
+insert into public.syllabus_runs (user_id, url, status) values
+  ('11111111-1111-1111-1111-111111111111', 'https://college.example/syllabus.pdf', 'done');
 
 insert into public.saves (user_id, state) values
   ('22222222-2222-2222-2222-222222222222','{"cash":123456}');
@@ -121,6 +125,10 @@ select pg_temp.check('cannot see work aimed at a classmate',
 select pg_temp.check('can edit their own display name',
   (select not pg_temp.denied($q$update public.cohort_members set display_name = 'Student K'
                                where user_id = '22222222-2222-2222-2222-222222222222'$q$)));
+select pg_temp.check('cannot record a syllabus run for themselves',
+  pg_temp.denied($q$insert into public.syllabus_runs (user_id, url) values ('22222222-2222-2222-2222-222222222222', 'https://x')$q$));
+select pg_temp.check('cannot read another person''s syllabus runs',
+  pg_temp.visible($q$select 1 from public.syllabus_runs where user_id <> '22222222-2222-2222-2222-222222222222'$q$) = 0);
 commit;
 
 \echo ''
@@ -137,6 +145,8 @@ select pg_temp.check('cannot read the attempts of somebody they do not teach',
   (select count(*) = 0 from public.attempts where user_id = '55555555-5555-5555-5555-555555555555'));
 select pg_temp.check('cannot read a student''s save',
   pg_temp.visible($q$select 1 from public.saves where user_id = '22222222-2222-2222-2222-222222222222'$q$) = 0);
+select pg_temp.check('can read their own syllabus runs',
+  (select count(*) = 1 from public.syllabus_runs where user_id = '11111111-1111-1111-1111-111111111111'));
 select pg_temp.check('cannot read a student''s transcript',
   pg_temp.visible($q$select 1 from public.transcripts where user_id = '22222222-2222-2222-2222-222222222222'$q$) = 0);
 commit;

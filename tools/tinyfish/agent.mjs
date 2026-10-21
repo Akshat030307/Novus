@@ -47,9 +47,25 @@ export function requireKey() {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
-async function call(key, path, init = {}) {
+/**
+ * The Agent API refuses an output_schema that carries `description` fields
+ * (400 INVALID_INPUT). They are kept in the schemas in this folder as notes
+ * for the reader, and stripped here on the way out.
+ */
+export function wireSchema(schema) {
+  if (Array.isArray(schema)) return schema.map(wireSchema)
+  if (!schema || typeof schema !== 'object') return schema
+  const out = {}
+  for (const [k, v] of Object.entries(schema)) if (k !== 'description') out[k] = wireSchema(v)
+  return out
+}
+
+async function call(key, path, init = {}, timeoutMs = 60_000) {
+  // every request gets its own deadline: a hung connection must not sit for
+  // five minutes while the run it was asking about finishes without us
   const res = await fetch(BASE + path, {
     ...init,
+    signal: AbortSignal.timeout(timeoutMs),
     headers: { 'X-API-Key': key, 'Content-Type': 'application/json', ...(init.headers ?? {}) },
   })
   if (!res.ok) throw new Error(`agent ${path} ${res.status}: ${(await res.text()).slice(0, 300)}`)
@@ -64,31 +80,46 @@ async function call(key, path, init = {}) {
  *   stealth         'stealth' browser profile, for sites that turn bots away
  *   maxSeconds      wall-clock cap on the run
  */
-export async function runAgent(key, { url, goal, schema, stealth = false, maxSeconds = 300 }) {
-  const started = await call(key, '/automation/run-async', {
-    method: 'POST',
-    body: JSON.stringify({
-      url,
-      goal,
-      output_schema: schema,
-      browser_profile: stealth ? 'stealth' : 'lite',
-      agent_config: { max_duration_seconds: maxSeconds },
-    }),
-  })
-  if (!started.run_id) throw new Error(`run not created: ${JSON.stringify(started.error ?? started)}`)
+export async function runAgent(key, { url, goal, schema, stealth = false, maxSeconds = 300, runId = null, onStart }) {
+  let id = runId
+  if (!id) {
+    const started = await call(key, '/automation/run-async', {
+      method: 'POST',
+      body: JSON.stringify({
+        url,
+        goal,
+        output_schema: wireSchema(schema),
+        browser_profile: stealth ? 'stealth' : 'lite',
+        agent_config: { max_duration_seconds: maxSeconds },
+      }),
+    }, 120_000)
+    if (!started.run_id) throw new Error(`run not created: ${JSON.stringify(started.error ?? started)}`)
+    id = started.run_id
+  }
+  // said out loud at once, so a crash below never loses a run already paid for
+  onStart?.(id)
 
   const deadline = Date.now() + (maxSeconds + 120) * 1000
+  let misses = 0
   for (;;) {
     await sleep(POLL_MS)
-    const run = await call(key, `/runs/${started.run_id}`)
+    let run
+    try {
+      run = await call(key, `/runs/${id}`, {}, 30_000)
+      misses = 0
+    } catch (e) {
+      // a dropped poll is the network, not the run: try again, give up after a few
+      if (++misses > 6) throw new Error(`run ${id}: status unreachable (${e.message}); resume with its id`)
+      continue
+    }
     if (run.status === 'COMPLETED') {
       // a bare list or plain-text answer comes back wrapped as result.result
-      return { runId: run.run_id, steps: run.num_of_steps, result: run.result ?? {} }
+      return { runId: run.run_id ?? id, steps: run.num_of_steps, result: run.result ?? {} }
     }
     if (run.status === 'FAILED' || run.status === 'CANCELLED') {
       const e = run.error ?? {}
-      throw new Error(`run ${run.run_id} ${run.status}: ${e.category ?? ''} ${e.message ?? ''}`.trim())
+      throw new Error(`run ${id} ${run.status}: ${e.category ?? ''} ${e.message ?? ''}`.trim())
     }
-    if (Date.now() > deadline) throw new Error(`run ${started.run_id} still ${run.status} after the deadline`)
+    if (Date.now() > deadline) throw new Error(`run ${id} still ${run.status} after the deadline; resume with its id`)
   }
 }

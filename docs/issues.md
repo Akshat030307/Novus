@@ -580,6 +580,31 @@ it, as they do in the Casebook; none of it reaches `data/stocks.ts` or
 
 ---
 
+### B13: Paste a syllabus, get a term plan ✅ M
+
+A teacher's first question is "where does this fit in my course?" Answering
+it meant reading their syllabus against the Novus catalogue by hand. Now they
+paste the link: the TinyFish Agent opens the syllabus in a browser and returns
+every course and unit as typed fields, and Novus turns one course into a
+week-by-week plan, each item due the Friday of the week its unit ends.
+
+The Agent only reads. Matching units to modules and drills is a keyword rule
+in `src/sim/syllabus.ts`, and every match shows the syllabus words behind it,
+so a teacher can see why "Working Capital Financing" became the credit desk
+aimed at cash, and untick it if they disagree. Units Novus does not teach
+(insurance, law, costing) are listed as not covered rather than padded out.
+
+It is the first time Novus calls an outside service while someone is using
+it, so the key sits in a Supabase function (`syllabus-plan`) that checks the
+caller is a signed-in teacher with a class and under five reads a day,
+counted in a table only the function can write, and refuses to spend anything
+if that count cannot be read. The sample class shows a real syllabus (VES
+College, Mumbai) read ahead of time, so the demo costs nothing.
+
+**Depends on:** B11.
+
+---
+
 ## C — Reach and polish
 
 ### C1 — No onboarding ⬜ S

@@ -452,3 +452,40 @@ create policy "cohort reads assignments" on public.assignments
     public.owns_cohort(cohort_id)
     or (public.in_cohort(cohort_id) and (for_user is null or for_user = auth.uid()))
   );
+
+-- ------------------------------------- b13: syllabus to term plan ----
+-- A teacher pastes a syllabus link; the TinyFish Agent reads it in a browser
+-- and returns the courses and units; Novus turns one course into a term plan.
+-- The Agent costs money per run and takes minutes, so it is started and
+-- watched by the Supabase function `syllabus-plan`, which holds the key.
+-- This table is that function's memory: who asked, for what, and how it went.
+--
+-- Only the function writes here (with the service role). A teacher may read
+-- their own rows, so the dashboard can show what they have already read.
+-- The daily limit is counted from this table, so it cannot be dodged by
+-- reloading the page.
+
+create table if not exists public.syllabus_runs (
+  id          uuid        primary key default gen_random_uuid(),
+  user_id     uuid        not null references auth.users (id) on delete cascade,
+  url         text        not null check (length(url) <= 2000),
+  run_id      text,
+  status      text        not null default 'running' check (status in ('running', 'done', 'failed')),
+  result      jsonb,
+  error       text,
+  created_at  timestamptz not null default now(),
+  finished_at timestamptz
+);
+
+create index if not exists syllabus_runs_by_user on public.syllabus_runs (user_id, created_at desc);
+
+alter table public.syllabus_runs enable row level security;
+
+drop policy if exists "read own syllabus runs" on public.syllabus_runs;
+create policy "read own syllabus runs" on public.syllabus_runs
+  for select using (auth.uid() = user_id);
+
+-- No insert, update or delete policy: a client cannot record a run it did not
+-- pay for, mark one done, or erase one to reset its daily count.
+grant select on public.syllabus_runs to authenticated;
+revoke all on public.syllabus_runs from anon;

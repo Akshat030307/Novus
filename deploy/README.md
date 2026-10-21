@@ -29,3 +29,25 @@ restart is a second or two of 502 on this one domain.
 The config exists because the site is two documents: `index.html` is the
 static front door, `play.html` is the React app, and `/play` and `/teach` have
 to reach the app rather than the front door.
+
+## The syllabus reader (Supabase function `syllabus-plan`)
+
+The one part of Novus that calls TinyFish while someone is using it: a
+teacher pastes a syllabus link on the Work set tab and the TinyFish Agent
+reads it. The key lives in the function, never in the site. Three steps, once:
+
+1. **Database.** Run `docs/supabase.sql` in the SQL editor (it is
+   idempotent). It adds `syllabus_runs`, which the function uses to enforce
+   five reads per teacher per day.
+2. **Secret.** Supabase → Edge Functions → Secrets → add
+   `TINYFISH_API_KEY` with the same value as in `.env`.
+   (`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are provided by Supabase.)
+3. **Deploy**, either way:
+   - CLI: `npx supabase login`, then
+     `npx supabase functions deploy syllabus-plan --project-ref lckmgjurvefeudlffyzi`
+   - Dashboard: Edge Functions → Deploy a new function → via editor, name it
+     `syllabus-plan`, and paste the whole of `deploy/syllabus-plan.single.ts`
+     (generated from the source by `node tools/build-edge-single.mjs`).
+
+Leave "Verify JWT" on. The function also checks the caller itself: signed in,
+owns a class, under the daily limit. Otherwise it spends nothing.

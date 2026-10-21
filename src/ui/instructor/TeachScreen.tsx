@@ -28,6 +28,7 @@ import {
 import { useSampleClass } from '@/state/sampleClass'
 import { StudentReport } from '@/ui/instructor/StudentReport'
 import { SetWorkForm } from '@/ui/instructor/SetWorkForm'
+import { SyllabusPlanner } from '@/ui/instructor/SyllabusPlanner'
 import { ClassBoards } from '@/ui/panels/ClassBoards'
 import type { BoardMember } from '@/sim/leaderboard'
 import { DemoLogin, demoUnlocked } from '@/ui/instructor/DemoLogin'
@@ -409,6 +410,7 @@ function CohortView({ cohort, onBack }: { cohort: Cohort; onBack: () => void }) 
           />
         </Card>
       }
+      planner={<SyllabusPlanner mode="live" assignments={assignments} onAdd={(a) => void assign(a)} />}
     />
   )
 }
@@ -588,6 +590,7 @@ function ClassBoard({
   attempts,
   loading,
   setWork,
+  planner,
   onAssign,
   watch,
   actions,
@@ -604,6 +607,8 @@ function ClassBoard({
   loading: boolean
   /** the real class passes its own form; the sample builds one from `actions` */
   setWork?: ReactNode
+  /** syllabus to term plan, live for a real class (issue B13) */
+  planner?: ReactNode
   /** the real class's way of setting work, for the one-click recommendation */
   onAssign?: (a: NewAssignment) => void
   /** live watching, for a real class only — the sample has nothing to wait for */
@@ -966,9 +971,15 @@ function ClassBoard({
       {tab === 'work' && (
         <div className="xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
           {actions ? (
-            <WorkEditor assignments={assignments} members={members} actions={actions} />
+            <div className="space-y-4">
+              <WorkEditor assignments={assignments} members={members} actions={actions} />
+              <SyllabusPlanner mode="sample" assignments={assignments} onAdd={(a) => actions.addAssignment(a)} />
+            </div>
           ) : (
-            setWork
+            <div className="space-y-4">
+              {setWork}
+              {planner}
+            </div>
           )}
         </div>
       )}
