@@ -370,6 +370,7 @@ function CohortView({ cohort, onBack }: { cohort: Cohort; onBack: () => void }) 
       assignments={assignments}
       attempts={attempts}
       loading={loading}
+      onAssign={(a) => void assign(a)}
       setWork={
         <Card>
           <SectionTitle
@@ -518,6 +519,7 @@ function ClassBoard({
   attempts,
   loading,
   setWork,
+  onAssign,
   actions,
   renaming,
 }: {
@@ -532,6 +534,8 @@ function ClassBoard({
   loading: boolean
   /** the real class passes its own form; the sample builds one from `actions` */
   setWork?: ReactNode
+  /** the real class's way of setting work, for the one-click recommendation */
+  onAssign?: (a: NewAssignment) => void
   /** present when this board may be edited */
   actions?: BoardActions
   renaming?: { on: boolean; draft: string; setDraft: (v: string) => void; setOn: (v: boolean) => void }
@@ -898,6 +902,7 @@ function ClassBoard({
           onSelect={setDetail}
           assignments={assignments}
           attempts={attempts}
+          onAssign={actions ? (a) => actions.addAssignment(a) : onAssign}
         />
       )}
 

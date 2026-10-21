@@ -1,5 +1,13 @@
 import { useMemo } from 'react'
-import { HABITS, resultOf, weakAreas, type Assignment, type Row } from '@/sim/cohort'
+import {
+  HABITS,
+  resultOf,
+  weakAreas,
+  type Assignment,
+  type NewAssignment,
+  type Row,
+} from '@/sim/cohort'
+import { readingBuiltAt, recommendFor } from '@/sim/recommend'
 import { percent, progressOn, type Attempt } from '@/sim/attempts'
 import { board, type BoardMember } from '@/sim/leaderboard'
 
@@ -23,12 +31,15 @@ export function StudentReport({
   onSelect,
   assignments,
   attempts,
+  onAssign,
 }: {
   rows: Row[]
   selected: string | null
   onSelect: (userId: string | null) => void
   assignments: Assignment[]
   attempts: (Attempt & { userId: string })[]
+  /** present where this board may be written to */
+  onAssign?: (a: NewAssignment) => void
 }) {
   const row = rows.find((r) => r.member.userId === selected) ?? rows[0] ?? null
   const index = row ? rows.findIndex((r) => r.member.userId === row.member.userId) : -1
@@ -71,6 +82,8 @@ export function StudentReport({
   if (!row) {
     return <p className="text-muted">Nobody has joined this class yet.</p>
   }
+
+  const pick = recommendFor(weak, assignments, row.member.userId)
 
   const s = row.member.summary
   const step = (by: -1 | 1) => {
@@ -178,6 +191,70 @@ export function StudentReport({
               </ol>
             )}
           </Card>
+
+          {pick && (
+            <Card title="What to set them next" accent="text-marigold">
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
+                <span className="text-[17px] font-semibold text-ink">{pick.title}</span>
+                {onAssign ? (
+                  <button
+                    onClick={() =>
+                      onAssign({
+                        kind: 'drill',
+                        refId: pick.refId,
+                        title: pick.title,
+                        dueAt: null,
+                        forUser: row.member.userId,
+                      })
+                    }
+                    className="rounded-md border border-marigold bg-marigold px-3 py-1.5 text-sm font-semibold text-night hover:bg-marigold/90"
+                  >
+                    Set it for {row.member.displayName.split(' ')[0]}
+                  </button>
+                ) : (
+                  <span className="text-sm text-muted">Set it from the Work set tab.</span>
+                )}
+              </div>
+
+              {/* the why. A recommendation nobody can argue with is an order. */}
+              <p className="mt-2 text-[14px] leading-relaxed text-muted">
+                <span className="text-amethyst">Why: </span>
+                {pick.why}
+              </p>
+
+              {pick.reading.length > 0 && (
+                <div className="mt-3 border-t border-line pt-3">
+                  <div className="text-[12px] font-semibold tracking-wide text-muted uppercase">
+                    The same mistake, in the news
+                  </div>
+                  <ul className="mt-1.5 space-y-1">
+                    {pick.reading.map((r) => (
+                      <li key={r.url} className="text-[14px]">
+                        <a
+                          href={r.url}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className="text-amethyst underline hover:text-marigold"
+                        >
+                          {r.title}
+                        </a>
+                        <span className="text-muted">
+                          {' '}
+                          — {r.site}
+                          {r.at && ` · ${r.at}`}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-2 text-[12px] text-muted">
+                    Found by TinyFish{readingBuiltAt() ? ` on ${readingBuiltAt()!.slice(0, 10)}` : ''},
+                    for you rather than for the game — the market your students trade stays
+                    invented. The exercise above was chosen by the rule, not by a model.
+                  </p>
+                </div>
+              )}
+            </Card>
+          )}
 
           <Card title="Set work" accent="text-jade">
             {assignments.length === 0 ? (

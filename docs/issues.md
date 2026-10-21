@@ -552,6 +552,34 @@ score covering both would hide which one they actually passed.
 
 ---
 
+### B12 — "What do I set them next?" ✅ M
+
+The student report could say what somebody keeps getting wrong and then left
+the teacher to work out what to do about it at nine o'clock on a Sunday. It
+now names one exercise, aimed at that weakness, set for that student in a
+click.
+
+The split is the whole design. **The pick is a rule** — a weak area names a
+habit or a piece of work, `FOCUSES` says which drill answers it, the drill is
+aimed there, work already set is skipped. It is deterministic and a teacher
+can disagree with it on the evidence printed beside it. **TinyFish supplies
+the other half**: at build time it searches current coverage of the same
+mistake, and `src/data/recommendations.json` ships with the game, so "you keep
+reacting to movement that means nothing" can be followed by Reuters on what
+that cost retail traders last year.
+
+TinyFish does not choose the exercise, and it is worth being plain about why:
+a recommendation a teacher cannot audit is worse than none, and "the model
+said so" is not a reason to put a student through a drill.
+
+The reading is teacher-facing and labelled as such. Real companies appear in
+it, as they do in the Casebook; none of it reaches `data/stocks.ts` or
+`data/events.ts`, and the market the students trade stays invented.
+
+**Depends on:** B10, B11.
+
+---
+
 ## C — Reach and polish
 
 ### C1 — No onboarding ⬜ S

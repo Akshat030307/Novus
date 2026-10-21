@@ -1,0 +1,127 @@
+{
+  "builtAt": "2026-10-21T08:17:25.219Z",
+  "builtBy": "TinyFish Search API",
+  "window": "365 days",
+  "note": "Teacher-facing reading only. Nothing here reaches the playable market: no company found here is added to data/stocks.ts and no headline here is copied into data/events.ts.",
+  "areas": {
+    "habit:noise_trade": {
+      "label": "Trading the noise",
+      "reading": [
+        {
+          "title": "India equity derivatives traders fall, total losses decline in FY26, regulator says",
+          "url": "https://www.reuters.com/world/india/indias-individual-equity-derivatives-traders-fall-about-20-fiscal-2026-regulator-2026-08-20/",
+          "site": "Reuters",
+          "at": "Aug 20, 2026"
+        },
+        {
+          "title": "India’s Retail Traders Lost $9.6 Billion in Equity Derivatives",
+          "url": "https://www.bloomberg.com/news/articles/2026-08-11/india-s-retail-traders-lost-9-6-billion-in-equity-derivatives",
+          "site": "Bloomberg.com",
+          "at": "Aug 11, 2026"
+        }
+      ]
+    },
+    "habit:concentration": {
+      "label": "One name, most of the book",
+      "reading": [
+        {
+          "title": "Investors look to shelter portfolios from rising AI concentration risks",
+          "url": "https://www.ft.com/content/3302fd5c-8b92-425b-9523-673b2565bb10?syn-25a6b1a6=1",
+          "site": "Financial Times",
+          "at": "2 weeks ago"
+        },
+        {
+          "title": "What should SIP investors do amid market volatility? From diversification to allocation — Here's what experts said",
+          "url": "https://www.livemint.com/money/personal-finance/sip-investors-optimism-should-do-what-protect-market-volatility-expert-advice-continue-review-diverse-asset-allocation-11782550011923.html",
+          "site": "Livemint",
+          "at": "Jun 28, 2026"
+        }
+      ]
+    },
+    "habit:unsound_call": {
+      "label": "Judging a call by how it turned out",
+      "reading": [
+        {
+          "title": "Is Climbing to the Top of an Investment Bank Luck or Skill? I Asked a Billionaire",
+          "url": "https://www.wsj.com/business/fernando-de-leon-luck-vs-skill-3da04177",
+          "site": "WSJ",
+          "at": "May 29, 2026"
+        },
+        {
+          "title": "How to Tell Whether an Active Fund Manager Was Skilled or Lucky",
+          "url": "https://www.morningstar.com/funds/how-tell-whether-an-active-fund-manager-was-skilled-or-lucky",
+          "site": "Morningstar",
+          "at": "1 month ago"
+        }
+      ]
+    },
+    "habit:missed_flags": {
+      "label": "Reading a file too fast",
+      "reading": [
+        {
+          "title": "Vietnamese EV maker VinFast's move to shift $7 billion in debt raises 'red flags'",
+          "url": "https://www.reuters.com/world/asia-pacific/vietnamese-ev-maker-vinfasts-move-shift-7-billion-debt-raises-red-flags-2026-05-21/",
+          "site": "Reuters",
+          "at": "May 21, 2026"
+        },
+        {
+          "title": "PwC resigns as statutory auditor of Arisinfra Solutions over fee dispute",
+          "url": "https://legal.economictimes.indiatimes.com/news/corporate-business/pwc-resigns-as-auditor-for-arisinfra-solutions-amid-fee-dispute/131101319",
+          "site": "ETLegalWorld.com",
+          "at": "May 15, 2026"
+        }
+      ]
+    },
+    "work:credit-desk": {
+      "label": "The credit desk",
+      "reading": [
+        {
+          "title": "India's BSE, brokerage stocks slide as RBI tightens bank lending to capital markets",
+          "url": "https://www.reuters.com/world/india/indian-bourse-brokerage-stocks-drop-after-cenbank-tightens-capital-market-2026-02-16/",
+          "site": "Reuters",
+          "at": "Feb 15, 2026"
+        },
+        {
+          "title": "Indian Bank aims to recover Rs 5,500 from bad loans during FY27: MD Binod Kumar",
+          "url": "https://m.economictimes.com/industry/banking/finance/banking/indian-bank-aims-to-recover-rs-5500-from-bad-loans-during-fy27-md-binod-kumar/articleshow/132341143.cms",
+          "site": "The Economic Times",
+          "at": "Jul 12, 2026"
+        }
+      ]
+    },
+    "work:cash-vs-profit": {
+      "label": "Cash is not profit",
+      "reading": [
+        {
+          "title": "Iran war set to stretch India Inc’s working capital cycles, squeeze margins",
+          "url": "https://www.moneycontrol.com/news/business/iran-war-set-to-stretch-india-inc-s-working-capital-cycles-squeeze-margins-13869105.html",
+          "site": "Moneycontrol.com",
+          "at": "Mar 24, 2026"
+        },
+        {
+          "title": "Why Cash Flow Is the King: The Mountain and the Flow | SSON",
+          "url": "https://www.ssonetwork.com/finance-accounting/articles/why-cash-flow-is-king",
+          "site": "SSON",
+          "at": "Apr 20, 2026"
+        }
+      ]
+    },
+    "work:replay-ilfs": {
+      "label": "Funding that stops",
+      "reading": [
+        {
+          "title": "India central bank opens up term money market for non-banks, companies to boost liquidity",
+          "url": "https://www.reuters.com/sustainability/boards-policy-regulation/india-central-bank-opens-up-term-money-market-non-banks-companies-boost-2026-04-08/",
+          "site": "Reuters",
+          "at": "Apr 8, 2026"
+        },
+        {
+          "title": "Banking liquidity surplus stays over ₹5 trillion for fifth straight day",
+          "url": "https://www.business-standard.com/industry/banking/banking-liquidity-surplus-stays-above-rs-5-trillion-for-fifth-day-126041501410_1.html",
+          "site": "Business Standard",
+          "at": "Apr 15, 2026"
+        }
+      ]
+    }
+  }
+}
