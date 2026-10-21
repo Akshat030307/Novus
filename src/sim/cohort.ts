@@ -290,6 +290,97 @@ export function whatToTeachNext(rows: Row[], assignments: Assignment[]): Lesson[
   return lessons.sort((a, b) => b.affected / b.of - a.affected / a.of)
 }
 
+/* ---------- one student, and what to do about them ---------- */
+
+/**
+ * A weak area, with the evidence that produced it attached.
+ *
+ * `why` is the point. A dashboard that says "collateral cover: weak" is an
+ * accusation; one that says "four of her six wrong calls were collateral
+ * cover, the last on Tuesday" is something a teacher can take to the student
+ * and be argued out of. Nothing here is inferred — every sentence is a count
+ * of rows that exist.
+ */
+export interface WeakArea {
+  /** a stable id, so a recommendation can point at one (issue B12) */
+  id: string
+  label: string
+  /** how many times the evidence came up */
+  seen: number
+  /** the sentence under it */
+  why: string
+  /** worst first */
+  weight: number
+}
+
+/**
+ * What this student is actually getting wrong, hardest first.
+ *
+ * Two sources, deliberately kept apart: habits the game logged while they
+ * played, and set work they have attempted and not passed. A habit says how
+ * they think; an unpassed assignment says what they have not done yet. They
+ * are not the same problem and the page does not pretend they are.
+ */
+export function weakAreas(row: Row, assignments: Assignment[], attempts: Attempt[]): WeakArea[] {
+  const out: WeakArea[] = []
+  const s = row.member.summary
+  // newest first, because "last on Tuesday" reads off the front of this list
+  const mine = attempts
+    .filter((a) => (a as Attempt & { userId?: string }).userId === row.member.userId)
+    .sort((a, b) => (a.at < b.at ? 1 : -1))
+
+  if (s) {
+    for (const [kind, copy] of Object.entries(MISTAKE_LESSON)) {
+      const seen = s.mistakes[kind] ?? 0
+      if (seen === 0) continue
+      out.push({
+        id: `habit:${kind}`,
+        label: copy.headline,
+        seen,
+        why: `The game logged this ${seen} ${seen === 1 ? 'time' : 'times'} while they played. ${copy.detail}`,
+        // a habit seen repeatedly outranks a single piece of unfinished work
+        weight: 100 + seen,
+      })
+    }
+  }
+
+  assignments.forEach((assignment, i) => {
+    const cell = row.cells[i]
+    if (!cell || !cell.best || cell.best.passed) return
+    const tries = cell.tries
+    const all = mine.filter((a) => a.refId === assignment.refId)
+    const bestPct = percent(cell.best)
+    const trend =
+      cell.gained === null
+        ? 'One attempt so far.'
+        : cell.gained > 0
+          ? `Up ${cell.gained} points since the first go, so it is moving.`
+          : cell.gained < 0
+            ? `Down ${Math.abs(cell.gained)} points since the first go.`
+            : 'No change between attempts.'
+    out.push({
+      id: `work:${assignment.refId}`,
+      label: `${assignment.title} — not passed`,
+      seen: tries,
+      why: `Best ${cell.best.score}/${cell.best.outOf} (${bestPct}%) across ${tries} ${
+        tries === 1 ? 'try' : 'tries'
+      }${all.length > 0 ? `, last on ${dayName(all[0].at)}` : ''}. ${trend}`,
+      weight: 50 + (100 - bestPct) / 10,
+    })
+  })
+
+  return out.sort((a, b) => b.weight - a.weight)
+}
+
+/** "Tuesday", or a date once it is more than a week old */
+function dayName(iso: string, now = Date.now()): string {
+  const t = Date.parse(iso)
+  const days = (now - t) / 86_400_000
+  return days < 7
+    ? new Date(t).toLocaleDateString('en-IN', { weekday: 'long' })
+    : new Date(t).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
+}
+
 /* ---------- the four figures at the top of a class ---------- */
 
 export interface ClassTotals {

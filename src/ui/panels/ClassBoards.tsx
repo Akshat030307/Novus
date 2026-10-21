@@ -20,11 +20,14 @@ export function ClassBoards({
   members,
   meId,
   hidden,
+  heading = true,
 }: {
   members: BoardMember[]
   meId: string
   /** the reader has taken themselves off the board */
   hidden: boolean
+  /** off where the surrounding card already carries the title */
+  heading?: boolean
 }) {
   if (members.length === 0) {
     return (
@@ -35,11 +38,13 @@ export function ClassBoards({
   }
 
   return (
-    <div className="mt-3">
-      <div className="text-[12px] text-amethyst font-semibold uppercase tracking-wide">
-        Class leaderboard
-      </div>
-      <div className="mt-2 grid gap-3 sm:grid-cols-2">
+    <div className="space-y-2">
+      {heading && (
+        <div className="text-[12px] text-amethyst font-semibold uppercase tracking-wide">
+          Class leaderboard
+        </div>
+      )}
+      <div className="grid gap-3 sm:grid-cols-2">
         <Board kind="learning" members={members} meId={meId} />
         <Board kind="trading" members={members} meId={meId} />
       </div>

@@ -27,7 +27,9 @@ import {
   type Cohort,
 } from '@/state/cohorts'
 import { useSampleClass } from '@/state/sampleClass'
-import { StudentDetail } from '@/ui/instructor/StudentDetail'
+import { StudentReport } from '@/ui/instructor/StudentReport'
+import { ClassBoards } from '@/ui/panels/ClassBoards'
+import type { BoardMember } from '@/sim/leaderboard'
 import { DemoLogin, demoUnlocked } from '@/ui/instructor/DemoLogin'
 import {
   ActivityChart,
@@ -497,7 +499,7 @@ function AssignmentList({
   )
 }
 
-type Tab = 'overview' | 'students' | 'work'
+type Tab = 'class' | 'student' | 'students' | 'work'
 
 /**
  * Everything below the page header — shared by a real class and the sample.
@@ -555,8 +557,25 @@ function ClassBoard({
   const lessons = useMemo(() => whatToTeachNext(rows, assignments), [rows, assignments])
   const totals = useMemo(() => classTotals(rows, assignments), [rows, assignments])
   const breakdowns = useMemo(() => assignmentBreakdown(rows, assignments), [rows, assignments])
+  // the same two boards the class sees, built from the summaries already
+  // fetched — a teacher should never be shown a ranking their students cannot
+  const boardMembers = useMemo<BoardMember[]>(
+    () =>
+      rows
+        .filter((r) => r.member.summary)
+        .map((r) => ({
+          userId: r.member.userId,
+          displayName: r.member.displayName,
+          workPassed: r.member.summary!.workPassed ?? r.passed,
+          accuracy: r.member.summary!.accuracy ?? null,
+          improvement: r.member.summary!.improvement ?? null,
+          returnPct: r.member.summary!.returnPct ?? null,
+          day: r.member.summary!.day,
+        })),
+    [rows],
+  )
   const [now] = useState(() => Date.now())
-  const [tab, setTab] = useState<Tab>('overview')
+  const [tab, setTab] = useState<Tab>('class')
 
   // one student picked anywhere is highlighted everywhere
   const [focus, setFocus] = useState<string | null>(null)
@@ -600,7 +619,11 @@ function ClassBoard({
     })
   }, [rows, filter, filterIndex, query, sort])
 
-  const detailRow = rows.find((r) => r.member.userId === detail) ?? null
+  // the student whose report is open; the Students table hands over to it
+  const openStudent = (userId: string) => {
+    setDetail(userId)
+    setTab('student')
+  }
 
   const download = () => {
     const csv = toCsv(rows, assignments)
@@ -667,7 +690,8 @@ function ClassBoard({
           <nav className="flex rounded-lg border border-line bg-panel-2 p-0.5 text-sm" aria-label="Class views">
             {(
               [
-                ['overview', 'Overview'],
+                ['class', 'Class report'],
+                ['student', 'Student report'],
                 ['students', `Students · ${members.length}`],
                 ['work', `Work set · ${assignments.length}`],
               ] as [Tab, string][]
@@ -719,7 +743,7 @@ function ClassBoard({
       {title}
 
       {/* the figures, or the picked student in their place — same slot, so nothing moves down */}
-      {focused ? (
+      {tab === 'student' ? null : focused ? (
         <FocusStrip row={focused} assignments={assignments} onClear={() => setFocus(null)} />
       ) : (
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -749,8 +773,20 @@ function ClassBoard({
         </div>
       )}
 
-      {tab === 'overview' && (
-        <div className="grid gap-4 lg:grid-cols-2 xl:min-h-0 xl:flex-1 xl:grid-cols-3 xl:grid-rows-2">
+      {tab === 'class' && (
+        <div className="grid gap-4 lg:grid-cols-2 xl:min-h-0 xl:flex-1 xl:grid-cols-3 xl:overflow-y-auto">
+          <ChartCard
+            title="Class leaderboard"
+            accent="text-marigold"
+            note="What your students see of each other. Work on the left, the market on the right."
+            bodyHeight="h-96"
+            className="xl:col-span-2"
+          >
+            <div className="absolute inset-0 overflow-y-auto pr-1">
+              <ClassBoards members={boardMembers} meId="" hidden={false} heading={false} />
+            </div>
+          </ChartCard>
+
           <ChartCard
             title="What to teach next"
             accent="text-amethyst"
@@ -865,12 +901,13 @@ function ClassBoard({
         </div>
       )}
 
-      {detailRow && (
-        <StudentDetail
-          row={detailRow}
+      {tab === 'student' && (
+        <StudentReport
+          rows={rows}
+          selected={detail}
+          onSelect={setDetail}
           assignments={assignments}
           attempts={attempts}
-          onClose={() => setDetail(null)}
         />
       )}
 
@@ -957,9 +994,9 @@ function ClassBoard({
                       <td className="px-4 py-2.5">
                         <span className="flex items-center gap-2">
                           <button
-                            onClick={() => setDetail(row.member.userId)}
+                            onClick={() => openStudent(row.member.userId)}
                             className={`text-left font-medium hover:underline ${on ? 'text-marigold' : 'text-ink'}`}
-                            title="Open this student's full history"
+                            title="Open this student's report"
                           >
                             {row.member.displayName}
                           </button>

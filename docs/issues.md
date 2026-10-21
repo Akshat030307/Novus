@@ -500,6 +500,29 @@ database is what hides them, not the screen.
 
 ---
 
+### B10 — The dashboard is one page for everybody ✅ M
+
+The teaching view put the whole class on one page and tucked each student
+behind a drawer. That is backwards: the two questions a teacher has are "how
+is the class doing" and "what do I do about this one student", and the second
+one deserves a page, not a panel that slides over the first.
+
+So the top bar now reads **Class report · Student report · Students · Work
+set**. The class report keeps the charts and gains the leaderboard. The
+student report is a page per person, reached from a dropdown or by clicking a
+name in the table, with prev/next for going through a class one at a time, and
+a print button because this is the page that gets printed.
+
+Everything on it carries its evidence. "What to work on with them" never says
+a student is weak at something without the count behind it and when it last
+happened — a teacher has to be able to take the claim to the student and be
+argued out of it. `weakAreas()` builds those sentences out of rows that exist;
+nothing is inferred.
+
+**Depends on:** B3, B9.
+
+---
+
 ## C — Reach and polish
 
 ### C1 — No onboarding ⬜ S
