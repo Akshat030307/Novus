@@ -3,39 +3,41 @@
 /* Design tokens. Every colour and font in the game comes from here.
    Do not hard-code hex values in components. */
 @theme {
-  /* Surfaces step up from the page, so a panel reads as a surface rather than
-     a hole. Not pure black any more: black-on-black needs a border to exist,
-     and borders everywhere is what made the old screens feel like a form. */
-  --color-night: #0a0a0e;        /* page background */
-  --color-panel: #121218;        /* panel fill */
-  --color-panel-2: #191921;      /* raised panel / hover / header fill */
-  --color-panel-3: #22222c;      /* inset well: stat chips, bars, table rows */
-  --color-line: #2f2f3b;         /* borders */
-  --color-hi: #3f3f4e;           /* top-edge highlight, so a panel catches light */
-  --color-ink: #eceefb;          /* main text */
-  --color-muted: #a2a7c6;        /* secondary text — lifted for contrast at small sizes */
-  --color-marigold: #f2a73b;     /* accent: money, XP, focus */
-  --color-amethyst: #8a6be8;     /* reputation, levels */
+  /* The palette the front door uses (index.html), carried inside so the game
+     and the page that sells it look like one product. Surfaces step up from
+     the page, so a panel reads as a surface rather than a hole. */
+  --color-night: #0b0b12;        /* page background */
+  --color-panel: #15151f;        /* panel fill */
+  --color-panel-2: #1c1c29;      /* raised panel / hover / header fill */
+  --color-panel-3: #232332;    /* inset well: stat chips, bars, table rows */
+  --color-line: #2a2a3c;         /* borders */
+  --color-hi: #3a3a50;           /* top-edge highlight, so a panel catches light */
+  --color-ink: #f3f1ea;          /* main text */
+  --color-muted: #a6a6ba;        /* secondary text */
+
+  /* Lime is the thing-to-press colour, as it is on the front door. Iris
+     carries learning — concepts, habits, reputation. Up and down stay green
+     and red: a market that shows gains in lime and losses in coral is harder
+     to read at a glance, not easier, and the colour-blind swap below was
+     built around that pair. */
+  --color-lime: #c6ff3d;         /* accent: money, XP, focus, press this */
+  --color-iris: #8b7bff;         /* reputation, levels, concepts */
   --color-jade: #43c08a;         /* up / gain / approve */
-  --color-coral: #e4574c;        /* down / loss / reject */
+  --color-coral: #ff5b3a;        /* down / loss / reject */
 
-  /* Landing page only — ui/screens/HomeScreen. The game palette above is
-     deliberately untouched, so the front door can have its own identity
-     without restyling a single panel behind it. */
-  --color-plum: #140d18;         /* landing ground */
-  --color-plum-2: #241430;       /* raised surface, image frame */
-  --color-plum-line: #4a2a55;    /* borders on the landing page */
-  --color-magenta: #ff2d78;      /* primary accent */
-  --color-magenta-soft: #ff7ab0; /* secondary accent, hover ink */
-  --color-blush: #f5eaf0;        /* landing body text */
+  /* The old names, kept pointing at the new palette. Hundreds of components
+     say text-marigold and bg-amethyst; renaming all of them in one commit
+     would bury the colour change in a diff nobody could read. New work uses
+     lime and iris. */
+  --color-marigold: var(--color-lime);
+  --color-amethyst: var(--color-iris);
 
-  /* Silkscreen is an accent, not a reading face: the wordmark, panel titles,
-     buttons. Everything you actually read is Inter; numbers are mono so
-     columns line up. */
-  --font-display: "Silkscreen", monospace;
-  --font-body: "Inter", system-ui, sans-serif;
-  --font-num: "IBM Plex Mono", monospace;
-  --font-ui: "Inter", system-ui, sans-serif;
+  /* Archivo for anything that announces itself, Figtree for reading, DM Mono
+     for figures so columns line up. Same three faces as the front door. */
+  --font-display: "Archivo", system-ui, sans-serif;
+  --font-body: "Figtree", system-ui, sans-serif;
+  --font-num: "DM Mono", ui-monospace, monospace;
+  --font-ui: "Figtree", system-ui, sans-serif;
 }
 
 /* Issue A3. Green/red is the worst possible pair for up and down — roughly 8%

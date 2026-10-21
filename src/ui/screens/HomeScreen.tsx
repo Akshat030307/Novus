@@ -1,4 +1,4 @@
-import { useState, useEffect, type CSSProperties, type FormEvent, type ReactNode } from 'react'
+import { useState, useEffect, type FormEvent, type ReactNode } from 'react'
 import { useUiStore, useGameStore } from '@/state/store'
 import { hasSave, hasCloudSave, loadGame } from '@/state/save'
 import { newGame } from '@/state/newGame'
@@ -8,12 +8,16 @@ import { useSettingsStore } from '@/state/settings'
 import { enterFullscreen } from '@/lib/fullscreen'
 
 /**
- * The front door — a product page rather than a game title screen: what Novus
- * is on the left, what it looks like on the right, one obvious way in.
+ * The start screen at /play.
  *
- * It runs on its own palette (plum + magenta, `--color-plum*`/`--color-magenta*`
- * in styles/index.css). Those tokens exist only for this screen; the game's
- * black-and-marigold interface behind it is deliberately untouched.
+ * It used to be the front door and do the selling. The front door is now
+ * index.html — a static page with its own canvas work — so this is the thing
+ * that starts a career: name yourself, carry on from a save, and optionally
+ * sign in so progress follows you to another machine.
+ *
+ * It takes the palette and the three faces from that page, so crossing from
+ * one to the other feels like one product: lime for the thing to press, the
+ * same dark greys, Archivo for anything that announces itself.
  */
 export default function HomeScreen() {
   const setScreen = useUiStore((s) => s.setScreen)
@@ -64,59 +68,55 @@ export default function HomeScreen() {
   const canContinue = saveExists || cloudSave
 
   return (
-    <main className="relative h-full overflow-y-auto bg-plum">
-      <Blooms />
+    <main className="relative h-full overflow-y-auto bg-night">
+      <Glow />
 
-      <div className="relative z-10 flex min-h-full w-full flex-col px-6 py-8 sm:px-10 lg:px-16 lg:py-10">
-        {/* logotype */}
+      <div className="relative z-10 flex min-h-full w-full flex-col px-6 py-7 sm:px-10 lg:px-16">
         <header className="anim-rise flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <PixelDollar className="aspect-[6/7] h-5 shrink-0" />
-            <span className="text-[14px] tracking-widest text-blush font-semibold uppercase">Novus</span>
-          </div>
-
-          {/* the other door. A teacher arriving here is not going to press
-              "Start playing" — they want to see the class, so say so. */}
+          <a href="/" className="flex items-center gap-2.5" aria-label="Back to the Novus home page">
+            <Mark />
+            <span className="font-display text-[21px] font-black tracking-tight text-ink">NOVUS</span>
+          </a>
           <a
             href="/teach"
-            className="border-2 border-plum-line px-4 py-2 font-display text-[12px] tracking-wide
-              text-blush/70 uppercase transition-colors hover:border-magenta hover:text-magenta"
+            className="rounded-full border border-line px-4 py-2 text-[14px] font-semibold text-muted transition-colors hover:border-lime hover:text-lime"
           >
             For teachers
           </a>
         </header>
 
-        {/* hero — centred in whatever room is left between logotype and footer */}
-        <div className="my-auto grid items-center gap-10 py-8 lg:grid-cols-[0.85fr_1.35fr] lg:gap-16">
+        <div className="my-auto grid items-center gap-10 py-10 lg:grid-cols-[0.9fr_1.3fr] lg:gap-16">
           <div className="flex flex-col items-start">
-            <h1
-              className="anim-rise -ml-[0.08em] font-display leading-[0.85] tracking-tight text-blush text-[clamp(3rem,8vw,7.5rem)]"
-              style={{ animationDelay: '60ms' }}
+            <p
+              className="anim-rise font-num text-[12px] tracking-[0.18em] text-lime uppercase"
+              style={{ animationDelay: '40ms' }}
             >
-              NOVUS
+              Day one · ₹5,00,000 · one city
+            </p>
+
+            <h1
+              className="anim-rise mt-3 font-display text-[clamp(2.6rem,6vw,4.6rem)] leading-[0.95] font-extrabold tracking-tight text-ink"
+              style={{ animationDelay: '80ms' }}
+            >
+              Make the call,
+              <br />
+              <span className="text-lime">live with it.</span>
             </h1>
 
             <p
-              className="anim-rise mt-4 font-semibold uppercase leading-relaxed tracking-wide text-magenta text-[clamp(0.7rem,1.5vw,1.15rem)]"
-              style={{ animationDelay: '120ms' }}
-            >
-              Gamified Financial Markets Education Platform
-            </p>
-
-            <p
-              className="anim-rise mt-6 max-w-lg text-[15px] leading-relaxed text-blush/70"
-              style={{ animationDelay: '180ms' }}
+              className="anim-rise mt-5 max-w-lg text-[17px] leading-relaxed text-muted"
+              style={{ animationDelay: '140ms' }}
             >
               Walk a city that runs on money. Judge real loan files, trade a live market, and find
               out what your decisions were worth — graded on your reasoning, never on your luck.
             </p>
 
-            <div className="anim-rise mt-8 w-full" style={{ animationDelay: '240ms' }}>
+            <div className="anim-rise mt-8 w-full" style={{ animationDelay: '200ms' }}>
               {naming ? (
-                <div className="w-full max-w-sm border-2 border-plum-line bg-plum-2 p-4">
+                <div className="w-full max-w-sm rounded-2xl border border-line bg-panel p-5">
                   <label
                     htmlFor="name"
-                    className="mb-2 block text-[13px] text-blush/50 font-semibold uppercase tracking-wide"
+                    className="mb-2 block font-num text-[12px] tracking-[0.14em] text-muted uppercase"
                   >
                     What should people call you?
                   </label>
@@ -127,8 +127,8 @@ export default function HomeScreen() {
                     onChange={(e) => setName(e.target.value)}
                     maxLength={16}
                     placeholder="Arjun"
-                    className="mb-4 w-full border-2 border-plum-line bg-plum px-3 py-2 font-num text-blush
-                      placeholder:text-blush/25 focus:border-magenta focus:outline-none"
+                    className="mb-4 w-full rounded-xl border border-line bg-panel-2 px-4 py-3 text-[16px] text-ink
+                      placeholder:text-muted/40 focus:border-lime focus:outline-none"
                   />
                   <div className="flex gap-3">
                     <Cta onClick={startNew}>Start</Cta>
@@ -149,17 +149,9 @@ export default function HomeScreen() {
               )}
             </div>
 
-            <p className="anim-rise mt-4 text-[13px] text-blush/40" style={{ animationDelay: '270ms' }}>
-              Teaching with it?{' '}
-              <a href="/teach" className="text-magenta underline hover:text-blush">
-                Open the teacher dashboard
-              </a>
-              .
-            </p>
-
             <ul
-              className="anim-rise mt-10 flex flex-wrap gap-x-5 gap-y-2 text-[12px] text-blush/40 font-semibold uppercase tracking-wide"
-              style={{ animationDelay: '300ms' }}
+              className="anim-rise mt-9 flex flex-wrap gap-x-5 gap-y-2 font-num text-[12px] tracking-[0.1em] text-muted uppercase"
+              style={{ animationDelay: '260ms' }}
             >
               <Feature>Credit decisions</Feature>
               <Feature>Live market sim</Feature>
@@ -167,17 +159,12 @@ export default function HomeScreen() {
             </ul>
           </div>
 
-          {/* what it actually looks like */}
+          {/* the trailer, not a still. preload="none" keeps the 11 MB off the
+              page until someone presses play, and it never autoplays. */}
           <figure
-            className="anim-rise relative border-2 border-plum-line bg-plum-2 p-2"
-            style={{
-              animationDelay: '200ms',
-              boxShadow: '0 0 60px -20px var(--color-magenta)',
-            }}
+            className="anim-rise relative rounded-2xl border border-line bg-panel p-2"
+            style={{ animationDelay: '180ms', boxShadow: '0 30px 80px -40px rgba(198,255,61,0.35)' }}
           >
-            {/* the trailer, not a still. It doesn't float like the old picture did: controls
-                that drift are hard to hit. preload="none" keeps the 11 MB off the page
-                until someone presses play, and it never autoplays, because it has music. */}
             <video
               src="/novus-demo.mp4"
               poster="/novus-demo-poster.jpg"
@@ -186,46 +173,45 @@ export default function HomeScreen() {
               preload="none"
               width={1920}
               height={1080}
-              className="block aspect-video h-auto w-full bg-plum"
+              className="block aspect-video h-auto w-full rounded-xl bg-night"
               aria-label="Novus gameplay demo: the credit desk, the market, real-case replays, the day-end report, transcripts and the teacher dashboard"
             />
-            <figcaption className="mt-2 px-1 text-[11px] text-blush/35 font-semibold uppercase tracking-wide">
+            <figcaption className="mt-2 px-1 font-num text-[11px] tracking-[0.1em] text-muted uppercase">
               Gameplay demo · 1:24 · sound on
             </figcaption>
           </figure>
         </div>
 
-        {/* account + build */}
-        <footer className="flex flex-col gap-4 border-t-2 border-plum-line pt-6 sm:flex-row sm:items-end sm:justify-between">
+        <footer className="flex flex-col gap-4 border-t border-line pt-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-sm">
             {cloudEnabled && authReady ? (
               user ? (
                 <div className="flex items-center gap-3 text-[14px]">
-                  <span className="font-num text-blush/60">{user.email}</span>
+                  <span className="font-num text-muted">{user.email}</span>
                   <button
                     onClick={() => void signOut()}
-                    className="text-[12px] text-blush/40 font-semibold uppercase tracking-wide transition-colors hover:text-magenta"
+                    className="text-[13px] font-semibold text-muted transition-colors hover:text-lime"
                   >
                     Sign out
                   </button>
                 </div>
               ) : linkSent ? (
-                <p className="text-[14px] text-blush/60">Sign-in link sent — check your email.</p>
+                <p className="text-[14px] text-muted">Sign-in link sent — check your email.</p>
               ) : (
                 <>
-                  <form onSubmit={sendLink} className="flex gap-3">
+                  <form onSubmit={sendLink} className="flex gap-2">
                     <input
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@email.com"
-                      className="min-w-0 flex-1 border-2 border-plum-line bg-plum-2 px-3 py-2 font-num text-[15px] text-blush
-                        placeholder:text-blush/25 focus:border-magenta focus:outline-none"
+                      className="min-w-0 flex-1 rounded-full border border-line bg-panel px-4 py-2.5 font-num text-[14px] text-ink
+                        placeholder:text-muted/40 focus:border-lime focus:outline-none"
                     />
                     <Ghost type="submit">Send link</Ghost>
                   </form>
-                  <p className="mt-2 text-[13px] text-blush/35">
+                  <p className="mt-2 text-[13px] text-muted/80">
                     Optional — sign in to keep your progress across devices.
                   </p>
                 </>
@@ -234,7 +220,7 @@ export default function HomeScreen() {
             {authError && <p className="mt-2 text-[14px] text-coral">{authError}</p>}
           </div>
 
-          <p className="text-[12px] text-blush/30 font-semibold uppercase tracking-wide">
+          <p className="font-num text-[12px] tracking-[0.1em] text-muted/70 uppercase">
             Build 0.1 · single player · plays in the browser
           </p>
         </footer>
@@ -245,21 +231,38 @@ export default function HomeScreen() {
 
 /* ---------- pieces ---------- */
 
-/** Two slow magenta blooms behind everything — the only light in the room. */
-function Blooms() {
+/** the same mark as the front door: a lime tile with a line that turns up */
+function Mark() {
+  return (
+    <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true" className="shrink-0">
+      <rect width="32" height="32" rx="8" fill="var(--color-lime)" />
+      <path
+        d="M6 22l6-7 5 4 9-10"
+        fill="none"
+        stroke="var(--color-night)"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+/** two slow washes behind everything — the only light in the room */
+function Glow() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
       <div
-        className="absolute -top-56 -left-52 h-[36rem] w-[36rem] blur-[130px]"
+        className="absolute -top-56 -left-40 h-[34rem] w-[34rem] blur-[140px]"
         style={{
-          background: 'radial-gradient(closest-side, var(--color-magenta), transparent)',
+          background: 'radial-gradient(closest-side, rgba(198,255,61,0.16), transparent)',
           animation: 'bloom 13s ease-in-out infinite',
         }}
       />
       <div
-        className="absolute -right-56 -bottom-64 h-[40rem] w-[40rem] blur-[140px]"
+        className="absolute -right-52 -bottom-60 h-[38rem] w-[38rem] blur-[150px]"
         style={{
-          background: 'radial-gradient(closest-side, var(--color-amethyst), transparent)',
+          background: 'radial-gradient(closest-side, rgba(139,123,255,0.18), transparent)',
           animation: 'bloom 17s ease-in-out infinite',
           animationDelay: '-6s',
         }}
@@ -268,21 +271,20 @@ function Blooms() {
   )
 }
 
-/** The one thing we want pressed. Hard corners, magenta fill, glow on hover. */
+/** the one thing we want pressed */
 function Cta({ children, onClick }: { children: ReactNode; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="border-2 border-magenta bg-magenta px-5 py-2.5 font-display text-[14px] tracking-wide
-        text-plum uppercase transition-[box-shadow,background-color]
-        hover:bg-magenta-soft hover:[box-shadow:0_0_24px_var(--color-magenta)]"
+      className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full border border-lime bg-lime px-6
+        text-[15px] font-semibold text-night transition-shadow hover:shadow-[0_0_0_6px_rgba(198,255,61,0.18)]"
     >
       {children}
     </button>
   )
 }
 
-/** Everything else: outline only, so it never competes with the CTA. */
+/** everything else: outline only, so it never competes with the CTA */
 function Ghost({
   children,
   onClick,
@@ -302,55 +304,20 @@ function Ghost({
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className="border-2 border-plum-line px-5 py-2.5 font-display text-[14px] tracking-wide
-        text-blush/70 uppercase transition-colors hover:border-magenta hover:text-magenta
-        disabled:cursor-not-allowed disabled:border-plum-line disabled:text-blush/20
-        disabled:hover:border-plum-line disabled:hover:text-blush/20"
+      className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-ink/70 px-6 text-[15px]
+        font-semibold text-ink transition-colors hover:bg-ink/10
+        disabled:cursor-not-allowed disabled:border-line disabled:text-muted/40 disabled:hover:bg-transparent"
     >
       {children}
     </button>
   )
 }
 
-/** A hard magenta pixel rather than a glyph — Silkscreen has no icon set, and
- *  anything fancier falls back to a different face mid-line. */
 function Feature({ children }: { children: ReactNode }) {
   return (
     <li className="flex items-center gap-2">
-      <span className="h-1.5 w-1.5 shrink-0 bg-magenta" />
+      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-lime" />
       {children}
     </li>
-  )
-}
-
-/* A dollar sign at 6×7 pixels: stem nub, top bar, upper block, middle bar,
-   lower block, bottom bar, stem nub. */
-const DOLLAR = [
-  [0, 0, 1, 1, 0, 0],
-  [1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 0, 0, 0],
-  [0, 1, 1, 1, 1, 0],
-  [0, 0, 0, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1],
-  [0, 0, 1, 1, 0, 0],
-]
-
-/** The mark, rendered as hard pixels — a grid of magenta cells, no anti-alias. */
-function PixelDollar({ className = '', style }: { className?: string; style?: CSSProperties }) {
-  return (
-    <div
-      aria-hidden
-      className={`grid ${className}`}
-      style={{
-        gridTemplateColumns: 'repeat(6, 1fr)',
-        gridAutoRows: '1fr',
-        filter: 'drop-shadow(0 0 4px var(--color-magenta))',
-        ...style,
-      }}
-    >
-      {DOLLAR.flat().map((on, i) => (
-        <span key={i} className={on ? 'bg-magenta' : ''} />
-      ))}
-    </div>
   )
 }

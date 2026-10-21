@@ -39,7 +39,7 @@ export default function VerifyScreen({ code }: { code: string }) {
       <div className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6">
         <header className="mb-6 border-b-2 border-line pb-4">
           <h1 className="font-display text-xl text-ink">NOVUS</h1>
-          <p className="mt-1 text-[12px] text-magenta font-semibold uppercase tracking-wide">
+          <p className="mt-1 text-[12px] text-lime font-semibold uppercase tracking-wide">
             Gamified Financial Markets Education Platform
           </p>
         </header>

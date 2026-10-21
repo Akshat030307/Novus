@@ -85,7 +85,7 @@ export default function TeachScreen() {
             <span className="text-sm text-muted">for teachers</span>
           </a>
           <nav className="flex items-center gap-5 text-sm">
-            <a href="/" className="text-muted hover:text-ink">
+            <a href="/play" className="text-muted hover:text-ink">
               Open the game
             </a>
             {user && (
