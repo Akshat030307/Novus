@@ -111,6 +111,43 @@ export function buildSummary(state: GameState, attempts: Attempt[] = []): Member
 const mean = (xs: number[]): number => xs.reduce((t, x) => t + x, 0) / xs.length
 const round1 = (n: number): number => Math.round(n * 10) / 10
 
+/* ---------- set work, as a player meets it ---------- */
+
+/**
+ * An assignment with the class it came from attached. A player can be in more
+ * than one class, and "who set this" is the first thing they ask.
+ */
+export interface SetWork extends Assignment {
+  cohortId: string
+  cohortName: string
+}
+
+/**
+ * Is this drill or module set for me, and by whom? The soonest deadline wins
+ * when two classes set the same thing — that is the one that can be late.
+ */
+export function workFor(all: SetWork[], refId: string): SetWork | null {
+  const mine = all.filter((w) => w.refId === refId)
+  if (mine.length === 0) return null
+  return mine.reduce((soonest, w) => {
+    if (!w.dueAt) return soonest
+    if (!soonest.dueAt) return w
+    return w.dueAt < soonest.dueAt ? w : soonest
+  })
+}
+
+export type DueState = 'done' | 'overdue' | 'due' | 'open'
+
+/**
+ * What the badge says. `done` beats `overdue` on purpose: somebody who passed
+ * it late has still passed it, and a red mark on finished work teaches nothing.
+ */
+export function dueState(work: SetWork, passed: boolean, now: string): DueState {
+  if (passed) return 'done'
+  if (!work.dueAt) return 'open'
+  return work.dueAt < now ? 'overdue' : 'due'
+}
+
 /* ---------- the completion table ---------- */
 
 export interface Cell {

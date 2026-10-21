@@ -6,6 +6,8 @@ import { CreditDeskDrill } from '@/ui/scenarios/CreditDeskDrill'
 import { BuildABookDrill } from '@/ui/scenarios/BuildABookDrill'
 import { SpotTheShockDrill } from '@/ui/scenarios/SpotTheShockDrill'
 import { ReplayDrill } from '@/ui/scenarios/ReplayDrill'
+import { useClasswork } from '@/state/useClasswork'
+import { SetWorkBadge, SetWorkNote } from '@/ui/components/SetWork'
 
 /**
  * Step C-h, extended by issue B2. Set-piece drills, off to one side of the
@@ -17,6 +19,8 @@ export function ScenariosPanel() {
   const [open, setOpen] = useState<Scenario | null>(null)
   const attempts = useAttemptsStore((s) => s.attempts)
   const syncError = useAttemptsStore((s) => s.error)
+  const { classes, work } = useClasswork()
+  const drills = work.filter((w) => w.kind === 'drill')
 
   if (open) {
     return (
@@ -28,7 +32,14 @@ export function ScenariosPanel() {
           ← All drills
         </button>
         <div>
-          <h3 className="text-[14px] text-marigold font-semibold uppercase tracking-wide">{open.title}</h3>
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h3 className="text-[14px] text-marigold font-semibold uppercase tracking-wide">{open.title}</h3>
+            <SetWorkBadge
+              work={drills}
+              refId={open.id}
+              passed={Boolean(bestAttempt(attempts, open.id)?.passed)}
+            />
+          </div>
           <p className="mt-1 text-[14px] text-muted">{open.brief}</p>
           <p className="mt-1 text-[14px] text-amethyst">Goal: {open.goal}</p>
         </div>
@@ -48,6 +59,7 @@ export function ScenariosPanel() {
         Practice runs, separate from your career. Your world save is untouched — but every attempt
         is kept, so the improvement is visible and goes on your transcript.
       </p>
+      <SetWorkNote work={drills} inAClass={classes.length > 0} kind="drills" />
       <SyncNote error={syncError} />
       <ul className="space-y-2">
         {SCENARIOS.map((s) => (
@@ -58,7 +70,14 @@ export function ScenariosPanel() {
             >
               <div className="flex items-baseline justify-between gap-2">
                 <h3 className="font-display text-[14px] text-ink">{s.title}</h3>
-                <Best id={s.id} attempts={attempts} />
+                <span className="flex shrink-0 items-baseline gap-2">
+                  <SetWorkBadge
+                    work={drills}
+                    refId={s.id}
+                    passed={Boolean(bestAttempt(attempts, s.id)?.passed)}
+                  />
+                  <Best id={s.id} attempts={attempts} />
+                </span>
               </div>
               <p className="mt-1 text-[14px] text-muted">{s.brief}</p>
             </button>

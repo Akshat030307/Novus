@@ -91,3 +91,22 @@ export const useUiStore = create<UiStore>((set, get) => ({
     )
   },
 }))
+
+/**
+ * A door for the development build only, so a script can drive the game the
+ * way a player does — open the Academy, switch a tab, take a screenshot —
+ * without a Phaser walk in between. `import.meta.env.DEV` is a compile-time
+ * constant, so none of this exists in a production bundle.
+ */
+if (import.meta.env.DEV) {
+  void Promise.all([import('@/state/classwork'), import('@/state/auth')]).then(
+    ([classwork, auth]) => {
+      ;(window as unknown as { novus?: unknown }).novus = {
+        ui: useUiStore,
+        game: useGameStore,
+        classwork: classwork.useClassworkStore,
+        auth: auth.useAuthStore,
+      }
+    },
+  )
+}

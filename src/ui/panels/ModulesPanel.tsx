@@ -13,6 +13,8 @@ import { logAttempt } from '@/state/attempts'
 import { getConcept } from '@/data/concepts'
 import { playSound } from '@/lib/sound'
 import { PixelButton } from '@/ui/components/PixelButton'
+import { useClasswork } from '@/state/useClasswork'
+import { SetWorkBadge, SetWorkNote } from '@/ui/components/SetWork'
 
 /**
  * Step C-f. The course. A list of modules, each opening to its blurb, the
@@ -22,6 +24,8 @@ import { PixelButton } from '@/ui/components/PixelButton'
 export function ModulesPanel() {
   const [openId, setOpenId] = useState<string | null>(null)
   const modules = useGameStore((s) => s.state.modules)
+  const { classes, work } = useClasswork()
+  const set = work.filter((w) => w.kind === 'module')
 
   if (openId) {
     return <ModuleDetail id={openId} onBack={() => setOpenId(null)} />
@@ -37,6 +41,7 @@ export function ModulesPanel() {
         </span>{' '}
         modules passed. Each ends with a short check — 60% to clear it, retake as often as you like.
       </p>
+      <SetWorkNote work={set} inAClass={classes.length > 0} kind="modules" />
       <ul className="space-y-2">
         {MODULES.map((m) => {
           const p = moduleProgress(useGameStore.getState().state, m.id)
@@ -48,16 +53,19 @@ export function ModulesPanel() {
               >
                 <div className="flex items-baseline justify-between gap-2">
                   <h3 className="font-display text-[14px] text-ink">{m.title}</h3>
-                  <span
-                    className={`font-display text-[12px] uppercase ${
-                      p.passed ? 'text-jade' : p.started ? 'text-marigold' : 'text-muted'
-                    }`}
-                  >
-                    {p.passed
-                      ? `Passed ${Math.round((p.score ?? 0) * 100)}%`
-                      : p.started
-                        ? 'In progress'
-                        : 'Not started'}
+                  <span className="flex shrink-0 items-baseline gap-2">
+                    <SetWorkBadge work={set} refId={m.id} passed={Boolean(p.passed)} />
+                    <span
+                      className={`font-display text-[12px] uppercase ${
+                        p.passed ? 'text-jade' : p.started ? 'text-marigold' : 'text-muted'
+                      }`}
+                    >
+                      {p.passed
+                        ? `Passed ${Math.round((p.score ?? 0) * 100)}%`
+                        : p.started
+                          ? 'In progress'
+                          : 'Not started'}
+                    </span>
                   </span>
                 </div>
                 <p className="mt-1 text-[14px] text-muted">{m.blurb}</p>

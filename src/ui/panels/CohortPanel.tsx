@@ -4,16 +4,8 @@ import { useAuthStore } from '@/state/auth'
 import { useAttemptsStore } from '@/state/attempts'
 import { buildSummary, type Assignment } from '@/sim/cohort'
 import { bestAttempt, progressOn } from '@/sim/attempts'
-import {
-  classBoard,
-  joinCohort,
-  leaveCohort,
-  listAssignments,
-  myMemberships,
-  publishSummary,
-  type Membership,
-} from '@/state/cohorts'
-import type { BoardMember } from '@/sim/leaderboard'
+import { joinCohort, leaveCohort, publishSummary } from '@/state/cohorts'
+import { useClasswork } from '@/state/useClasswork'
 import { useSettingsStore } from '@/state/settings'
 import { ClassBoards } from '@/ui/panels/ClassBoards'
 import { PixelButton } from '@/ui/components/PixelButton'
@@ -34,35 +26,12 @@ export function CohortPanel() {
   const hideFromBoard = useSettingsStore((s) => s.hideFromBoard)
   const setSetting = useSettingsStore((s) => s.set)
 
-  const [memberships, setMemberships] = useState<Membership[]>([])
-  const [assignments, setAssignments] = useState<Record<string, Assignment[]>>({})
-  const [boards, setBoards] = useState<Record<string, BoardMember[]>>({})
+  // one store for everything a class has set, shared with Drills and Modules
+  const { classes: memberships, assignments, boards, refresh } = useClasswork()
   const [code, setCode] = useState('')
   const [name, setName] = useState(state.player.name)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-
-  const refresh = async () => {
-    const mine = await myMemberships()
-    setMemberships(mine)
-    const byCohort: Record<string, Assignment[]> = {}
-    const boardsByCohort: Record<string, BoardMember[]> = {}
-    for (const m of mine) {
-      byCohort[m.cohortId] = await listAssignments(m.cohortId)
-      boardsByCohort[m.cohortId] = await classBoard(m.cohortId)
-    }
-    setAssignments(byCohort)
-    setBoards(boardsByCohort)
-  }
-
-  useEffect(() => {
-    if (!user) {
-      setMemberships([])
-      return
-    }
-    void refresh()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
 
   // The summary is published when the panel opens and when membership changes
   // — deliberately not on every state change. `state` ticks once a game minute,
