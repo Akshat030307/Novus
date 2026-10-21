@@ -39,7 +39,7 @@ const INSIDE: Record<string, { title: string; body: ReactNode }> = {
   },
   fintech: {
     title: 'The FinTech Floor',
-    body: <Note>The payments desk opens up later — nothing to do here yet.</Note>,
+    body: <Note>The payments desk opens up later. Nothing to do here yet.</Note>,
   },
   academy: {
     title: 'The Academy',
@@ -56,7 +56,7 @@ const INSIDE: Record<string, { title: string; body: ReactNode }> = {
   },
   payments: {
     title: 'Payment Centre',
-    body: <Note>UPI rails and settlement come later — nothing to do here yet.</Note>,
+    body: <Note>UPI rails and settlement come later. Nothing to do here yet.</Note>,
   },
   cafeteria: {
     title: 'The Cafeteria',

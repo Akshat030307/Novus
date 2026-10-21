@@ -109,7 +109,7 @@ function CloudChip() {
   if (status === 'off') return null
 
   const chip = {
-    idle: { text: 'Local only', cls: 'text-muted', title: 'Not signed in — this save stays in the browser.' },
+    idle: { text: 'Local only', cls: 'text-muted', title: 'Not signed in. This save stays in the browser.' },
     syncing: { text: 'Syncing…', cls: 'text-muted', title: 'Writing to the cloud.' },
     saved: {
       text: 'Cloud ✓',

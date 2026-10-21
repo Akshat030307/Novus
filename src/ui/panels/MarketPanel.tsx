@@ -123,7 +123,7 @@ export function MarketPanel() {
                   {signed(change)}
                 </td>
                 <td className="px-3 py-2 text-right font-num text-muted">
-                  {s.fundamentals.peRatio ? s.fundamentals.peRatio.toFixed(1) : '—'}
+                  {s.fundamentals.peRatio ? s.fundamentals.peRatio.toFixed(1) : '-'}
                 </td>
                 <td className="px-3 py-2 text-right font-num text-muted">
                   {s.fundamentals.debtToEquity.toFixed(1)}

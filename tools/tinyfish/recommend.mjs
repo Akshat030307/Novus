@@ -196,7 +196,8 @@ for (const area of AREAS) {
     if (!site || seen.has(site)) continue
     seen.add(site)
     reading.push({
-      title: String(h.title).slice(0, 160),
+      // the site carries no em dashes, so a headline's own become a colon
+      title: String(h.title).replace(/\s*\u2014\s*/g, ': ').slice(0, 160),
       url: h.url,
       site,
       // the search reports a human date ("Feb 15, 2026"), not an instant

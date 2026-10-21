@@ -23,10 +23,10 @@ export const satyamReplay: Replay = {
       ],
       question: 'What do you do with the position?',
       options: [
-        { id: 'hold', label: 'Hold — the numbers are excellent' },
+        { id: 'hold', label: 'Hold: the numbers are excellent' },
         { id: 'ask', label: 'Ask management about the cash and the cash flow' },
         { id: 'trim', label: 'Trim the position pending an answer' },
-        { id: 'add', label: 'Add — best margins in the sector' },
+        { id: 'add', label: 'Add: best margins in the sector' },
       ],
       defensible: ['ask', 'trim'],
       outcome:
@@ -43,16 +43,16 @@ export const satyamReplay: Replay = {
       ],
       question: 'Does the blocked acquisition change your read?',
       options: [
-        { id: 'noise', label: 'No — shareholders stopped it, the system worked' },
-        { id: 'governance', label: 'Yes — treat it as a governance failure and cut' },
-        { id: 'watch', label: 'Yes — keep the position but demand the cash be confirmed' },
-        { id: 'buy', label: 'Yes — the block is a positive, buy the dip' },
+        { id: 'noise', label: 'No, shareholders stopped it, the system worked' },
+        { id: 'governance', label: 'Yes, treat it as a governance failure and cut' },
+        { id: 'watch', label: 'Yes, keep the position but demand the cash be confirmed' },
+        { id: 'buy', label: 'Yes, the block is a positive, buy the dip' },
       ],
       defensible: ['governance', 'watch'],
       outcome:
         'The chairman resigned three weeks later, admitting the accounts had been falsified for years.',
       note:
-        'An attempt to move company cash into promoter-linked entities is a reason to doubt that the cash — and the people reporting it — can be trusted. That the block succeeded says nothing about whether the attempt should have been made.',
+        'An attempt to move company cash into promoter-linked entities is a reason to doubt that the cash (and the people reporting it) can be trusted. That the block succeeded says nothing about whether the attempt should have been made.',
     },
     {
       when: '7 January 2009',
@@ -65,7 +65,7 @@ export const satyamReplay: Replay = {
       options: [
         {
           id: 'unknowable',
-          label: 'Fraud is unknowable from outside — nobody could have seen this',
+          label: 'Fraud is unknowable from outside: nobody could have seen this',
         },
         {
           id: 'cash',

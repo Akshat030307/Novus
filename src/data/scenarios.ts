@@ -25,7 +25,7 @@ export const SCENARIOS: Scenario[] = [
     id: 'build-a-book',
     title: 'Build a book',
     brief:
-      '₹5,00,000 and a snapshot of the market. No ticking prices — this is about the shape of the book, not the timing.',
+      '₹5,00,000 and a snapshot of the market. No ticking prices. This is about the shape of the book, not the timing.',
     goal: 'Hold at least four different stocks with no single one over 40% of the book.',
     kind: 'build-a-book',
   },

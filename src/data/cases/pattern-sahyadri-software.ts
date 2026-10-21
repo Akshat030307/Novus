@@ -17,7 +17,7 @@ export const patternSahyadriSoftware: PatternCase = {
   kind: 'pattern',
   id: 'pattern-sahyadri-software',
   building: 'risk',
-  title: 'Sahyadri Software — accounts referred by the auditor',
+  title: 'Sahyadri Software: accounts referred by the auditor',
   brief:
     'Sahyadri Software is a mid-sized services firm that has grown fast for six ' +
     'years. Its auditor has referred the latest accounts to Risk & Compliance ' +

@@ -16,7 +16,7 @@ export const patternSetuFinance: PatternCase = {
   kind: 'pattern',
   id: 'pattern-setu-finance',
   building: 'risk',
-  title: 'Setu Finance — quarterly funding review',
+  title: 'Setu Finance: quarterly funding review',
   brief:
     'Setu Finance lends to road and water projects and is rated AAA by two agencies. ' +
     'Nothing in its book is overdue. The review is routine and the desk has already ' +

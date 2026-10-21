@@ -95,7 +95,7 @@ export function TranscriptPanel() {
       {!user && (
         <p className="border-l-2 border-line pl-3 text-[14px] text-muted">
           Sign in to issue a transcript. It has to be written against an account and timestamped by
-          the server — a code the game made up on its own would prove nothing.
+          the server: a code the game made up on its own would prove nothing.
         </p>
       )}
 
@@ -141,7 +141,7 @@ export function TranscriptPanel() {
           )}
           <p className="text-[13px] text-muted">
             The one above is a snapshot of the run as it stood when you issued it. Issue another
-            later and both stay readable — neither can be edited or withdrawn.
+            later and both stay readable: neither can be edited or withdrawn.
           </p>
         </div>
       )}

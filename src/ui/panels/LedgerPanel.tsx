@@ -13,7 +13,7 @@ export function LedgerPanel() {
   return (
     <div className="space-y-3">
       <p className="text-[14px] text-muted">
-        Cards unlock as they come up in play — a case, a trade, a headline.{' '}
+        Cards unlock as they come up in play: a case, a trade, a headline.{' '}
         <span className="font-num text-ink">
           {learned.length}/{CONCEPTS.length}
         </span>{' '}

@@ -40,7 +40,7 @@ export const FOCUSES: Focus[] = [
     id: 'collateral',
     label: 'Collateral cover',
     blurb:
-      'Files where the security looks like protection and is not — a charge worth a quarter of the exposure, or plant in a building somebody else owns.',
+      'Files where the security looks like protection and is not: a charge worth a quarter of the exposure, or plant in a building somebody else owns.',
     drills: ['credit-desk'],
     cases: ['loan-prakash-cold-storage', 'loan-sharma-textiles'],
     answers: ['work:credit-desk', 'habit:missed_flags'],
@@ -161,7 +161,7 @@ const drillTitle = (drill: string) => SCENARIOS.find((s) => s.id === drill)?.tit
 export function specTitle(spec: ScenarioSpec): string {
   const base = drillTitle(spec.drill)
   const focus = focusById(spec.focus)
-  const bits = [focus ? `${base} — ${focus.label.toLowerCase()}` : base]
+  const bits = [focus ? `${base}: ${focus.label.toLowerCase()}` : base]
   if (spec.count !== null) bits.push(`${spec.count} files`)
   if (spec.hard) bits.push('strict')
   return bits.length > 1 ? `${bits[0]} (${bits.slice(1).join(', ')})` : bits[0]
@@ -177,7 +177,7 @@ export function specPreview(spec: ScenarioSpec, fileCount: number): string {
   const scale =
     spec.count !== null && fileCount > 0 ? ` ${fileCount} ${fileCount === 1 ? 'file' : 'files'}.` : ''
   const strict = spec.hard
-    ? ' To pass, the risk read has to be right as well as the call — a lucky approval does not count.'
+    ? ' To pass, the risk read has to be right as well as the call: a lucky approval does not count.'
     : ''
   return `${what}${scale}${strict}`
 }

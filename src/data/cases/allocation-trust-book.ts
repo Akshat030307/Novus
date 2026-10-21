@@ -13,7 +13,7 @@ export const allocationTrustBook: AllocationCase = {
   kind: 'allocation',
   id: 'alloc-trust-book',
   building: 'exchange',
-  title: 'The Nalanda Trust book — annual review',
+  title: 'The Nalanda Trust book: annual review',
   brief:
     'The Nalanda Education Trust keeps a small endowment at the Exchange and its ' +
     'board reviews the book once a year. The mandate is plain and was written by ' +

@@ -68,7 +68,7 @@ const cleanPatternReads = (state: GameState) =>
 export const CERTIFICATES: Certificate[] = [
   {
     id: 'credit-foundation',
-    title: 'Credit Analysis — Foundation',
+    title: 'Credit Analysis: Foundation',
     blurb:
       'The reading end of a lending desk: whether a business can carry more debt, and how to say so in a way that survives the outcome going the other way.',
     scope:
@@ -102,7 +102,7 @@ export const CERTIFICATES: Certificate[] = [
   },
   {
     id: 'conduct-foundation',
-    title: 'Market Conduct — Foundation',
+    title: 'Market Conduct: Foundation',
     blurb:
       'The other half of the job: telling a price move from a story, keeping a book that can survive one bad headline, and saying which line on a page is actually the tell.',
     scope:

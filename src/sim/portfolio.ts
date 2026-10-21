@@ -28,7 +28,7 @@ export function applyTrade(state: GameState, order: TradeOrder): TradeResult {
     return { ok: false, reason: 'Enter a whole number of shares.' }
   }
   if (state.clock.phase !== 'open') {
-    return { ok: false, reason: 'The market is closed — it opens at 9:15 am.' }
+    return { ok: false, reason: 'The market is closed. It opens at 9:15 am.' }
   }
 
   const stock = state.market.stocks.find((s) => s.id === stockId)
@@ -46,7 +46,7 @@ export function applyTrade(state: GameState, order: TradeOrder): TradeResult {
     if (gross > state.player.cash) {
       return {
         ok: false,
-        reason: `This costs ${rupees(gross)} — you have ${rupees(state.player.cash)}.`,
+        reason: `This costs ${rupees(gross)}. You have ${rupees(state.player.cash)}.`,
       }
     }
     nextCash = state.player.cash - gross
@@ -71,7 +71,7 @@ export function applyTrade(state: GameState, order: TradeOrder): TradeResult {
         reason:
           have === 0
             ? `You don't hold any ${stock.name}.`
-            : `You hold ${have} ${stock.name} ${have === 1 ? 'share' : 'shares'} — can't sell ${quantity}.`,
+            : `You hold ${have} ${stock.name} ${have === 1 ? 'share' : 'shares'}, so you can't sell ${quantity}.`,
       }
     }
     nextCash = state.player.cash + gross

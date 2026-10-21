@@ -26,7 +26,7 @@ export const MODULES: Module[] = [
     id: 'loan-files',
     title: 'Reading a loan file',
     blurb:
-      'A credit decision is a reading exercise. The figures on the file already tell you whether the business can carry more debt — the trick is knowing which lines to look at first.',
+      'A credit decision is a reading exercise. The figures on the file already tell you whether the business can carry more debt: the trick is knowing which lines to look at first.',
     concepts: ['debt-service-cover', 'operating-cash-flow', 'credit-score'],
     doWhat: 'Resolve Sharma Textiles and Anand Dairy at the Bank. Commit a risk read on each before you decide.',
     quiz: [
@@ -45,7 +45,7 @@ export const MODULES: Module[] = [
         options: [
           'normal and nothing to worry about',
           'a reason the loan is safer than it looks',
-          'a flag — find out where the money went before lending',
+          'a flag: find out where the money went before lending',
           'only relevant for listed companies',
         ],
         answer: 2,
@@ -63,7 +63,7 @@ export const MODULES: Module[] = [
       {
         q: 'A high credit score next to thin cash flow tells you:',
         options: [
-          'approve — the score settles it',
+          'approve: the score settles it',
           'the score is a past record; the cash flow is the current risk',
           'the figures must be wrong',
           'reject on the score alone',
@@ -74,7 +74,7 @@ export const MODULES: Module[] = [
         q: 'Anand Dairy has strong cover, low leverage and a contracted buyer. Rejecting it would be:',
         options: [
           'the safe call',
-          'correct — never lend to dairies',
+          'correct: never lend to dairies',
           'an unsound call; over-caution has a cost too',
           'fine, since the outcome is a roll anyway',
         ],
@@ -130,7 +130,7 @@ export const MODULES: Module[] = [
         options: [
           'full unsecured approval',
           'flat rejection every time',
-          'a reduced or collateral-backed approval — the prudent middle',
+          'a reduced or collateral-backed approval, the prudent middle',
           'approving double to be safe',
         ],
         answer: 2,
@@ -141,7 +141,7 @@ export const MODULES: Module[] = [
     id: 'cash-vs-profit',
     title: 'Cash is not profit',
     blurb:
-      'Revenue is what you are owed. Profit is an accounting figure. Cash is what is actually in the account — and it is the only one that pays an interest bill.',
+      'Revenue is what you are owed. Profit is an accounting figure. Cash is what is actually in the account, and it is the only one that pays an interest bill.',
     concepts: ['operating-cash-flow', 'margin'],
     doWhat: 'Resolve Vector Trading at the Bank.',
     quiz: [
@@ -210,7 +210,7 @@ export const MODULES: Module[] = [
         options: [
           'well diversified',
           'fine if that stock is up',
-          'a concentrated position — one bad headline hurts the whole book',
+          'a concentrated position: one bad headline hurts the whole book',
           'only a problem if you used leverage',
         ],
         answer: 2,
@@ -230,7 +230,7 @@ export const MODULES: Module[] = [
         options: [
           'money in the bank',
           'a reason to buy more of the same stock',
-          "not yours until you sell — don't spend it in your head",
+          "not yours until you sell: don't spend it in your head",
           'proof the analysis was right',
         ],
         answer: 2,
@@ -264,7 +264,7 @@ export const MODULES: Module[] = [
         q: 'A high P/E means the market has priced in:',
         options: [
           'a dividend cut',
-          'a lot of future growth — and room to be disappointed',
+          'a lot of future growth, and room to be disappointed',
           'low debt',
           'an imminent takeover',
         ],

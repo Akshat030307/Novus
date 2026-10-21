@@ -186,7 +186,7 @@ function SignIn() {
       <div>
         <h1 className="text-2xl font-semibold text-ink">Teach with Novus</h1>
         <p className="mt-2 text-muted">
-          Create a class, set modules and drills, and see what your students are getting wrong — from
+          Create a class, set modules and drills, and see what your students are getting wrong, from
           the decisions they make in the game, not from a quiz score.
         </p>
       </div>
@@ -199,7 +199,7 @@ function SignIn() {
         <Card>
           <SectionTitle note="We'll email you a sign-in link. No password.">Sign in</SectionTitle>
           {sent ? (
-            <p className="text-ink">Check your email — the link signs you straight back in here.</p>
+            <p className="text-ink">Check your email. The link signs you straight back in here.</p>
           ) : (
             <form
               className="flex flex-wrap gap-2"
@@ -445,7 +445,7 @@ function SampleClass() {
           className="rounded-full border border-marigold/50 bg-marigold/10 px-2.5 py-0.5 text-[13px] font-medium text-marigold"
           title="An invented class shown through exactly the same page a real class gets. Everything works; nothing leaves this browser."
         >
-          Sample data — not real students
+          Sample data, not real students
         </span>
       }
       back={
@@ -827,14 +827,14 @@ function ClassBoard({
             tone="text-marigold"
             bar="bg-marigold"
             label="Work attempted"
-            value={totals.slots ? `${totals.attempted} of ${totals.slots}` : '—'}
+            value={totals.slots ? `${totals.attempted} of ${totals.slots}` : '-'}
             share={totals.slots ? totals.attempted / totals.slots : undefined}
           />
           <Figure
             tone="text-jade"
             bar="bg-jade"
             label="Work passed"
-            value={totals.slots ? `${totals.passed} of ${totals.slots}` : '—'}
+            value={totals.slots ? `${totals.passed} of ${totals.slots}` : '-'}
             share={totals.slots ? totals.passed / totals.slots : undefined}
             note={totals.late ? `${totals.late} handed in late` : undefined}
           />
@@ -938,7 +938,7 @@ function ClassBoard({
                 }}
               />
             ) : (
-              <p className="text-sm text-muted">No work set yet — use the Work set tab.</p>
+              <p className="text-sm text-muted">No work set yet. Use the Work set tab.</p>
             )}
           </ChartCard>
 
@@ -1099,12 +1099,12 @@ function ClassBoard({
                         </span>
                         {!s && <span className="block text-xs text-muted">no progress shared yet</span>}
                       </td>
-                      <td className="px-4 py-2.5 text-right font-num text-muted">{s?.day ?? '—'}</td>
+                      <td className="px-4 py-2.5 text-right font-num text-muted">{s?.day ?? '-'}</td>
                       <td className="px-4 py-2.5 text-right font-num text-muted">
-                        {s ? `${s.modulesPassed}/${s.modulesTotal}` : '—'}
+                        {s ? `${s.modulesPassed}/${s.modulesTotal}` : '-'}
                       </td>
                       <td className="px-4 py-2.5 text-right font-num text-muted">
-                        {s ? `${s.conceptsLearned}/${s.conceptsTotal}` : '—'}
+                        {s ? `${s.conceptsLearned}/${s.conceptsTotal}` : '-'}
                       </td>
                       {row.cells.map((cell, i) => (
                         <td key={assignments[i].id} className="px-4 py-2.5 text-right">
@@ -1119,7 +1119,7 @@ function ClassBoard({
           </div>
           <p className="text-[13px] text-muted">
             You can see attempts and the summary each student chooses to share. Their save, cash,
-            portfolio, career and any transcript they issue stay private — that is enforced by the
+            portfolio, career and any transcript they issue stay private: that is enforced by the
             database, not by this page.
           </p>
         </section>
@@ -1375,7 +1375,7 @@ function Result({ cell }: { cell: Cell }) {
   // work aimed at somebody else: a dash, not "not started". Holding a student
   // to an assignment that was never theirs is the kind of quiet unfairness a
   // table makes easy.
-  if (cell.na) return <span className="text-sm text-muted/50" title="Not set for them">—</span>
+  if (cell.na) return <span className="text-sm text-muted/50" title="Not set for them">-</span>
   if (!cell.best) return <span className="text-sm text-muted">Not started</span>
   const extra = [cell.tries > 1 && `${cell.tries} attempts`, cell.late && 'late'].filter(Boolean)
   return (

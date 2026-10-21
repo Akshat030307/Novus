@@ -5,7 +5,7 @@ export const anandDairy: LoanCase = {
   kind: 'loan',
   id: 'loan-anand-dairy',
   building: 'bank',
-  title: 'Anand Dairy — cold-chain expansion',
+  title: 'Anand Dairy: cold-chain expansion',
   brief:
     'Anand Dairy collects from 400 farmers across two districts and sells chilled ' +
     'milk to a listed retailer on a three-year contract. They want ₹8,00,000 to add ' +
@@ -33,7 +33,7 @@ export const anandDairy: LoanCase = {
   ],
   truth: {
     defaultRisk: 0.08,
-    drivers: ['nothing material — strong cover, low leverage, a contracted buyer'],
+    drivers: ['nothing material: strong cover, low leverage, a contracted buyer'],
   },
   teaches: ['recognising a safe credit', 'over-caution has a cost'],
 }

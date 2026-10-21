@@ -8,7 +8,7 @@ export const loanSharmaTextiles: LoanCase = {
   kind: 'loan',
   id: 'loan-sharma-textiles',
   building: 'bank',
-  title: 'Sharma Textiles — working capital loan',
+  title: 'Sharma Textiles: working capital loan',
   brief:
     'Sharma Textiles has run a weaving unit outside Surat for eleven years. ' +
     'They want ₹10,00,000 for four new looms to take on a larger export order. ' +

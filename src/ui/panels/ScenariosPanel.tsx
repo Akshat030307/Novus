@@ -110,7 +110,7 @@ export function ScenariosPanel() {
   return (
     <div className="space-y-3">
       <p className="text-[14px] text-muted">
-        Practice runs, separate from your career. Your world save is untouched — but every attempt
+        Practice runs, separate from your career. Your world save is untouched, but every attempt
         is kept, so the improvement is visible and goes on your transcript.
       </p>
       <SetWorkNote work={drills} inAClass={classes.length > 0} kind="drills" />
@@ -245,13 +245,13 @@ function History({ id, attempts, full }: { id: string; attempts: Attempt[]; full
   return (
     <div className="border-2 border-line bg-panel-3 p-3">
       <div className="mb-2 text-[12px] text-muted font-semibold uppercase tracking-wide">
-        Your attempts — {mine.length}
+        Your attempts · {mine.length}
       </div>
       <ol className="flex flex-wrap gap-1">
         {order.map((a, i) => (
           <li
             key={a.id}
-            title={`${new Date(a.at).toLocaleString('en-IN')} — ${a.score}/${a.outOf}`}
+            title={`${new Date(a.at).toLocaleString('en-IN')} · ${a.score}/${a.outOf}`}
             className={`border px-1.5 py-0.5 font-num text-[13px] ${
               a.passed ? 'border-jade text-jade' : 'border-line text-muted'
             }`}
@@ -263,7 +263,7 @@ function History({ id, attempts, full }: { id: string; attempts: Attempt[]; full
       {full && progress && (
         <p className="mt-2 text-[13px] text-muted">
           First go {progress.first.score}/{progress.first.outOf}, latest{' '}
-          {progress.latest.score}/{progress.latest.outOf} —{' '}
+          {progress.latest.score}/{progress.latest.outOf},{' '}
           {progress.gained > 0
             ? `up ${progress.gained} points.`
             : progress.gained < 0

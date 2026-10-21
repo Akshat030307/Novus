@@ -98,7 +98,7 @@ export function SpotTheShockDrill({ spec = plainSpec('spot-the-shock') }: { spec
                     shock > 0 ? 'text-jade' : shock < 0 ? 'text-coral' : 'text-muted'
                   }`}
                 >
-                  {shock === 0 ? '—' : signed(shock * 100)}
+                  {shock === 0 ? '-' : signed(shock * 100)}
                 </span>
               )}
             </li>
@@ -122,7 +122,7 @@ export function SpotTheShockDrill({ spec = plainSpec('spot-the-shock') }: { spec
               {marks.stray > 0 && ` · ${marks.stray} stray pick${marks.stray === 1 ? '' : 's'}`}
             </div>
             <p className="mt-1 text-[14px] text-muted">
-              Marked on the stocks this headline actually moves — picking the ones it lifts and
+              Marked on the stocks this headline actually moves: picking the ones it lifts and
               leaving the ones it hurts. A stray pick is a stock the headline doesn't touch at all.
               The map decays over a few game hours, and the weak links move less than a day of
               noise.

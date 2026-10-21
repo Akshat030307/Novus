@@ -56,7 +56,7 @@ export function CertificatesPanel() {
   return (
     <div className="space-y-3">
       <p className="text-[14px] text-muted">
-        Named awards with published conditions. Every requirement below is measured, not granted —
+        Named awards with published conditions. Every requirement below is measured, not granted,
         and you can read all of them long before you meet any of them.
       </p>
 

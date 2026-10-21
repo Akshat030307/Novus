@@ -20,7 +20,7 @@ const fail = (error: string): Result<never> => ({ ok: false, error })
 const NOT_SET_UP = /schema cache|does not exist/i
 const readable = (message: string) =>
   NOT_SET_UP.test(message)
-    ? 'Cohorts are not set up on this Novus install yet — docs/supabase.sql has to be run once on the project.'
+    ? 'Cohorts are not set up on this Novus install yet: docs/supabase.sql has to be run once on the project.'
     : message
 
 export interface Cohort {

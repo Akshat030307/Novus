@@ -77,9 +77,9 @@ async function resolve(
 }
 
 const INTRO_TASK: Record<FinancialCase['kind'], string> = {
-  loan: 'Retell this loan application as a short human story — who runs it, why they need the money.',
-  allocation: 'Set the scene for this portfolio review in a line or two — whose money it is and what they need from it.',
-  pattern: 'Set the scene for this compliance referral in a line or two — who is asking, and what they are uneasy about.',
+  loan: 'Retell this loan application as a short human story: who runs it, why they need the money.',
+  allocation: 'Set the scene for this portfolio review in a line or two: whose money it is and what they need from it.',
+  pattern: 'Set the scene for this compliance referral in a line or two: who is asking, and what they are uneasy about.',
 }
 
 /** the evidence the player actually read, in the words that kind uses */

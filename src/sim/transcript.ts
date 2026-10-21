@@ -113,10 +113,10 @@ function conceptSection(state: GameState): TranscriptSection {
   return {
     title: 'Concepts',
     summary:
-      'Ideas unlocked by meeting them in play — each one was explained at the moment it first mattered, not in advance.',
+      'Ideas unlocked by meeting them in play: each one was explained at the moment it first mattered, not in advance.',
     lines:
       state.learned.length === 0
-        ? [{ label: 'Nothing unlocked yet', value: '—' }]
+        ? [{ label: 'Nothing unlocked yet', value: '-' }]
         : state.learned.map((id) => ({
             label: getConcept(id)?.label ?? 'A concept no longer in the Ledger',
             value: 'learned',
@@ -169,7 +169,7 @@ function caseSection(
   return {
     title: 'Credit decisions',
     summary:
-      'Judgement is scored on the reasoning, not the outcome — a sound call that went badly still counts as sound.',
+      'Judgement is scored on the reasoning, not the outcome: a sound call that went badly still counts as sound.',
     lines,
   }
 }
@@ -207,7 +207,7 @@ function drillSection(attempts: Attempt[]): TranscriptSection {
       value: `best ${best.score}/${best.outOf}`,
       passed: best.passed,
       note: prog
-        ? `${prog.tries} attempts — first ${prog.first.score}/${prog.first.outOf}, latest ${prog.latest.score}/${prog.latest.outOf} (${prog.gained >= 0 ? '+' : ''}${prog.gained} pts)`
+        ? `${prog.tries} attempts: first ${prog.first.score}/${prog.first.outOf}, latest ${prog.latest.score}/${prog.latest.outOf} (${prog.gained >= 0 ? '+' : ''}${prog.gained} pts)`
         : 'one attempt',
     }
   })
@@ -232,10 +232,10 @@ function mistakeSection(state: GameState): TranscriptSection {
   return {
     title: 'Patterns the game noticed',
     summary:
-      'Logged automatically at the close of each day. This is the section worth teaching from — it says what to work on, not what went wrong once.',
+      'Logged automatically at the close of each day. This is the section worth teaching from: it says what to work on, not what went wrong once.',
     lines:
       state.mistakes.length === 0
-        ? [{ label: 'Nothing recurring', value: '—' }]
+        ? [{ label: 'Nothing recurring', value: '-' }]
         : [...counts].map(([kind, n]) => ({
             label: kinds[kind] ?? kind,
             value: `${n} time${n === 1 ? '' : 's'}`,
@@ -296,8 +296,8 @@ export function transcriptText(
   issued?: { code: string; at: string; url: string },
 ): string {
   const out: string[] = doc.award
-    ? [`NOVUS — ${doc.award.title}`, `Awarded to ${doc.player} · Day ${doc.day}`]
-    : ['NOVUS — report card', `${doc.player} · Finance Intern · Level ${doc.level} · Day ${doc.day}`]
+    ? [`NOVUS · ${doc.award.title}`, `Awarded to ${doc.player} · Day ${doc.day}`]
+    : ['NOVUS · report card', `${doc.player} · Finance Intern · Level ${doc.level} · Day ${doc.day}`]
   if (issued) {
     out.push(`Verification code: ${issued.code}`)
     out.push(`Issued: ${new Date(issued.at).toUTCString()}`)

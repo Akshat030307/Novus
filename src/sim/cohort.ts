@@ -301,7 +301,7 @@ export function whatToTeachNext(rows: Row[], assignments: Assignment[]): Lesson[
       headline: 'A group has not started at all',
       affected: notStarted,
       of,
-      detail: 'Not a teaching problem yet — check they can sign in and see the assignment.',
+      detail: 'Not a teaching problem yet. Check they can sign in and see the assignment.',
     })
   }
 
@@ -378,7 +378,7 @@ export function weakAreas(row: Row, assignments: Assignment[], attempts: Attempt
             : 'No change between attempts.'
     out.push({
       id: `work:${assignment.refId}`,
-      label: `${assignment.title} — not passed`,
+      label: `${assignment.title}: not passed`,
       seen: tries,
       why: `Best ${cell.best.score}/${cell.best.outOf} (${bestPct}%) across ${tries} ${
         tries === 1 ? 'try' : 'tries'
@@ -519,7 +519,7 @@ export function toCsv(rows: Row[], assignments: Assignment[]): string {
     'Concepts total',
     'Sound calls',
     'Unsound calls',
-    ...assignments.flatMap((a) => [`${a.title} — result`, `${a.title} — score`, `${a.title} — attempts`]),
+    ...assignments.flatMap((a) => [`${a.title}: result`, `${a.title}: score`, `${a.title}: attempts`]),
     ...HABITS.map((h) => `Habit: ${h.label}`),
   ]
 

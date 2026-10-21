@@ -108,7 +108,7 @@ export default function HomeScreen() {
               style={{ animationDelay: '140ms' }}
             >
               Walk a city that runs on money. Judge real loan files, trade a live market, and find
-              out what your decisions were worth — graded on your reasoning, never on your luck.
+              out what your decisions were worth, graded on your reasoning, never on your luck.
             </p>
 
             <div className="anim-rise mt-8 w-full" style={{ animationDelay: '200ms' }}>
@@ -196,7 +196,7 @@ export default function HomeScreen() {
                   </button>
                 </div>
               ) : linkSent ? (
-                <p className="text-[14px] text-muted">Sign-in link sent — check your email.</p>
+                <p className="text-[14px] text-muted">Sign-in link sent. Check your email.</p>
               ) : (
                 <>
                   <form onSubmit={sendLink} className="flex gap-2">
@@ -212,7 +212,7 @@ export default function HomeScreen() {
                     <Ghost type="submit">Send link</Ghost>
                   </form>
                   <p className="mt-2 text-[13px] text-muted/80">
-                    Optional — sign in to keep your progress across devices.
+                    Optional. Sign in to keep your progress across devices.
                   </p>
                 </>
               )

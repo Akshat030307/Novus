@@ -53,8 +53,8 @@ export function CreditDeskDrill({ spec = plainSpec('credit-desk') }: { spec?: Sc
             {cleared
               ? 'Clean sweep. The reasoning held on every file.'
               : spec.hard && sound === files.length
-                ? 'Every call was sound, but this run was set strict — the risk read has to be right too.'
-                : 'Look back at the ones that slipped — the figures were all on the file.'}
+                ? 'Every call was sound, but this run was set strict: the risk read has to be right too.'
+                : 'Look back at the ones that slipped: the figures were all on the file.'}
           </p>
         </div>
         <PixelButton

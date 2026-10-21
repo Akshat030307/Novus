@@ -24,7 +24,7 @@ export const CONCEPTS: Concept[] = [
       "How many times over a business's operating cash flow covers the interest it already owes this year.",
     goodBad: 'Above 2× is comfortable. Below 1.3× and one soft month is a missed payment.',
     furtherReading: {
-      label: 'Wikipedia — Debt service coverage ratio',
+      label: 'Wikipedia: Debt service coverage ratio',
       url: 'https://en.wikipedia.org/wiki/Debt_service_coverage_ratio',
     },
   },
@@ -35,7 +35,7 @@ export const CONCEPTS: Concept[] = [
       "Revenue is what a business is owed. Operating cash flow is what actually landed in the account. A business can show a profit and still run out of cash.",
     goodBad:
       'When cash flow sits far below revenue, ask where the money went before the loan looks safer than it is.',
-    furtherReading: { label: 'Wikipedia — Cash flow', url: 'https://en.wikipedia.org/wiki/Cash_flow' },
+    furtherReading: { label: 'Wikipedia: Cash flow', url: 'https://en.wikipedia.org/wiki/Cash_flow' },
   },
   {
     id: 'leverage',
@@ -45,7 +45,7 @@ export const CONCEPTS: Concept[] = [
       "How much of a business runs on borrowed money rather than its own. High leverage turns small swings in profit into large swings in what's left for the owners.",
     goodBad: 'Under 3 years of profit to clear the debt is comfortable. Past 6 and a bad year threatens the business itself.',
     furtherReading: {
-      label: 'Wikipedia — Leverage (finance)',
+      label: 'Wikipedia: Leverage (finance)',
       url: 'https://en.wikipedia.org/wiki/Leverage_(finance)',
     },
   },
@@ -57,7 +57,7 @@ export const CONCEPTS: Concept[] = [
       "What a lender can actually recover if a loan goes bad, as a share of what's owed. Collateral is a backstop, not a reason to lend badly.",
     goodBad: 'Above 75% cover is solid. Under 40% and the security barely dents the loss.',
     furtherReading: {
-      label: 'Wikipedia — Collateral (finance)',
+      label: 'Wikipedia: Collateral (finance)',
       url: 'https://en.wikipedia.org/wiki/Collateral_(finance)',
     },
   },
@@ -65,9 +65,9 @@ export const CONCEPTS: Concept[] = [
     id: 'credit-score',
     label: 'Credit score',
     short:
-      "A single number summarising how reliably a business has repaid in the past. A starting point, not the whole picture — the figures on the file can tell a different story.",
+      "A single number summarising how reliably a business has repaid in the past. A starting point, not the whole picture. The figures on the file can tell a different story.",
     goodBad: 'A score of 720+ reads strong on its own. A high score next to thin cash flow is still a risk.',
-    furtherReading: { label: 'Wikipedia — Credit score', url: 'https://en.wikipedia.org/wiki/Credit_score' },
+    furtherReading: { label: 'Wikipedia: Credit score', url: 'https://en.wikipedia.org/wiki/Credit_score' },
   },
   {
     id: 'margin',
@@ -76,7 +76,7 @@ export const CONCEPTS: Concept[] = [
     short: "What's left of revenue after expenses, as a share. Thin margins leave little room to absorb a bad quarter.",
     goodBad: '15%+ is strong. Below 7% and a small cost overrun wipes out the year.',
     furtherReading: {
-      label: 'Wikipedia — Operating margin',
+      label: 'Wikipedia: Operating margin',
       url: 'https://en.wikipedia.org/wiki/Operating_margin',
     },
   },
@@ -84,17 +84,17 @@ export const CONCEPTS: Concept[] = [
     id: 'default-risk',
     label: 'Default risk, and reasoning over dice',
     short:
-      "The real chance a loan goes bad, worked out from the figures. Never shown before you decide, and the outcome is sampled from it — but the score is on whether the file supported the call you made, not on which way the sample landed.",
+      "The real chance a loan goes bad, worked out from the figures. Never shown before you decide, and the outcome is sampled from it. But the score is on whether the file supported the call you made, not on which way the sample landed.",
     goodBad: 'There is no safe number. A sound call at 40% risk that still goes bad is still sound.',
   },
   {
     id: 'pe-ratio',
     label: 'Price-to-earnings (P/E)',
     formula: 'share price ÷ earnings per share',
-    short: 'The price of a share divided by how much the company earns per share — a rough gauge of how expensive it is relative to its profit.',
+    short: 'The price of a share divided by how much the company earns per share, a rough gauge of how expensive it is relative to its profit.',
     goodBad: 'A high P/E means the market has priced in a lot of future growth, and a lot of room to be disappointed.',
     furtherReading: {
-      label: 'Wikipedia — Price-to-earnings ratio',
+      label: 'Wikipedia: Price-to-earnings ratio',
       url: 'https://en.wikipedia.org/wiki/Price%E2%80%93earnings_ratio',
     },
   },
@@ -105,17 +105,17 @@ export const CONCEPTS: Concept[] = [
     short: "How a listed company is funded: borrowed money against the owners' own stake. The market panel's version of leverage.",
     goodBad: 'Below 1 means equity outweighs debt. Well above it and the company depends on lenders staying comfortable.',
     furtherReading: {
-      label: 'Wikipedia — Debt-to-equity ratio',
+      label: 'Wikipedia: Debt-to-equity ratio',
       url: 'https://en.wikipedia.org/wiki/Debt-to-equity_ratio',
     },
   },
   {
     id: 'unrealised-pnl',
     label: 'Realised vs unrealised profit',
-    short: "Unrealised profit is what a holding is worth right now, on paper. It isn't yours until you sell — realised profit is what's actually booked.",
+    short: "Unrealised profit is what a holding is worth right now, on paper. It isn't yours until you sell: realised profit is what's actually booked.",
     goodBad: "A big unrealised gain can vanish before you sell it. Don't spend it in your head.",
     furtherReading: {
-      label: 'Wikipedia — Mark-to-market accounting',
+      label: 'Wikipedia: Mark-to-market accounting',
       url: 'https://en.wikipedia.org/wiki/Mark-to-market_accounting',
     },
   },
@@ -125,7 +125,7 @@ export const CONCEPTS: Concept[] = [
     short: "Spreading money across holdings so one bad headline can't wreck the whole book. A portfolio that's mostly one stock is a bet on that one stock, whatever else sits in it.",
     goodBad: 'No single holding dominating the allocation bar is a habit worth having, not a hard rule.',
     furtherReading: {
-      label: 'Wikipedia — Diversification (finance)',
+      label: 'Wikipedia: Diversification (finance)',
       url: 'https://en.wikipedia.org/wiki/Diversification_(finance)',
     },
   },

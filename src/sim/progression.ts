@@ -20,10 +20,10 @@ export function skillLevel(points: number): number {
 
 /** what each threshold opens, shown in the Academy and the level-up popup */
 export const SKILL_UNLOCKS: { skill: SkillName; level: number; text: string }[] = [
-  { skill: 'accounting', level: 2, text: 'Accounting 2 — debt-service cover shown before you decide' },
-  { skill: 'risk', level: 2, text: 'Risk 2 — a gut-check risk read on every credit file' },
-  { skill: 'analysis', level: 3, text: 'Analysis 3 — a leverage read (debt vs annual profit) up front' },
-  { skill: 'trading', level: 2, text: 'Trading 2 — groundwork for exchange tools (arrives later)' },
+  { skill: 'accounting', level: 2, text: 'Accounting 2: debt-service cover shown before you decide' },
+  { skill: 'risk', level: 2, text: 'Risk 2: a gut-check risk read on every credit file' },
+  { skill: 'analysis', level: 3, text: 'Analysis 3: a leverage read (debt vs annual profit) up front' },
+  { skill: 'trading', level: 2, text: 'Trading 2: groundwork for exchange tools (arrives later)' },
 ]
 
 export type SkillGains = Partial<Record<SkillName, number>>
@@ -37,7 +37,7 @@ export interface ProgressAward {
 function nextUnlockLine(skills: Player['skills']): string | null {
   const next = SKILL_UNLOCKS.find((u) => skillLevel(skills[u.skill]) < u.level)
   if (!next) return null
-  return `Next up — ${next.text.split(' — ')[0]} (${skills[next.skill].toFixed(1)} / ${next.level}).`
+  return `Next up: ${next.text.split(': ')[0]} (${skills[next.skill].toFixed(1)} / ${next.level}).`
 }
 
 /**

@@ -138,7 +138,7 @@ export function StudentReport({
                 ? `Day ${s.day} in the game · Level ${s.level} · joined ${new Date(
                     row.member.joinedAt,
                   ).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}`
-                : 'Has not shared any progress yet — they joined, but have not opened the Class tab since.'}
+                : 'Has not shared any progress yet. They joined, but have not opened the Class tab since.'}
             </p>
             {(standing.learning || standing.trading) && (
               <p className="mt-1 text-[14px] text-muted">
@@ -174,7 +174,7 @@ export function StudentReport({
             {weak.length === 0 ? (
               <p className="text-sm text-muted">
                 Nothing is going wrong that the game has logged. Everything attempted has been
-                passed and no habit has come up — worth setting something harder.
+                passed and no habit has come up: worth setting something harder.
               </p>
             ) : (
               <ol className="space-y-3">
@@ -240,7 +240,7 @@ export function StudentReport({
                         </a>
                         <span className="text-muted">
                           {' '}
-                          — {r.site}
+                          · {r.site}
                           {r.at && ` · ${r.at}`}
                         </span>
                       </li>
@@ -248,7 +248,7 @@ export function StudentReport({
                   </ul>
                   <p className="mt-2 text-[12px] text-muted">
                     Found by TinyFish{readingBuiltAt() ? ` on ${readingBuiltAt()!.slice(0, 10)}` : ''},
-                    for you rather than for the game — the market your students trade stays
+                    for you rather than for the game: the market your students trade stays
                     invented. The exercise above was chosen by the rule, not by a model.
                   </p>
                 </div>
@@ -333,7 +333,7 @@ export function StudentReport({
           <Card
             title={`Every attempt${mine.length ? ` · ${mine.length}` : ''}`}
             accent="text-ink"
-            note="Kept in full, including the ones that went badly — a best score alone cannot show whether somebody improved."
+            note="Kept in full, including the ones that went badly: a best score alone cannot show whether somebody improved."
           >
             {mine.length === 0 ? (
               <p className="text-sm text-muted">Nothing attempted yet.</p>

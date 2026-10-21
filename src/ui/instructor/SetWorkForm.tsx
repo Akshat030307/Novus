@@ -224,7 +224,7 @@ export function SetWorkForm({
             · for {chosen.length} {chosen.length === 1 ? 'student' : 'students'}
           </span>
         )}
-        {isDrill ? ` — ${specPreview(spec, files)}` : ` — ${MODULE_BLURB[base.refId] ?? 'A module check.'}`}
+        {isDrill ? `: ${specPreview(spec, files)}` : `: ${MODULE_BLURB[base.refId] ?? 'A module check.'}`}
       </p>
     </div>
   )

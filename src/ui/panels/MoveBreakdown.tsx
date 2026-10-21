@@ -77,7 +77,7 @@ export function MoveBreakdown({ stockId }: { stockId: string }) {
       {open && !attribution && (
         <p className="mt-2 text-[14px] text-muted">
           {minute < 555
-            ? 'Nothing has traded yet — the market opens at 9:15.'
+            ? 'Nothing has traded yet. The market opens at 9:15.'
             : "Today can't be reconstructed from this save."}
         </p>
       )}
@@ -110,7 +110,7 @@ export function MoveBreakdown({ stockId }: { stockId: string }) {
 
           <p className="text-[13px] leading-relaxed text-muted">
             {Math.abs(attribution.noise) > Math.abs(attribution.drift) + Math.abs(attribution.shock)
-              ? 'Most of today was noise — movement that means nothing and will not repeat.'
+              ? 'Most of today was noise: movement that means nothing and will not repeat.'
               : 'Today was driven by more than noise. That is the unusual case, not the normal one.'}
           </p>
         </div>

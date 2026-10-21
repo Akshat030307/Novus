@@ -39,7 +39,7 @@ export function ModulesPanel() {
         <span className="font-num text-ink">
           {passed}/{MODULES.length}
         </span>{' '}
-        modules passed. Each ends with a short check — 60% to clear it, retake as often as you like.
+        modules passed. Each ends with a short check: 60% to clear it, retake as often as you like.
       </p>
       <SetWorkNote work={set} inAClass={classes.length > 0} kind="modules" />
       <ul className="space-y-2">
@@ -199,7 +199,7 @@ function ModuleDetail({ id, onBack }: { id: string; onBack: () => void }) {
                   result >= PASS_MARK ? 'text-jade' : 'text-coral'
                 }`}
               >
-                {Math.round(result * 100)}% — {result >= PASS_MARK ? 'passed' : 'not yet'}
+                {Math.round(result * 100)}% · {result >= PASS_MARK ? 'passed' : 'not yet'}
               </div>
               <button
                 onClick={open}

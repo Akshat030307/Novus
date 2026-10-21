@@ -48,7 +48,7 @@ export const CASEBOOK: CasebookEntry[] = [
     oneLine:
       "One of India's largest IT firms had been reporting cash and profits that did not exist. The chairman confessed in a letter to the board.",
     timeline: [
-      'For years, revenues, margins and — above all — the bank balance were inflated in the accounts.',
+      'For years, revenues, margins and (above all) the bank balance were inflated in the accounts.',
       'A 2008 attempt to buy two promoter-linked firms with Satyam cash was blocked by shareholders.',
       '7 January 2009: chairman Ramalinga Raju admitted the fraud in a letter to the board and resigned. The share price fell about 78% that day.',
       'The company was auctioned by a government-appointed board and bought by Tech Mahindra.',
@@ -67,7 +67,7 @@ export const CASEBOOK: CasebookEntry[] = [
     ],
     teaches: ['operating-cash-flow', 'margin', 'credit-score'],
     pairsWith:
-      'Sahyadri Software — a cash pile earning nothing, next to profit the cash flow never backs up.',
+      'Sahyadri Software: a cash pile earning nothing, next to profit the cash flow never backs up.',
     questions: [
       {
         q: 'Which single line on the balance sheet was the clearest tell?',
@@ -75,11 +75,11 @@ export const CASEBOOK: CasebookEntry[] = [
       },
       {
         q: 'Why did the blocked acquisition matter as a warning?',
-        a: 'Trying to move company cash into promoter-linked entities is a reason to doubt that the cash — and the people reporting it — can be trusted.',
+        a: 'Trying to move company cash into promoter-linked entities is a reason to doubt that the cash (and the people reporting it) can be trusted.',
       },
     ],
     sources: [
-      { label: 'Wikipedia — Satyam scandal', url: 'https://en.wikipedia.org/wiki/Satyam_scandal' },
+      { label: 'Wikipedia: Satyam scandal', url: 'https://en.wikipedia.org/wiki/Satyam_scandal' },
       { label: 'SEBI', url: 'https://www.sebi.gov.in/' },
     ],
   },
@@ -92,7 +92,7 @@ export const CASEBOOK: CasebookEntry[] = [
     timeline: [
       'IL&FS borrowed heavily, much of it short-term, to fund infrastructure assets that pay back over decades.',
       'From mid-2018 it began missing payments; the serious defaults came from September.',
-      'It was rated AAA to the end of August 2018 and rated default by mid-September — weeks, not years.',
+      'It was rated AAA to the end of August 2018 and rated default by mid-September: weeks, not years.',
       'The government superseded the board; NBFC funding costs jumped across the market.',
     ],
     numbers: [
@@ -101,32 +101,32 @@ export const CASEBOOK: CasebookEntry[] = [
       'It held the top rating almost up to the first default.',
     ],
     redFlags: [
-      'Short-term borrowing funding long-dated assets — an asset-liability mismatch.',
+      'Short-term borrowing funding long-dated assets: an asset-liability mismatch.',
       'Debt rising far faster than the cash the assets threw off.',
-      'A structure too complex for outsiders — or the board — to see through.',
+      'A structure too complex for outsiders, or the board, to see through.',
       'A rating that never moved until it moved all at once.',
     ],
     teaches: ['leverage', 'debt-to-equity', 'operating-cash-flow', 'drift-noise-shock'],
     pairsWith:
-      'Setu Finance — eleven-year assets funded by eighty-four-day paper, rated AAA throughout.',
+      'Setu Finance: eleven-year assets funded by eighty-four-day paper, rated AAA throughout.',
     questions: [
       {
         q: 'What is an asset-liability mismatch, in one sentence?',
-        a: 'Owing money back sooner than the things you spent it on will pay you — so you depend on always being able to borrow again.',
+        a: 'Owing money back sooner than the things you spent it on will pay you, so you depend on always being able to borrow again.',
       },
       {
         q: 'Why did one firm’s default move unrelated NBFCs?',
-        a: 'It made every lender re-price the risk of short-term NBFC funding at once — contagion, not a coincidence.',
+        a: 'It made every lender re-price the risk of short-term NBFC funding at once: contagion, not a coincidence.',
       },
     ],
     sources: [
-      { label: 'Wikipedia — IL&FS', url: 'https://en.wikipedia.org/wiki/IL%26FS' },
+      { label: 'Wikipedia: IL&FS', url: 'https://en.wikipedia.org/wiki/IL%26FS' },
       { label: 'Reserve Bank of India', url: 'https://www.rbi.org.in/' },
     ],
   },
   {
     id: 'pnb-lou',
-    title: 'Punjab National Bank — letters of undertaking',
+    title: 'Punjab National Bank: letters of undertaking',
     year: '2018',
     oneLine:
       'A multi-year fraud at a single branch issued bank guarantees that the bank’s own systems never recorded.',
@@ -149,7 +149,7 @@ export const CASEBOOK: CasebookEntry[] = [
     ],
     teaches: ['credit-score', 'default-risk'],
     pairsWith:
-      'Harbour Trade Finance — guarantees live on one system that the ledger has never seen.',
+      'Harbour Trade Finance: guarantees live on one system that the ledger has never seen.',
     questions: [
       {
         q: 'How were the guarantees invisible to the bank?',
@@ -157,12 +157,12 @@ export const CASEBOOK: CasebookEntry[] = [
       },
       {
         q: 'What ordinary control would have caught it?',
-        a: 'Reconciling outgoing messages against the core banking system — and not letting the same people initiate and approve.',
+        a: 'Reconciling outgoing messages against the core banking system, and not letting the same people initiate and approve.',
       },
     ],
     sources: [
       {
-        label: 'Wikipedia — Punjab National Bank Scam',
+        label: 'Wikipedia: Punjab National Bank Scam',
         url: 'https://en.wikipedia.org/wiki/Punjab_National_Bank_Scam',
       },
     ],
@@ -186,15 +186,15 @@ export const CASEBOOK: CasebookEntry[] = [
     ],
     redFlags: [
       'A single broker able to move the whole market.',
-      'Prices with no relationship to company earnings — P/E multiples far beyond anything the profits justified.',
+      'Prices with no relationship to company earnings: P/E multiples far beyond anything the profits justified.',
       'Bank money reaching the stock market through instruments nobody was really checking.',
     ],
     teaches: ['drift-noise-shock', 'pe-ratio', 'default-risk'],
-    pairsWith: 'the "reading the tape" module — telling a price move from a story',
+    pairsWith: 'the "reading the tape" module: telling a price move from a story',
     questions: [
       {
         q: 'What told you the 1992 rally was not real?',
-        a: 'Share prices detached from earnings — valuations no plausible profit growth could support — plus a single participant driving the move.',
+        a: 'Share prices detached from earnings: valuations no plausible profit growth could support, plus a single participant driving the move.',
       },
       {
         q: 'What changed afterwards?',
@@ -203,7 +203,7 @@ export const CASEBOOK: CasebookEntry[] = [
     ],
     sources: [
       {
-        label: 'Wikipedia — 1992 Indian stock market scam',
+        label: 'Wikipedia: 1992 Indian stock market scam',
         url: 'https://en.wikipedia.org/wiki/1992_Indian_stock_market_scam',
       },
     ],
@@ -226,13 +226,13 @@ export const CASEBOOK: CasebookEntry[] = [
       'Part of the borrowing was secured against an optimistic valuation of the brand.',
     ],
     redFlags: [
-      'Persistent operating losses — the core business never covered its costs.',
+      'Persistent operating losses: the core business never covered its costs.',
       'Negative net worth carried by fresh borrowing.',
       'Debt-funded expansion into an acquisition while already loss-making.',
       'Collateral leaning on an intangible whose value depended on the company surviving.',
     ],
     teaches: ['operating-cash-flow', 'margin', 'leverage', 'default-risk'],
-    pairsWith: 'Sharma Textiles / Prakash Cold Storage — can the business carry more debt at all',
+    pairsWith: 'Sharma Textiles / Prakash Cold Storage: can the business carry more debt at all',
     questions: [
       {
         q: 'What is the problem with lending against brand value here?',
@@ -245,7 +245,7 @@ export const CASEBOOK: CasebookEntry[] = [
     ],
     sources: [
       {
-        label: 'Wikipedia — Kingfisher Airlines',
+        label: 'Wikipedia: Kingfisher Airlines',
         url: 'https://en.wikipedia.org/wiki/Kingfisher_Airlines',
       },
     ],
@@ -264,17 +264,17 @@ export const CASEBOOK: CasebookEntry[] = [
     ],
     numbers: [
       'Major investment banks were leveraged in the region of 30 to 1.',
-      'Lehman had around $600 billion in assets — the largest bankruptcy in US history.',
+      'Lehman had around $600 billion in assets, the largest bankruptcy in US history.',
       'Much of the funding was very short-term borrowing rolled over daily.',
     ],
     redFlags: [
-      'Extreme leverage — a small fall in asset values wipes out the equity.',
+      'Extreme leverage: a small fall in asset values wipes out the equity.',
       'Reliance on rolling over short-term funding every day.',
       'Ratings that reflected the structure, not the quality of the underlying loans.',
-      'House prices far above what local incomes could service — and assumed never to fall together.',
+      'House prices far above what local incomes could service, and assumed never to fall together.',
     ],
     teaches: ['leverage', 'debt-to-equity', 'diversification', 'drift-noise-shock'],
-    pairsWith: 'the "don’t bet the book" module — correlation is concentration in disguise',
+    pairsWith: 'the "don’t bet the book" module: correlation is concentration in disguise',
     questions: [
       {
         q: 'Why did "diversified" pools of mortgages fail together?',
@@ -287,11 +287,11 @@ export const CASEBOOK: CasebookEntry[] = [
     ],
     sources: [
       {
-        label: 'Wikipedia — 2007–2008 financial crisis',
+        label: 'Wikipedia: 2007–2008 financial crisis',
         url: 'https://en.wikipedia.org/wiki/2007%E2%80%932008_financial_crisis',
       },
       {
-        label: 'Wikipedia — Bankruptcy of Lehman Brothers',
+        label: 'Wikipedia: Bankruptcy of Lehman Brothers',
         url: 'https://en.wikipedia.org/wiki/Bankruptcy_of_Lehman_Brothers',
       },
     ],

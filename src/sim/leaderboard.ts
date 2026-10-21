@@ -42,7 +42,7 @@ export const BOARD_RULE: Record<BoardKind, string> = {
   learning:
     'Ranked on work passed first, then on how accurate it was, then on how much someone improved between tries. Nothing here moves because of a lucky day in the market.',
   trading:
-    'Ranked on profit and loss from trading only — wages from a job do not count — as a percentage of the ₹5,00,000 everybody starts with. This one is partly luck, and it is kept separate for that reason.',
+    'Ranked on profit and loss from trading only (wages from a job do not count) as a percentage of the ₹5,00,000 everybody starts with. This one is partly luck, and it is kept separate for that reason.',
 }
 
 /* The comparison keys. Each returns the values to sort on, most significant

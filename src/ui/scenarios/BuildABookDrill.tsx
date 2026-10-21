@@ -108,7 +108,7 @@ export function BuildABookDrill({ spec = plainSpec('build-a-book') }: { spec?: S
             {held.length} holding{held.length === 1 ? '' : 's'}, biggest is{' '}
             {Math.round(topShare * 100)}% of the book.{' '}
             {pass
-              ? 'Four or more names, none dominating — one bad headline can’t take the whole book.'
+              ? 'Four or more names, none dominating: one bad headline can’t take the whole book.'
               : 'Aim for four or more, with no single name over 40%.'}
           </p>
           <button

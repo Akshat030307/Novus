@@ -67,7 +67,7 @@ export function SetWorkNote({
   if (!inAClass) {
     return (
       <p className="border-l-2 border-line pl-3 text-[14px] text-muted">
-        You are not in a class, so nothing here is set for you — every {kind.slice(0, -1)} is open,
+        You are not in a class, so nothing here is set for you: every {kind.slice(0, -1)} is open,
         in any order, as often as you like.
       </p>
     )
@@ -84,7 +84,7 @@ export function SetWorkNote({
     <p className="border-l-2 border-marigold pl-3 text-[14px] text-muted">
       <span className="font-num text-ink">{work.length}</span> of these{' '}
       {work.length === 1 ? 'is' : 'are'} set by {names.join(' and ')}. A deadline is a date, not a
-      lock — you can do anything here whenever you like, and retake it.
+      lock: you can do anything here whenever you like, and retake it.
     </p>
   )
 }

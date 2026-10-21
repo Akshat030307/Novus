@@ -233,7 +233,7 @@ export function CasePanel({ building }: { building?: BuildingId } = {}) {
         <div className="border-l-2 border-coral bg-panel-3 py-2 pl-3 pr-2">
           <div className="text-[12px] text-coral font-semibold uppercase tracking-wide">Running on fumes</div>
           <p className="mt-0.5 text-[14px] text-muted">
-            Nothing is jumping out at you. The figures are all still there — you just have to work
+            Nothing is jumping out at you. The figures are all still there: you just have to work
             them yourself. A break at the Cafeteria would help.
           </p>
         </div>
@@ -304,7 +304,7 @@ export function CasePanel({ building }: { building?: BuildingId } = {}) {
         <span className="text-[14px] text-muted">
           {choice
             ? (openCase.choices.find((c) => c.id === choice)?.detail ?? '')
-            : 'The outcome is a roll — the score is on your reasoning.'}
+            : 'The outcome is a roll: the score is on your reasoning.'}
         </span>
       </div>
     </div>
@@ -474,9 +474,9 @@ function LoanAids({
         <Aid tag={skillLevel(skills.accounting) >= 2 ? 'Unlocked · Accounting 2' : 'Assist'}>
           <Explain id="debt-service-cover">Debt-service cover</Explain>{' '}
           <span className="font-num text-ink">
-            {f.interestPaid > 0 ? (f.cashFlow / f.interestPaid).toFixed(1) : '—'}×
+            {f.interestPaid > 0 ? (f.cashFlow / f.interestPaid).toFixed(1) : '-'}×
           </span>{' '}
-          — cash flow ÷ interest already paid.
+          = cash flow ÷ interest already paid.
         </Aid>
       )}
       {(assist || skillLevel(skills.analysis) >= 3) && (
@@ -485,7 +485,7 @@ function LoanAids({
           <span className="font-num text-ink">
             {f.revenue - f.expenses > 0
               ? (f.existingDebt / (f.revenue - f.expenses)).toFixed(1)
-              : '—'}
+              : '-'}
           </span>{' '}
           years of profit would clear the existing debt.
         </Aid>
@@ -627,7 +627,7 @@ function Outcome({
                 </span>
                 <span className={f.real ? 'text-ink' : 'text-muted'}>
                   {f.label}
-                  {!f.real && <span className="text-muted/70"> — odd, but not evidence</span>}
+                  {!f.real && <span className="text-muted/70"> (odd, but not evidence)</span>}
                 </span>
               </li>
             ))}
@@ -706,7 +706,7 @@ function PredictionLine({ r, realRisk }: { r: ResolvedCase; realRisk: number }) 
       <div className="text-[12px] text-amethyst font-semibold uppercase tracking-wide">Your read</div>
       <p className="text-[14px] text-muted">
         You called it {BAND_LABEL[p.risk]}
-        {p.note ? ` — “${p.note}”` : ''}. The file was {pct}%.{' '}
+        {p.note ? `: “${p.note}”` : ''}. The file was {pct}%.{' '}
         {r.predictionRight
           ? 'Well judged, whichever way the roll went.'
           : 'Worth sitting with why the figures pointed the other way.'}

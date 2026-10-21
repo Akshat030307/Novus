@@ -51,8 +51,8 @@ export default function VerifyScreen({ code }: { code: string }) {
             <h2 className="text-[14px] text-coral font-semibold uppercase tracking-wide">Not verified</h2>
             <p className="mt-2 text-[15px] text-ink">{state.error}</p>
             <p className="mt-2 text-[14px] text-muted">
-              Codes look like <span className="font-num">NVS-A2B3C-D4E5F</span>. Check for a typo —
-              the alphabet has no letter O and no digit 1, so those are usually a zero and an I.
+              Codes look like <span className="font-num">NVS-A2B3C-D4E5F</span>. Check for a typo.
+              The alphabet has no letter O and no digit 1, so those are usually a zero and an I.
             </p>
           </div>
         )}

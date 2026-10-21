@@ -6,7 +6,7 @@ export const prakashColdStorage: LoanCase = {
   kind: 'loan',
   id: 'loan-prakash-cold-storage',
   building: 'bank',
-  title: 'Prakash Cold Storage — refrigeration retrofit',
+  title: 'Prakash Cold Storage: refrigeration retrofit',
   brief:
     'Prakash runs a single cold store rented to vegetable traders near the wholesale ' +
     'market. They want ₹6,00,000 to replace the compressors. The building is leased, ' +

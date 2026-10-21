@@ -50,7 +50,7 @@ export function ClassBoards({
       </div>
       {hidden && (
         <p className="mt-2 text-[13px] text-marigold">
-          You are hidden from these boards — your classmates cannot see your name or your figures
+          You are hidden from these boards: your classmates cannot see your name or your figures
           on them. You can still see theirs.
         </p>
       )}

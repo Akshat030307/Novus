@@ -34,7 +34,7 @@ export function analyseDay(state: GameState): string | null {
     (r) => r.day === day && r.judgement === 'unsound',
   )
   if (unsoundToday.length > 0) {
-    return 'You made an unsound call today. The outcome is a roll — the reasoning is the part to go back over.'
+    return 'You made an unsound call today. The outcome is a roll: the reasoning is the part to go back over.'
   }
 
   const missed = state.cases.resolved.find(
@@ -42,12 +42,12 @@ export function analyseDay(state: GameState): string | null {
       r.flagScore.found / r.flagScore.of < FLAGS_SEEN,
   )
   if (missed?.flagScore) {
-    return `You spotted ${missed.flagScore.found} of ${missed.flagScore.of} tells on that file. The lines were all on the page — the reading is the skill.`
+    return `You spotted ${missed.flagScore.found} of ${missed.flagScore.of} tells on that file. The lines were all on the page: the reading is the skill.`
   }
 
   const top = topHolding(state)
   if (top && top.share >= CONCENTRATION) {
-    return `Your book is ${Math.round(top.share * 100)}% ${top.name}. One bad headline there is a bad day — spread it out.`
+    return `Your book is ${Math.round(top.share * 100)}% ${top.name}. One bad headline there is a bad day. Spread it out.`
   }
 
   const tradesToday = state.portfolio.trades.filter((t) => t.day === day).length
@@ -69,7 +69,7 @@ export function spotMistakes(state: GameState): MistakeRecord[] {
       id: `unsound_call-${day}-${r.caseId}`,
       kind: 'unsound_call',
       day,
-      note: `${title} — the figures on the file did not support that call.`,
+      note: `${title}: the figures on the file did not support that call.`,
     })
   }
 
@@ -83,7 +83,7 @@ export function spotMistakes(state: GameState): MistakeRecord[] {
       kind: 'missed_flags',
       day,
       note:
-        `${title} — ${got} of ${of} real tells spotted` +
+        `${title}: ${got} of ${of} real tells spotted` +
         (wrong > 0 ? `, and ${wrong} thing${wrong === 1 ? '' : 's'} flagged that was not one.` : '.'),
     })
   }

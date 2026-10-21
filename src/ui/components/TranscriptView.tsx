@@ -87,7 +87,7 @@ export function TranscriptProvenance({
       </p>
       <p className="mt-2 text-[13px] leading-relaxed text-muted">
         This code proves the report came out of Novus, under this account, at the time the database
-        recorded — and that nothing in it has been edited since. It does not vouch for how the run
+        recorded, and that nothing in it has been edited since. It does not vouch for how the run
         was played.
       </p>
     </div>

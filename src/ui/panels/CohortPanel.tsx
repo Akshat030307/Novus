@@ -76,7 +76,7 @@ export function CohortPanel() {
   if (!user) {
     return (
       <p className="border-l-2 border-line pl-3 text-[14px] text-muted">
-        Sign in to join a class. Your career, your cash and your transcripts stay yours either way —
+        Sign in to join a class. Your career, your cash and your transcripts stay yours either way:
         see below for exactly what joining shares.
       </p>
     )
@@ -155,13 +155,13 @@ export function CohortPanel() {
         <div className="mt-3 border-l-2 border-amethyst pl-3">
           <div className="text-[12px] text-amethyst font-semibold uppercase tracking-wide">What joining shares</div>
           <p className="mt-1 text-[14px] leading-relaxed text-muted">
-            Whoever runs the class can see the name you type above, your drill and module attempts —
-            every one, including the ones that went badly — and a summary: day, level, modules
+            Whoever runs the class can see the name you type above, your drill and module attempts,
+            every one, including the ones that went badly, and a summary: day, level, modules
             passed, concepts unlocked, sound and unsound calls, and which habits the game has logged
             against you.
           </p>
           <p className="mt-1 text-[14px] leading-relaxed text-muted">
-            Your classmates see less: your name and your place on the two class boards — work
+            Your classmates see less: your name and your place on the two class boards: work
             passed, accuracy, improvement, and how your trading has gone as a percentage. Not your
             habits, and not what you hold. You can take yourself off the boards at any time, and
             everyone else's stay visible to you.

@@ -16,7 +16,7 @@ export const patternHarbourTrade: PatternCase = {
   kind: 'pattern',
   id: 'pattern-harbour-trade',
   building: 'risk',
-  title: 'Harbour Trade Finance — branch controls review',
+  title: 'Harbour Trade Finance: branch controls review',
   brief:
     'A routine controls review of one trade-finance branch. The accounts balance, ' +
     'the audits are clean, and there is no loss to point at. You are not being ' +
@@ -100,6 +100,6 @@ export const patternHarbourTrade: PatternCase = {
   teaches: [
     'a clean audit of a missing control tells you nothing',
     'when two systems only have to agree once a year, they are not reconciled',
-    'fraud usually needs no false number — only a gap nobody owns',
+    'fraud usually needs no false number, only a gap nobody owns',
   ],
 }

@@ -43,7 +43,7 @@ export function fallbackCaseExplanation({ fc, r, drivers }: CaseExplanationParam
 
 function loanNumbers(fc: LoanCase): string {
   const f = fc.figures
-  const name = fc.title.split(' — ')[0]
+  const name = fc.title.split(': ')[0]
   const profit = f.revenue - f.expenses
 
   const profitClause =
@@ -56,7 +56,7 @@ function loanNumbers(fc: LoanCase): string {
       : 'with no interest currently owed'
   const coverClause =
     f.interestPaid > 0
-      ? ` — cover of about ${(f.cashFlow / f.interestPaid).toFixed(1)}×.`
+      ? `, cover of about ${(f.cashFlow / f.interestPaid).toFixed(1)}×.`
       : '.'
 
   return `${name} ${profitClause} and ${rupees(f.cashFlow)} of operating cash, ${interestClause}${coverClause}`
@@ -70,12 +70,12 @@ function bookNumbers(fc: AllocationCase): string {
   const share = total > 0 ? Math.round((topSector[1] / total) * 100) : 0
   return (
     `${fc.book.length} holdings, ${rupees(total, { short: true })} in all, across ` +
-    `${bySector.size} sectors — with ${share}% of it in ${topSector[0]}.`
+    `${bySector.size} sectors, with ${share}% of it in ${topSector[0]}.`
   )
 }
 
 function accountNumbers(fc: PatternCase): string {
-  const name = fc.title.split(' — ')[0]
+  const name = fc.title.split(': ')[0]
   const real = fc.truth.realFlags.length
   return (
     `${name}'s accounts carried ${real} line${real === 1 ? '' : 's'} that genuinely did not ` +
@@ -101,12 +101,12 @@ function callLine(fc: FinancialCase, r: ResolvedCase, pct: number): string {
         ? ` It would have ${badly}, so standing aside at ${pct}% was right.`
         : ` It ${good}, and the call was well judged.`
       : stoodAside
-        ? ` It would have ${good} this time — but acting at ${pct}% is still correct. Reward the reasoning, not the roll.`
-        : ` It ${bad}, yet the call was defensible at ${pct}% — a sound call can still go bad.`
+        ? ` It would have ${good} this time. But acting at ${pct}% is still correct. Reward the reasoning, not the roll.`
+        : ` It ${bad}, yet the call was defensible at ${pct}%. A sound call can still go bad.`
   }
   return r.outcome === 'good'
     ? ` It worked out, but the evidence did not support that call. You got away with it.`
     : stoodAside
       ? ` It would have ${good}. Acting on evidence this thin costs something too.`
-      : ` It ${bad} — and at ${pct}%, that call was not one the evidence supported.`
+      : ` It ${bad}, and at ${pct}%, that call was not one the evidence supported.`
 }

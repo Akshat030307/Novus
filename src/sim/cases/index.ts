@@ -197,7 +197,7 @@ export function riskRead(fc: FinancialCase): string {
   switch (fc.kind) {
     case 'loan':
       return risky
-        ? 'This one smells risky — the figures need to really stack up.'
+        ? 'This one smells risky: the figures need to really stack up.'
         : 'Looks manageable on the face of it.'
     case 'allocation':
       return risky
@@ -276,7 +276,7 @@ function loanRatios(fc: LoanCase): CaseRatio[] {
   return [
     {
       label: 'Debt-service cover',
-      value: dscr === Infinity ? '—' : `${dscr.toFixed(1)}×`,
+      value: dscr === Infinity ? '-' : `${dscr.toFixed(1)}×`,
       verdict: dscr >= 2 ? 'strong' : dscr >= 1.3 ? 'ok' : 'weak',
     },
     {
@@ -286,12 +286,12 @@ function loanRatios(fc: LoanCase): CaseRatio[] {
     },
     {
       label: 'Debt / annual profit',
-      value: leverageYears === Infinity ? '—' : `${leverageYears.toFixed(1)} yrs`,
+      value: leverageYears === Infinity ? '-' : `${leverageYears.toFixed(1)} yrs`,
       verdict: leverageYears <= 3 ? 'strong' : leverageYears <= 6 ? 'ok' : 'weak',
     },
     {
       label: 'Collateral / existing debt',
-      value: collateralCover === Infinity ? '—' : `${(collateralCover * 100).toFixed(0)}%`,
+      value: collateralCover === Infinity ? '-' : `${(collateralCover * 100).toFixed(0)}%`,
       verdict: collateralCover >= 0.75 ? 'strong' : collateralCover >= 0.4 ? 'ok' : 'weak',
     },
     {
@@ -367,13 +367,13 @@ function verdictLine(fc: FinancialCase, r: ResolvedCase, pct: number): string {
         : `It held, and leaving ${noun} alone was defensible on what you could see.`
     }
     return guarded
-      ? `Nothing happened this time — but at ${pct}% you were still right to act. Don't chase the outcome.`
+      ? `Nothing happened this time. But at ${pct}% you were still right to act. Don't chase the outcome.`
       : `It came apart, yet the call was defensible at ${pct}%. A sound call can still go bad.`
   }
   if (r.outcome === 'good') {
     return `It worked out, but the evidence did not support that call. You got away with it.`
   }
-  return `It came apart — and at ${pct}%, that call was not one the evidence supported.`
+  return `It came apart, and at ${pct}%, that call was not one the evidence supported.`
 }
 
 function loanVerdict(r: ResolvedCase, pct: number): string {
@@ -385,7 +385,7 @@ function loanVerdict(r: ResolvedCase, pct: number): string {
         : `It repaid, and the approval was well judged.`
     }
     return rejected
-      ? `It would have repaid — but rejecting a ${pct}% risk is still correct. Don't chase the outcome.`
+      ? `It would have repaid. But rejecting a ${pct}% risk is still correct. Don't chase the outcome.`
       : `It defaulted, yet the approval was defensible at ${pct}% risk. A sound call can still go bad.`
   }
   if (r.outcome === 'good') {
@@ -393,5 +393,5 @@ function loanVerdict(r: ResolvedCase, pct: number): string {
   }
   return rejected
     ? `It would have repaid. Rejecting a credit this clean leaves money on the table.`
-    : `It defaulted — and at ${pct}% risk, an unsecured full approval was the wrong call.`
+    : `It defaulted, and at ${pct}% risk, an unsecured full approval was the wrong call.`
 }

@@ -19,7 +19,7 @@ export function PriceChart({
   if (points.length < 2) {
     return (
       <div className="p-3 text-[15px] text-muted">
-        No price history yet — prices start moving when the market opens at 9:15.
+        No price history yet. Prices start moving when the market opens at 9:15.
       </div>
     )
   }

@@ -196,10 +196,10 @@ export const ENTERABLE: EnterableBuilding[] = BUILDINGS.filter(
 )
 
 export const NPCS: NpcSpec[] = [
-  { id: 'bank-manager', name: 'Rao — Branch Manager', x: 22, y: 19, frame: 105 },
-  { id: 'trader', name: 'Vikram — Trader', x: 35, y: 19, frame: 186 },
-  { id: 'risk-officer', name: 'Sunil — Risk Officer', x: 50, y: 31, frame: 348 },
-  { id: 'journalist', name: 'Meera — Reporter', x: 32, y: 25, frame: 429 },
+  { id: 'bank-manager', name: 'Rao, Branch Manager', x: 22, y: 19, frame: 105 },
+  { id: 'trader', name: 'Vikram, Trader', x: 35, y: 19, frame: 186 },
+  { id: 'risk-officer', name: 'Sunil, Risk Officer', x: 50, y: 31, frame: 348 },
+  { id: 'journalist', name: 'Meera, Reporter', x: 32, y: 25, frame: 429 },
 ]
 
 /* ---------- build the three tile layers ---------- */

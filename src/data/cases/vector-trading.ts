@@ -6,7 +6,7 @@ export const vectorTrading: LoanCase = {
   kind: 'loan',
   id: 'loan-vector-trading',
   building: 'bank',
-  title: 'Vector Trading Co — inventory finance',
+  title: 'Vector Trading Co: inventory finance',
   brief:
     'Vector Trading buys and resells packaged goods to kirana distributors. The ' +
     'application shows ₹1.2 crore of turnover and a near-perfect credit score. They ' +

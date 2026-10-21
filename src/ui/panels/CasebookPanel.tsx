@@ -247,7 +247,7 @@ function CheckedLine() {
   return (
     <p className="mt-2 text-[12px] text-muted">
       Every source in the Casebook was opened by a {CHECK.checkedBy} agent on {when}
-      {broken === 0 ? ' and all of them resolved.' : ` — ${broken} did not resolve.`}
+      {broken === 0 ? ' and all of them resolved.' : `, and ${broken} did not resolve.`}
     </p>
   )
 }
@@ -289,7 +289,7 @@ function RhymesWith({ entry }: { entry: CasebookEntry }) {
             {done ? "Reopen the file" : "Now find it in a live file"}
           </PixelButton>
           <p className="mt-1 text-[13px] text-muted">
-            {live.title} — waiting at Risk &amp; Compliance.
+            {live.title}: waiting at Risk &amp; Compliance.
           </p>
         </div>
       )}

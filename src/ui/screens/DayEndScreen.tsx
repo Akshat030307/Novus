@@ -36,7 +36,7 @@ export function DayEndScreen({
     <div className="anim-backdrop fixed inset-0 z-50 flex items-center justify-center bg-night/85 p-6">
       <div className="anim-pop w-full max-w-[760px] overflow-hidden rounded-2xl border border-line bg-panel shadow-2xl shadow-black/60">
         <header className="border-b-2 border-line px-5 py-3">
-          <h2 className="font-display text-[18px] text-ink">Day {report.day} — closed</h2>
+          <h2 className="font-display text-[18px] text-ink">Day {report.day} · closed</h2>
           <p className="text-[12px] text-muted font-semibold uppercase tracking-wide">Market shut at 3:30 pm</p>
         </header>
 

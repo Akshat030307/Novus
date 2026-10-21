@@ -64,7 +64,7 @@ export function MoneyPanel() {
             </div>
             <p className={`mt-1.5 text-[13px] ${concentrated ? 'text-coral' : 'text-muted'}`}>
               {Math.round(book.biggest.share * 100)}% of everything you have
-              {concentrated ? ' — one headline there is a bad day.' : '.'}
+              {concentrated ? '. One headline there is a bad day.' : '.'}
             </p>
           </div>
         )}

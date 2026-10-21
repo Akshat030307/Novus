@@ -95,7 +95,7 @@ export function ReplayDrill({ replayId }: { replayId: string }) {
           <p className="mt-1 text-[14px] text-muted">
             {score === replay.steps.length
               ? 'Every call held up on what was on the table when you made it. That is the only standard anyone can be held to.'
-              : 'Go back over the ones that slipped — not because of how it ended, but because of what was already published when you decided.'}
+              : 'Go back over the ones that slipped, not because of how it ended, but because of what was already published when you decided.'}
           </p>
         </div>
         <PixelButton onClick={restart}>Run it again</PixelButton>

@@ -5,7 +5,7 @@ export const girishSteel: LoanCase = {
   kind: 'loan',
   id: 'loan-girish-steel',
   building: 'bank',
-  title: 'Girish Steel Fabricators — plant upgrade',
+  title: 'Girish Steel Fabricators: plant upgrade',
   brief:
     'Girish Steel fabricates structural sections for road contractors. Order book ' +
     'is full and revenue is up year on year. They want ₹15,00,000 to replace an ' +

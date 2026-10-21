@@ -24,15 +24,15 @@ export const ilfsReplay: Replay = {
       ],
       question: 'You hold its commercial paper. What do you do?',
       options: [
-        { id: 'roll', label: 'Keep rolling it — AAA, and nothing is overdue' },
+        { id: 'roll', label: 'Keep rolling it: AAA, and nothing is overdue' },
         { id: 'size', label: 'Cap the exposure and stop adding' },
         { id: 'exit', label: 'Let the paper run off and do not renew' },
-        { id: 'add', label: 'Add — the yield is good for the rating' },
+        { id: 'add', label: 'Add: the yield is good for the rating' },
       ],
       defensible: ['size', 'exit'],
       outcome: 'The rating held. Payments continued as scheduled.',
       note:
-        'Owing money back sooner than the assets pay you means depending on always being able to borrow again. A rating is an opinion on credit, not on whether the market will refinance you next quarter — and several hundred entities is a structure outsiders, and the board, could not see through.',
+        'Owing money back sooner than the assets pay you means depending on always being able to borrow again. A rating is an opinion on credit, not on whether the market will refinance you next quarter, and several hundred entities is a structure outsiders, and the board, could not see through.',
     },
     {
       when: 'Mid-2018',
@@ -43,14 +43,14 @@ export const ilfsReplay: Replay = {
       ],
       question: 'The rating has not moved. Does that settle it?',
       options: [
-        { id: 'trust', label: 'Yes — the agencies see more than we do' },
-        { id: 'act', label: 'No — missed payments outrank a rating, cut the exposure' },
-        { id: 'hedge', label: 'No — hold but stop treating the rating as evidence' },
-        { id: 'wait', label: 'Yes — wait for a downgrade before acting' },
+        { id: 'trust', label: 'Yes, the agencies see more than we do' },
+        { id: 'act', label: 'No, missed payments outrank a rating, cut the exposure' },
+        { id: 'hedge', label: 'No, hold but stop treating the rating as evidence' },
+        { id: 'wait', label: 'Yes, wait for a downgrade before acting' },
       ],
       defensible: ['act', 'hedge'],
       outcome:
-        'The rating was held to the end of August 2018. The serious defaults came from September, and the firm was rated default by mid-September — weeks, not years.',
+        'The rating was held to the end of August 2018. The serious defaults came from September, and the firm was rated default by mid-September: weeks, not years.',
       note:
         'A rating that never moves until it moves all at once is a known failure mode, not a surprise. Waiting for the downgrade means acting after everyone who did not wait.',
     },
@@ -62,7 +62,7 @@ export const ilfsReplay: Replay = {
       ],
       question: 'Why did unrelated lenders re-price?',
       options: [
-        { id: 'coincidence', label: 'Coincidence — they had their own problems' },
+        { id: 'coincidence', label: 'Coincidence: they had their own problems' },
         {
           id: 'contagion',
           label: 'Every lender re-priced short-term non-bank funding risk at once',
@@ -73,7 +73,7 @@ export const ilfsReplay: Replay = {
       defensible: ['contagion'],
       outcome: 'Funding costs stayed elevated across the sector well beyond the firm itself.',
       note:
-        'Contagion, not coincidence. If your funding depends on a market staying open, someone else closing it is your problem too — which is the same maturity-mismatch lesson, one level up.',
+        'Contagion, not coincidence. If your funding depends on a market staying open, someone else closing it is your problem too, which is the same maturity-mismatch lesson, one level up.',
     },
   ],
 }

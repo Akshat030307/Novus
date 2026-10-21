@@ -44,7 +44,7 @@ const fail = (error: string): Issued<never> => ({ ok: false, error })
 const NOT_SET_UP = /schema cache|does not exist/i
 const readable = (message: string) =>
   NOT_SET_UP.test(message)
-    ? 'Transcripts are not set up on this Novus install yet — docs/supabase.sql has to be run once on the project.'
+    ? 'Transcripts are not set up on this Novus install yet: docs/supabase.sql has to be run once on the project.'
     : message
 
 interface TranscriptRow {
@@ -81,7 +81,7 @@ export async function issueTranscript(
 ): Promise<Issued<IssuedTranscript>> {
   if (!supabase) return fail('Cloud save is not configured, so there is nothing to issue against.')
   const user = await currentUser()
-  if (!user) return fail('Sign in first — a transcript has to be issued against an account.')
+  if (!user) return fail('Sign in first: a transcript has to be issued against an account.')
 
   try {
     const { data, error } = await supabase
