@@ -1,5 +1,6 @@
 import type { Attempt } from '@/sim/attempts'
 import type { Assignment, CohortMember, MemberSummary } from '@/sim/cohort'
+import type { BoardMember } from '@/sim/leaderboard'
 import { supabase, currentUser } from '@/lib/supabase'
 import { cloudNote, cloudReason } from '@/state/cloud'
 
@@ -245,6 +246,49 @@ export async function joinCohort(code: string, displayName: string): Promise<Res
     return { ok: true, value: { cohortId: rows[0].out_cohort_id, cohortName: rows[0].out_cohort_name } }
   } catch (e) {
     return fail(readable(cloudReason(e)))
+  }
+}
+
+/**
+ * The class leaderboard. One RPC, because a classmate is not allowed to read
+ * the members table — class_board() hands back a name and five numbers for a
+ * cohort the caller is in, and nothing else. See docs/supabase.sql.
+ */
+export async function classBoard(cohortId: string): Promise<BoardMember[]> {
+  if (!supabase) return []
+  try {
+    const { data, error } = await supabase.rpc('class_board', { p_cohort: cohortId })
+    if (error) {
+      cloudNote('class board', error.message)
+      return []
+    }
+    return ((data ?? []) as unknown[]).map((r) => {
+      const row = r as {
+        out_user_id: string
+        out_display_name: string
+        out_work_passed: number | null
+        out_accuracy: number | string | null
+        out_improvement: number | string | null
+        out_return_pct: number | string | null
+        out_day: number | null
+      }
+      // numeric columns arrive as JSON numbers, but a null is a real answer
+      // here — "has not published that yet" is not the same as zero
+      const num = (v: number | string | null): number | null =>
+        v === null || v === '' ? null : Number(v)
+      return {
+        userId: row.out_user_id,
+        displayName: row.out_display_name,
+        workPassed: row.out_work_passed ?? 0,
+        accuracy: num(row.out_accuracy),
+        improvement: num(row.out_improvement),
+        returnPct: num(row.out_return_pct),
+        day: row.out_day ?? 0,
+      }
+    })
+  } catch (e) {
+    cloudNote('class board', cloudReason(e))
+    return []
   }
 }
 

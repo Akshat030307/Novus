@@ -1,6 +1,8 @@
 import type { GameState } from '@/sim/types'
 import type { Attempt } from '@/sim/attempts'
-import { bestAttempt, progressOn } from '@/sim/attempts'
+import { bestAttempt, percent, progressOn, type Progress } from '@/sim/attempts'
+import { bookSummary } from '@/sim/portfolio'
+import { STARTING_CAPITAL } from '@/sim/economy'
 import { CONCEPTS } from '@/data/concepts'
 import { MODULES } from '@/data/modules'
 import { moduleProgress } from '@/sim/modules'
@@ -31,6 +33,23 @@ export interface MemberSummary {
   unsoundCalls: number
   /** mistake kind -> how many times it has been logged */
   mistakes: Record<string, number>
+
+  /* ---- the class leaderboard (issue B9) ----
+   * These five are read by classmates, not only by the teacher, through
+   * class_board() in docs/supabase.sql. Everything above stays teacher-only.
+   * They are figures about work and about trading, never a balance: a board
+   * of everyone's cash is both a privacy leak and a contest in luck. */
+
+  /** drills and module checks passed, counted once each however many tries */
+  workPassed?: number
+  /** mean best score across everything attempted, in percent; null if nothing */
+  accuracy?: number | null
+  /** mean points gained between first and latest try; null with nothing to compare */
+  improvement?: number | null
+  /** trading profit as a percentage of the capital everybody starts with */
+  returnPct?: number
+  /** the student asked to be left off the class board */
+  hidden?: boolean
 }
 
 export interface CohortMember {
@@ -55,11 +74,28 @@ export interface Assignment {
  * instructor has no business reading someone's cash, their career or their
  * transcripts, and the cheapest way to guarantee that is to never send them.
  */
-export function buildSummary(state: GameState): MemberSummary {
+export function buildSummary(state: GameState, attempts: Attempt[] = []): MemberSummary {
   const mistakes: Record<string, number> = {}
   for (const m of state.mistakes) mistakes[m.kind] = (mistakes[m.kind] ?? 0) + 1
 
+  // one best attempt per thing attempted — a drill run forty times is still
+  // one piece of work, and counting runs would reward grinding over learning
+  const refs = [...new Set(attempts.map((a) => a.refId))]
+  const bests = refs.map((r) => bestAttempt(attempts, r)).filter((b): b is Attempt => b !== null)
+  const gains = refs
+    .map((r) => progressOn(attempts, r))
+    .filter((p): p is Progress => p !== null)
+
+  const book = bookSummary(state)
+  // realised plus unrealised, against the capital everyone opens with. Wages
+  // from a job are deliberately left out: this board is about the market.
+  const traded = state.portfolio.realisedPnL + book.unrealised
+
   return {
+    workPassed: bests.filter((b) => b.passed).length,
+    accuracy: bests.length === 0 ? null : round1(mean(bests.map(percent))),
+    improvement: gains.length === 0 ? null : round1(mean(gains.map((g) => g.gained))),
+    returnPct: round1((traded / STARTING_CAPITAL) * 100),
     day: state.clock.day,
     level: state.player.level,
     modulesPassed: MODULES.filter((m) => moduleProgress(state, m.id).passed).length,
@@ -71,6 +107,9 @@ export function buildSummary(state: GameState): MemberSummary {
     mistakes,
   }
 }
+
+const mean = (xs: number[]): number => xs.reduce((t, x) => t + x, 0) / xs.length
+const round1 = (n: number): number => Math.round(n * 10) / 10
 
 /* ---------- the completion table ---------- */
 

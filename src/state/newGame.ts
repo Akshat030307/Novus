@@ -4,11 +4,14 @@ import { DAY_START_MINUTE, phaseFor, snapshotDayOpen } from '@/sim/clock'
 import { xpForLevel } from '@/sim/progression'
 import { checkQuests } from '@/sim/quests'
 import { ENERGY_MAX } from '@/sim/energy'
+import { STARTING_CAPITAL } from '@/sim/economy'
 // pure map data, no Phaser — state/ is where the layers meet
 import { SPAWN } from '@/world/map/city'
 
-/** ₹5,00,000 to start. Tunable — this is a game balance number, not a rule. */
-const STARTING_CASH = 5_00_000_00
+/** ₹5,00,000 to start. Tunable — this is a game balance number, not a rule.
+ *  It lives in sim/economy.ts because the class leaderboard measures a
+ *  player's trading against the same figure. */
+const STARTING_CASH = STARTING_CAPITAL
 
 /**
  * A fresh save. Bare on purpose: holdings arrive at step 9, quests at 12,

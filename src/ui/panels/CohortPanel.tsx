@@ -5,6 +5,7 @@ import { useAttemptsStore } from '@/state/attempts'
 import { buildSummary, type Assignment } from '@/sim/cohort'
 import { bestAttempt, progressOn } from '@/sim/attempts'
 import {
+  classBoard,
   joinCohort,
   leaveCohort,
   listAssignments,
@@ -12,6 +13,9 @@ import {
   publishSummary,
   type Membership,
 } from '@/state/cohorts'
+import type { BoardMember } from '@/sim/leaderboard'
+import { useSettingsStore } from '@/state/settings'
+import { ClassBoards } from '@/ui/panels/ClassBoards'
 import { PixelButton } from '@/ui/components/PixelButton'
 
 /**
@@ -27,9 +31,12 @@ export function CohortPanel() {
   const state = useGameStore((s) => s.state)
   const attempts = useAttemptsStore((s) => s.attempts)
   const user = useAuthStore((s) => s.user)
+  const hideFromBoard = useSettingsStore((s) => s.hideFromBoard)
+  const setSetting = useSettingsStore((s) => s.set)
 
   const [memberships, setMemberships] = useState<Membership[]>([])
   const [assignments, setAssignments] = useState<Record<string, Assignment[]>>({})
+  const [boards, setBoards] = useState<Record<string, BoardMember[]>>({})
   const [code, setCode] = useState('')
   const [name, setName] = useState(state.player.name)
   const [error, setError] = useState<string | null>(null)
@@ -39,8 +46,13 @@ export function CohortPanel() {
     const mine = await myMemberships()
     setMemberships(mine)
     const byCohort: Record<string, Assignment[]> = {}
-    for (const m of mine) byCohort[m.cohortId] = await listAssignments(m.cohortId)
+    const boardsByCohort: Record<string, BoardMember[]> = {}
+    for (const m of mine) {
+      byCohort[m.cohortId] = await listAssignments(m.cohortId)
+      boardsByCohort[m.cohortId] = await classBoard(m.cohortId)
+    }
     setAssignments(byCohort)
+    setBoards(boardsByCohort)
   }
 
   useEffect(() => {
@@ -61,10 +73,20 @@ export function CohortPanel() {
   useEffect(() => {
     latest.current = state
   }, [state])
+
+  /**
+   * What gets published. The attempts go in because the leaderboard's learning
+   * figures are computed from them, and the hide flag goes in because the
+   * database is what has to know — a setting kept only in this browser would
+   * leave the row on everyone else's board.
+   */
+  const mySummary = () => ({ ...buildSummary(latest.current, attempts), hidden: hideFromBoard })
+
   useEffect(() => {
     if (!user || memberships.length === 0) return
-    void publishSummary(buildSummary(latest.current))
-  }, [user, memberships.length])
+    void publishSummary(mySummary())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, memberships.length, hideFromBoard])
 
   const join = async () => {
     setBusy(true)
@@ -74,7 +96,7 @@ export function CohortPanel() {
     if (!result.ok) return setError(result.error)
     setCode('')
     await refresh()
-    void publishSummary(buildSummary(state))
+    void publishSummary(mySummary())
   }
 
   const leave = async (cohortId: string) => {
@@ -105,8 +127,32 @@ export function CohortPanel() {
             </button>
           </div>
           <Work assignments={assignments[m.cohortId] ?? []} attempts={attempts} />
+
+          <ClassBoards
+            members={boards[m.cohortId] ?? []}
+            meId={user.id}
+            hidden={hideFromBoard}
+          />
+
+          <label className="mt-2 flex cursor-pointer items-center gap-2 text-[13px] text-muted">
+            <input
+              type="checkbox"
+              checked={hideFromBoard}
+              onChange={async (e) => {
+                setSetting('hideFromBoard', e.target.checked)
+                await publishSummary({ ...buildSummary(latest.current, attempts), hidden: e.target.checked })
+                await refresh()
+              }}
+              className="accent-marigold"
+            />
+            Keep me off the class leaderboard
+          </label>
+
           <button
-            onClick={() => void publishSummary(buildSummary(latest.current))}
+            onClick={async () => {
+              await publishSummary(mySummary())
+              await refresh()
+            }}
             className="mt-2 text-[12px] text-amethyst font-semibold uppercase tracking-wide underline hover:text-marigold"
           >
             Update what your teacher sees
@@ -146,7 +192,13 @@ export function CohortPanel() {
             against you.
           </p>
           <p className="mt-1 text-[14px] leading-relaxed text-muted">
-            They cannot see your save, your cash, your portfolio, your career, or any transcript or
+            Your classmates see less: your name and your place on the two class boards — work
+            passed, accuracy, improvement, and how your trading has gone as a percentage. Not your
+            habits, and not what you hold. You can take yourself off the boards at any time, and
+            everyone else's stay visible to you.
+          </p>
+          <p className="mt-1 text-[14px] leading-relaxed text-muted">
+            Nobody can see your save, your cash, your portfolio, your career, or any transcript or
             certificate you have issued. That is enforced by the database, not by this screen. You
             can leave at any time, which stops the sharing.
           </p>

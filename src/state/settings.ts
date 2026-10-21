@@ -15,6 +15,10 @@ import { persist } from 'zustand/middleware'
  * (step C-b — disclosure, not difficulty; on by default); `colourSafe` swaps
  * the jade/coral up-down pair for one that survives colour blindness, and is
  * mirrored onto <html> by App.tsx alongside reducedMotion (issue A3).
+ *
+ * `hideFromBoard` keeps the player off the class leaderboard their classmates
+ * can see (issue B9). It is sent up with the published summary rather than
+ * only kept here — the database is what actually hides the row.
  */
 
 export interface Settings {
@@ -25,6 +29,7 @@ export interface Settings {
   aiWording: boolean
   assist: boolean
   colourSafe: boolean
+  hideFromBoard: boolean
 }
 
 interface SettingsStore extends Settings {
@@ -41,6 +46,7 @@ export const useSettingsStore = create<SettingsStore>()(
       aiWording: false,
       assist: true,
       colourSafe: false,
+      hideFromBoard: false,
       set: (key, value) => set({ [key]: value } as Partial<Settings>),
     }),
     {
@@ -52,6 +58,7 @@ export const useSettingsStore = create<SettingsStore>()(
         aiWording: s.aiWording,
         assist: s.assist,
         colourSafe: s.colourSafe,
+        hideFromBoard: s.hideFromBoard,
       }),
     },
   ),

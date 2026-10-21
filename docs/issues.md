@@ -473,6 +473,33 @@ training buyers actually ask for.
 
 ---
 
+### B9 — A class has no standing in it ✅ M
+
+A student can see their own work and a teacher can see everyone's, but nobody
+in a class can see where they stand among the people sitting next to them.
+Classes are the thing that makes a course a course, and a board is the cheapest
+way to make one feel like a room rather than twelve single players.
+
+The risk is obvious: rank a class on money and the lesson becomes "get lucky".
+So there are two boards, shown side by side and labelled apart. **Learning**
+ranks on work passed, then accuracy, then how much somebody improved between
+their first try and their latest — none of which a good day in the market can
+move. **Trading** ranks on profit and loss alone, says in its own words that it
+is partly luck, and counts for nothing else. In the sample class the two
+disagree on purpose: the student who has passed everything is near the bottom
+of the trading board.
+
+What classmates may read is a new crossing of the privacy line, so it is one
+narrow function — `class_board()` in `docs/supabase.sql` — returning a display
+name and five numbers for a cohort the caller is actually in. Not the summary:
+the habits the game logs against somebody stay between them and their teacher.
+Figures, never balances. Anyone can take themselves off the board, and the
+database is what hides them, not the screen.
+
+**Depends on:** B2, B3.
+
+---
+
 ## C — Reach and polish
 
 ### C1 — No onboarding ⬜ S

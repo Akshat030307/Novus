@@ -1,4 +1,4 @@
-import type { Attempt } from '@/sim/attempts'
+import { bestAttempt, percent, progressOn, type Attempt } from '@/sim/attempts'
 import type { Assignment, CohortMember, MemberSummary } from '@/sim/cohort'
 import { CONCEPTS } from '@/data/concepts'
 import { MODULES } from '@/data/modules'
@@ -29,6 +29,14 @@ type Mistakes = Partial<Record<'unsound_call' | 'concentration' | 'noise_trade' 
 
 interface SampleStudent {
   name: string
+  /**
+   * Trading profit as a percentage of the ₹5,00,000 everyone starts with —
+   * invented, like everything else here, and deliberately uncorrelated with
+   * how well the student is learning. Ishita, who has passed everything, is
+   * down on the market; Farhan, who is not landing the credit desk, is up.
+   * The two boards are meant to disagree.
+   */
+  traded: number
   /** null: joined, never opened the Class tab again, so nothing published */
   summary: { day: number; level: number; modules: number; concepts: number; sound: number; unsound: number; mistakes: Mistakes } | null
   attempts: Row[]
@@ -41,61 +49,73 @@ const IL = 'replay-ilfs'
 const STUDENTS: SampleStudent[] = [
   {
     name: 'Aarav Menon',
+    traded: 3.4,
     summary: { day: 11, level: 5, modules: 3, concepts: 9, sound: 8, unsound: 1, mistakes: { noise_trade: 2 } },
     attempts: [[CD, 3, 5, 9], [CD, 5, 5, 7], [CP, 4, 4, 4], [IL, 3, 3, 1]],
   },
   {
     name: 'Diya Kulkarni',
+    traded: -1.2,
     summary: { day: 9, level: 4, modules: 2, concepts: 8, sound: 6, unsound: 1, mistakes: { unsound_call: 1 } },
     attempts: [[CD, 5, 5, 8], [CP, 3, 4, 3], [IL, 2, 3, 1]],
   },
   {
     name: 'Farhan Qureshi',
+    traded: 11.8,
     summary: { day: 7, level: 3, modules: 1, concepts: 5, sound: 3, unsound: 3, mistakes: { noise_trade: 4, unsound_call: 2, concentration: 1 } },
     attempts: [[CD, 2, 5, 8], [CD, 3, 5, 6], [CP, 2, 4, 3]],
   },
   {
     name: 'Ishita Bose',
+    traded: -2.6,
     summary: { day: 13, level: 6, modules: 4, concepts: 11, sound: 11, unsound: 0, mistakes: {} },
     attempts: [[CD, 5, 5, 10], [CP, 4, 4, 5], [IL, 3, 3, 2]],
   },
   {
     name: 'Kabir Singh',
+    traded: 0.4,
     summary: { day: 6, level: 3, modules: 1, concepts: 6, sound: 4, unsound: 1, mistakes: { noise_trade: 3, missed_flags: 1 } },
     attempts: [[CD, 4, 5, 6], [CP, 2, 4, 1]],
   },
   {
     name: 'Meera Pillai',
+    traded: 5.1,
     summary: { day: 8, level: 4, modules: 2, concepts: 7, sound: 6, unsound: 0, mistakes: { missed_flags: 2 } },
     attempts: [[CD, 5, 5, 7], [IL, 3, 3, 0]],
   },
   {
     name: 'Nikhil Das',
+    traded: 0,
     summary: null,
     attempts: [],
   },
   {
     name: 'Priya Shetty',
+    traded: -7.3,
     summary: { day: 4, level: 2, modules: 0, concepts: 4, sound: 1, unsound: 3, mistakes: { noise_trade: 1, unsound_call: 3 } },
     attempts: [[CD, 3, 5, 3]],
   },
   {
     name: 'Rohan Joshi',
+    traded: 8.9,
     summary: { day: 10, level: 4, modules: 2, concepts: 8, sound: 7, unsound: 2, mistakes: { noise_trade: 2, concentration: 2 } },
     attempts: [[CD, 4, 5, 9], [CD, 4, 5, 8], [CD, 5, 5, 6], [CP, 3, 4, 3], [IL, 1, 3, 1]],
   },
   {
     name: 'Sana Sheikh',
+    traded: 2.2,
     summary: { day: 9, level: 4, modules: 3, concepts: 9, sound: 7, unsound: 0, mistakes: { missed_flags: 1 } },
     attempts: [[CD, 5, 5, 8], [CP, 4, 4, 4]],
   },
   {
     name: 'Tenzin Norbu',
+    traded: -0.8,
     summary: { day: 7, level: 3, modules: 1, concepts: 6, sound: 4, unsound: 2, mistakes: { noise_trade: 1, unsound_call: 1 } },
     attempts: [[CD, 3, 5, 7], [CP, 3, 4, 4]],
   },
   {
     name: 'Zoya Fernandes',
+    traded: 6.5,
     summary: { day: 6, level: 3, modules: 1, concepts: 5, sound: 4, unsound: 1, mistakes: { noise_trade: 2 } },
     attempts: [[CD, 4, 5, 6]],
   },
@@ -128,13 +148,6 @@ export function sampleClass(now: number = Date.now()): {
     { id: 'sample-a3', kind: 'drill', refId: IL, title: titleOf(IL), dueAt: at(-3, 11) },
   ]
 
-  const members: CohortMember[] = STUDENTS.map((s, i) => ({
-    userId: `sample-u${i + 1}`,
-    displayName: s.name,
-    joinedAt: at(14),
-    summary: s.summary && summaryOf(s.summary),
-  }))
-
   const attempts = STUDENTS.flatMap((s, i) =>
     s.attempts.map(([refId, score, outOf, daysAgo], j) => ({
       id: `sample-${i + 1}-${j + 1}`,
@@ -149,13 +162,41 @@ export function sampleClass(now: number = Date.now()): {
     })),
   )
 
+  // the leaderboard figures are derived from the attempts above rather than
+  // typed in, so the sample cannot drift out of agreement with itself — the
+  // board on this page is computed the same way a real student's would be
+  const members: CohortMember[] = STUDENTS.map((s, i) => {
+    const userId = `sample-u${i + 1}`
+    return {
+      userId,
+      displayName: s.name,
+      joinedAt: at(14),
+      summary: s.summary && summaryOf(s.summary, s.traded, attempts.filter((a) => a.userId === userId)),
+    }
+  })
+
   return { members, assignments, attempts }
 }
 
-function summaryOf(s: NonNullable<SampleStudent['summary']>): MemberSummary {
+function summaryOf(
+  s: NonNullable<SampleStudent['summary']>,
+  traded: number,
+  mine: Attempt[],
+): MemberSummary {
   const mistakes: Record<string, number> = {}
   for (const [k, v] of Object.entries(s.mistakes)) if (v) mistakes[k] = v
+
+  const refs = [...new Set(mine.map((a) => a.refId))]
+  const bests = refs.map((r) => bestAttempt(mine, r)).filter((b): b is Attempt => b !== null)
+  const gains = refs.map((r) => progressOn(mine, r)).filter((g) => g !== null)
+  const round1 = (n: number) => Math.round(n * 10) / 10
+
   return {
+    workPassed: bests.filter((b) => b.passed).length,
+    accuracy: bests.length === 0 ? null : round1(bests.reduce((t, b) => t + percent(b), 0) / bests.length),
+    improvement:
+      gains.length === 0 ? null : round1(gains.reduce((t, g) => t + g!.gained, 0) / gains.length),
+    returnPct: traded,
     day: s.day,
     level: s.level,
     modulesPassed: s.modules,

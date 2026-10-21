@@ -346,3 +346,72 @@ grant execute on function public.join_cohort(text, text) to authenticated;
 grant select, insert, update, delete on public.cohorts to authenticated;
 grant select, update, delete on public.cohort_members to authenticated;
 grant select, insert, update, delete on public.assignments to authenticated;
+
+-- -------------------------------------------- b9: the class leaderboard ----
+-- A student may now see where they stand among their classmates. That is a
+-- new crossing of the privacy line — until this, the only person who could
+-- see your work was whoever ran the class — so it is deliberately narrow:
+--
+--   * one function, returning five numbers and a display name. Not the
+--     summary, so the habits the game logs against somebody stay between
+--     them and their teacher.
+--   * only for a cohort the caller is actually in (or owns).
+--   * anyone who sets `hidden` on their own summary disappears from it.
+--
+-- Figures, never balances. `returnPct` is profit as a percentage of the
+-- capital everyone starts with, so it says how well somebody traded without
+-- saying what they have. See src/sim/leaderboard.ts for what is done with it.
+
+-- Reading a number out of a summary a client wrote. jsonb_typeof is the whole
+-- point: a plain ::numeric cast on somebody's hand-edited summary would throw,
+-- and one bad row would take the entire class's board down with it.
+create or replace function public.novus_num(j jsonb, k text) returns numeric
+language sql immutable as $$
+  select case when j is not null and jsonb_typeof(j -> k) = 'number'
+         then (j ->> k)::numeric end
+$$;
+
+create or replace function public.novus_flag(j jsonb, k text) returns boolean
+language sql immutable as $$
+  select coalesce(case when j is not null and jsonb_typeof(j -> k) = 'boolean'
+         then (j ->> k)::boolean end, false)
+$$;
+
+drop function if exists public.class_board(uuid);
+
+create function public.class_board(p_cohort uuid)
+returns table (
+  out_user_id      uuid,
+  out_display_name text,
+  out_work_passed  int,
+  out_accuracy     numeric,
+  out_improvement  numeric,
+  out_return_pct   numeric,
+  out_day          int
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select
+    m.user_id,
+    m.display_name,
+    coalesce(public.novus_num(m.summary, 'workPassed'), 0)::int,
+    public.novus_num(m.summary, 'accuracy'),
+    public.novus_num(m.summary, 'improvement'),
+    public.novus_num(m.summary, 'returnPct'),
+    coalesce(public.novus_num(m.summary, 'day'), 0)::int
+  from public.cohort_members m
+  where m.cohort_id = p_cohort
+    -- the authorisation, and the only one: a definer function runs past RLS,
+    -- so if this clause is wrong the table is open to everybody
+    and (public.in_cohort(p_cohort) or public.owns_cohort(p_cohort))
+    and m.summary is not null
+    and not public.novus_flag(m.summary, 'hidden')
+$$;
+
+revoke all on function public.novus_num(jsonb, text) from public;
+revoke all on function public.novus_flag(jsonb, text) from public;
+revoke all on function public.class_board(uuid) from public;
+grant execute on function public.class_board(uuid) to authenticated;
