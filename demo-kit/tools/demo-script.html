@@ -1,0 +1,137 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Novus — demo script</title>
+<style>
+  @page { size: A4; margin: 11mm 12mm; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; color: #15131a; background: #fff;
+    font: 11.4px/1.38 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .mono { font-family: "DejaVu Sans Mono", ui-monospace, Menlo, Consolas, monospace; }
+  header { display: flex; align-items: baseline; justify-content: space-between;
+           border-bottom: 2px solid #d6197f; padding-bottom: 4px; }
+  h1 { font-size: 21px; margin: 0; letter-spacing: -0.2px; }
+  h1 span { color: #d6197f; }
+  .sub { font-size: 10.2px; color: #5d5768; text-align: right; line-height: 1.5; }
+  .setup { display: flex; gap: 16px; margin: 8px 0 9px;
+           background: #faf4f8; border-left: 3px solid #d6197f; padding: 7px 10px; }
+  .setup div { font-size: 10.6px; }
+  .setup b { color: #15131a; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 8.4px; letter-spacing: 0.7px; text-transform: uppercase;
+       color: #8a8295; border-bottom: 1px solid #ddd8e2; padding: 0 6px 2px 0; font-weight: 700; }
+  td { vertical-align: top; padding: 5.5px 8px 5.5px 0; border-bottom: 1px solid #efecf3; }
+  td.t { white-space: nowrap; width: 44px; color: #d6197f; font-weight: 700; }
+  td.do { width: 31%; }
+  td.do b { display: block; font-size: 11.8px; margin-bottom: 1px; }
+  td.do .k { color: #5d5768; font-size: 10.1px; }
+  .say::before { content: "“"; color: #b9b2c4; }
+  .say::after  { content: "”"; color: #b9b2c4; }
+  .say { color: #2b2635; }
+  .note { color: #6f6880; font-style: italic; }
+  .cols { display: flex; gap: 11px; margin-top: 9px; }
+  .box { flex: 1; border: 1px solid #e3dfe9; border-radius: 4px; padding: 7px 9px; }
+  .box h2 { font-size: 8.4px; letter-spacing: 0.7px; text-transform: uppercase;
+            color: #d6197f; margin: 0 0 3px; }
+  .box p { margin: 0 0 4px; font-size: 10.2px; }
+  .box p:last-child { margin-bottom: 0; }
+  .box b { color: #15131a; }
+  footer { margin-top: 6px; border-top: 1px solid #e3dfe9; padding-top: 4px;
+           font-size: 9.4px; color: #6f6880; display: flex; justify-content: space-between; }
+</style>
+
+<header>
+  <h1>NOVUS <span>— demo script</span></h1>
+  <div class="sub">
+    <span class="mono">game.akshatchowdhary.online</span> · teacher demo <span class="mono">/teach/sample</span> · <span class="mono">root / 12345</span><br>
+    5 minutes · open both tabs before you start · sound on for the trailer only
+  </div>
+</header>
+
+<div class="setup">
+  <div><b>Before they sit down:</b> two tabs open — the game (a save already on day 7), and the sample dashboard already past the login. Wi-fi off is survivable: everything but the news links works offline.</div>
+  <div style="flex:0 0 31%"><b>The one line to land:</b> every other finance game scores you on money. Novus scores you on <b>reasoning</b> — and that is what the teacher sees.</div>
+</div>
+
+<table>
+  <tr><th></th><th>Do this</th><th>Say roughly this</th></tr>
+
+  <tr>
+    <td class="t">0:00</td>
+    <td class="do"><b>The front door</b><span class="k">Landing page. Don't play the trailer.</span></td>
+    <td><span class="say">Novus is a city that runs on money. You take finance jobs, judge real loan files and trade a live market — and you are graded on your reasoning, never on your luck. That one decision is why there is a teacher behind it.</span></td>
+  </tr>
+
+  <tr>
+    <td class="t">0:30</td>
+    <td class="do"><b>Make one call</b><span class="k">Academy → Drills → The credit desk. Read the file aloud, commit a risk band, then choose.</span></td>
+    <td><span class="say">Prakash wants six lakh for new compressors. The building is leased — the only security is the plant, worth about a quarter of the exposure. I commit my read first, then my call. Approving against that collateral is not protection, and the game marks the reasoning, not whether I got lucky.</span></td>
+  </tr>
+
+  <tr>
+    <td class="t">1:30</td>
+    <td class="do"><b>The thing nobody else logs</b><span class="k">Academy → Mistakes.</span></td>
+    <td><span class="say">Every slip is logged by <b>type</b> — traded the noise, judged a call by how it turned out, one name holding most of the book. Not a score. A habit. Hold that thought.</span></td>
+  </tr>
+
+  <tr>
+    <td class="t">2:00</td>
+    <td class="do"><b>Switch tabs: the teacher</b><span class="k">Class report. Point at "What to teach next".</span></td>
+    <td><span class="say">Twelve students, a week of play. The dashboard doesn't say "class average 61%". It says <b>seven of twelve keep trading the noise</b>, and the credit desk isn't landing for five of the eleven who tried it. That is Thursday's lesson plan, and it falls out of work the students already did.</span></td>
+  </tr>
+
+  <tr>
+    <td class="t">2:45</td>
+    <td class="do"><b>Two leaderboards that disagree</b><span class="k">Same page, top-left card.</span></td>
+    <td><span class="say">A class wants a leaderboard. Rank them on money and you have taught them to gamble. So there are two. Learning — work passed, accuracy, improvement. Trading — profit, and it says in its own words that it is partly luck. <b>Farhan is top of the market and bottom of the work.</b> That gap is the conversation.</span></td>
+  </tr>
+
+  <tr>
+    <td class="t">3:20</td>
+    <td class="do"><b>One student</b><span class="k">Student report → Farhan Qureshi.</span></td>
+    <td><span class="say">Never "weak at credit". It says: best 3 out of 5 across two tries, last on Thursday, up 20 points since the first go. Evidence he can argue with — which is the only feedback worth giving.</span></td>
+  </tr>
+
+  <tr>
+    <td class="t">4:00</td>
+    <td class="do"><b>The close: act on it</b><span class="k">Scroll to "What to set them next" → press <i>Set it for Farhan</i>.</span></td>
+    <td><span class="say">It names one exercise, aimed at the habit he keeps repeating, and sets it for him alone — not the class. The pick is a rule I can show you. <b>TinyFish</b> brings the other half: Reuters and Bloomberg, this year, on what that exact mistake cost India's retail traders. The model never chooses the homework — a recommendation a teacher can't audit is worse than none.</span></td>
+  </tr>
+
+  <tr>
+    <td class="t">4:40</td>
+    <td class="do"><b>Stop talking</b><span class="k">Leave the dashboard on screen.</span></td>
+    <td><span class="say">Students learn by living with their decisions. Teachers get the habits behind the marks. And the market is invented from end to end, so nothing here is ever advice.</span></td>
+  </tr>
+</table>
+
+<div class="cols">
+  <div class="box">
+    <h2>If they ask</h2>
+    <p><b>Is the AI picking the exercise?</b> No. A rule picks it; TinyFish fetches current reading for the teacher. Deliberate — "the model said so" is not a reason to drill a student.</p>
+    <p><b>What's real?</b> The Casebook cases and the teacher's reading list. Every tradable company, price and loan file is invented, on purpose: real tickers turn a learning game into advice.</p>
+    <p><b>Privacy?</b> A teacher sees attempts and a shared summary. Never a save, cash, or a transcript. Enforced in Postgres, not in the screen — 24 checks in <span class="mono">tools/sql</span>, all passing.</p>
+    <p><b>Built with?</b> React, Phaser, Supabase, TypeScript. Rules, world and interface kept in separate layers so the market stays testable.</p>
+  </div>
+  <div class="box">
+    <h2>If it breaks</h2>
+    <p><b>Dashboard empty?</b> You're on <span class="mono">/teach</span>, not <span class="mono">/teach/sample</span>.</p>
+    <p><b>Asked to log in again?</b> New tab clears it — <span class="mono">root / 12345</span>.</p>
+    <p><b>No network?</b> Everything works except the two news links. Say so and keep going.</p>
+    <p><b>Game won't load a save?</b> Start a new one; the credit desk drill needs nothing.</p>
+    <p><b>Running long?</b> Cut 1:30 (Mistakes) and 3:20 (one student). Never cut 2:45 or 4:00 — the two boards and the recommendation are the demo.</p>
+  </div>
+  <div class="box">
+    <h2>Numbers to have ready</h2>
+    <p><b>12</b> students · <b>11</b> sharing progress · <b>24 of 36</b> pieces of work attempted, <b>15</b> passed.</p>
+    <p><b>7 of 12</b> trade the noise. <b>5 of 11</b> haven't cleared the credit desk.</p>
+    <p>Farhan: <b>11th</b> of 11 on learning, <b>1st</b> on trading, habit logged <b>×4</b>.</p>
+    <p>Bloomberg, Aug 2026: India's retail traders lost <b>$9.6bn</b> in equity derivatives — the same mistake, outside the game.</p>
+  </div>
+</div>
+
+<footer>
+  <span>Novus · a pixel-art finance RPG with a teacher behind it</span>
+  <span>One page. Don't read it at them — read the room.</span>
+</footer>

@@ -416,6 +416,16 @@ revoke all on function public.novus_flag(jsonb, text) from public;
 revoke all on function public.class_board(uuid) from public;
 grant execute on function public.class_board(uuid) to authenticated;
 
+-- `revoke ... from public` is not enough on a Supabase project. Supabase sets
+-- default privileges that grant EXECUTE on functions in this schema to `anon`
+-- and `authenticated` by name, and a revoke from PUBLIC does not touch a grant
+-- made to a role directly. Signed out, the function already returns nothing —
+-- auth.uid() is null, so neither in_cohort() nor owns_cohort() can be true —
+-- but there is no reason for anon to be able to call it at all.
+revoke execute on function public.class_board(uuid) from anon;
+revoke execute on function public.novus_num(jsonb, text) from anon;
+revoke execute on function public.novus_flag(jsonb, text) from anon;
+
 -- -------------------------------------------- b11: work aimed at a person ----
 -- Set work could only ever be set for everybody. A class is not one student
 -- repeated nineteen times, so an assignment may now name who it is for:
